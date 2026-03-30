@@ -60,6 +60,16 @@ header {
 
 .site-header {
   padding: 3rem 0 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 1rem;
+  align-items: end;
+}
+
+.site-header > .eyebrow,
+.site-header > h1,
+.site-header > .lead {
+  grid-column: 1 / -1;
 }
 
 .site-footer {
@@ -69,11 +79,12 @@ header {
 
 .machine-link {
   margin: 1rem 0 0;
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
+  grid-column: 2;
+  justify-self: end;
+  align-self: end;
   font-size: 1.05rem;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .machine-link a {
@@ -222,5 +233,18 @@ code {
 
   .site-header {
     padding-top: 2rem;
+    grid-template-columns: 1fr;
+  }
+
+  .site-header > .eyebrow,
+  .site-header > h1,
+  .site-header > .lead,
+  .site-header > nav,
+  .site-header > .machine-link {
+    grid-column: 1;
+  }
+
+  .machine-link {
+    justify-self: start;
   }
 }
