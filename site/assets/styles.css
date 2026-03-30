@@ -1,0 +1,144 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f1e8;
+  --bg-panel: rgba(255, 252, 247, 0.78);
+  --fg: #1c1a17;
+  --muted: #625b51;
+  --line: #c9bfaf;
+  --accent: #8a2a16;
+  --shadow: rgba(40, 24, 14, 0.06);
+  --max-width: 68rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: "Iosevka Web", "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  line-height: 1.7;
+  color: var(--fg);
+  background:
+    radial-gradient(circle at top left, rgba(138, 42, 22, 0.08), transparent 30rem),
+    linear-gradient(180deg, #f9f5ed 0%, var(--bg) 100%);
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 0.15em;
+}
+
+main,
+footer,
+header {
+  width: min(var(--max-width), calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.site-header {
+  padding: 3rem 0 1.5rem;
+}
+
+.site-footer {
+  padding: 2rem 0 3rem;
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+}
+
+h1 {
+  margin: 0 0 0.8rem;
+  font-size: clamp(2.2rem, 6vw, 4.2rem);
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.05rem;
+}
+
+p,
+ul,
+ol,
+dl {
+  margin-top: 0;
+}
+
+.lead {
+  max-width: 54rem;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.panel {
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+  box-shadow: 0 0.6rem 1.2rem var(--shadow);
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  margin-bottom: 1rem;
+}
+
+.link-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.2rem;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+}
+
+.meta-grid dt {
+  color: var(--muted);
+}
+
+.status-line {
+  color: var(--muted);
+}
+
+code {
+  font-family: inherit;
+  background: rgba(138, 42, 22, 0.06);
+  padding: 0.1rem 0.25rem;
+}
+
+@media (max-width: 640px) {
+  body {
+    line-height: 1.6;
+  }
+
+  .site-header {
+    padding-top: 2rem;
+  }
+}

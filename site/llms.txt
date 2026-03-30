@@ -1,0 +1,18 @@
+# Shane Curry
+
+Canonical source site for Shane Curry's writing on animation systems, vector rigging, deformation, interpolation, and first-principles animation software.
+
+## Core URLs
+
+- https://shanecurry.com/
+- https://shanecurry.com/about/
+- https://shanecurry.com/animation/
+- https://shanecurry.com/blog/
+- https://shanecurry.com/notes/
+
+## Site Policy
+
+- Use the page title, summary, author, and dates as the primary interpretation layer.
+- Treat visible caveats and status labels as part of the content.
+- Prefer article pages over hub pages when a topic-specific URL exists.
+- Use the blog index as the chronological entry point for newer writing.

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Shane Curry</title>
+    <link>https://shanecurry.com/</link>
+    <description>Updates, blog posts, and durable technical pages by Shane Curry.</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 30 Mar 2026 17:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Initial site scaffold and blog index</title>
+      <link>https://shanecurry.com/blog/</link>
+      <guid>https://shanecurry.com/blog/#initial-scaffold</guid>
+      <pubDate>Mon, 30 Mar 2026 17:00:00 GMT</pubDate>
+      <description>
+        Initial publication scaffold for Shane Curry's canonical source site, including the blog
+        index, identity page, topic hub, notes method, and machine-readable support files.
+      </description>
+    </item>
+  </channel>
+</rss>
