@@ -105,6 +105,10 @@ dl {
   font-size: 1.35rem;
 }
 
+.human-lead {
+  color: var(--fg);
+}
+
 .panel {
   margin: 0 0 1rem;
   padding: 1rem 1.1rem;
