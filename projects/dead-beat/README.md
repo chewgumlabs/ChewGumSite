@@ -22,7 +22,6 @@ it now has two front ends:
 
 - `W` / `S`: move forward and backward
 - `A` / `D`: turn left and right
-- `Q` / `E`: strafe left and right
 - `Esc`: quit
 
 ## Native run

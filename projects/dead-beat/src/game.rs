@@ -1,5 +1,3 @@
-use std::f32::consts::FRAC_PI_2;
-
 use crate::framebuffer::Framebuffer;
 use crate::input::InputState;
 use crate::player::Player;
@@ -100,22 +98,12 @@ impl Game {
             move_dir -= 1.0;
         }
 
-        let mut strafe_dir = 0.0;
-        if input.strafe_left {
-            strafe_dir -= 1.0;
-        }
-        if input.strafe_right {
-            strafe_dir += 1.0;
-        }
-
         let step = self.player.move_speed * dt;
         let forward_x = self.player.angle.cos();
         let forward_y = self.player.angle.sin();
-        let right_x = (self.player.angle + FRAC_PI_2).cos();
-        let right_y = (self.player.angle + FRAC_PI_2).sin();
 
-        let dx = forward_x * move_dir * step + right_x * strafe_dir * step;
-        let dy = forward_y * move_dir * step + right_y * strafe_dir * step;
+        let dx = forward_x * move_dir * step;
+        let dy = forward_y * move_dir * step;
 
         self.try_move(dx, dy);
     }
