@@ -748,15 +748,19 @@ async function boot() {
     });
   }
 
-  audioTrigger.addEventListener("click", async () => {
-    try {
-      await musicBox.arm();
-    } catch (error) {
-      status.textContent = "Audio failed";
-      songState.textContent = error instanceof Error ? error.message : String(error);
-      console.error(error);
-    }
-  });
+  if (audioTrigger) {
+    audioTrigger.addEventListener("click", async () => {
+      try {
+        await musicBox.arm();
+      } catch (error) {
+        status.textContent = "Audio failed";
+        if (songState) {
+          songState.textContent = error instanceof Error ? error.message : String(error);
+        }
+        console.error(error);
+      }
+    });
+  }
 
   function frame(now) {
     const dtSeconds = Math.min((now - lastTime) / 1000, 0.05);
@@ -794,6 +798,8 @@ async function boot() {
 
 boot().catch((error) => {
   status.textContent = "Boot failed";
-  songState.textContent = error instanceof Error ? error.message : String(error);
+  if (songState) {
+    songState.textContent = error instanceof Error ? error.message : String(error);
+  }
   console.error(error);
 });

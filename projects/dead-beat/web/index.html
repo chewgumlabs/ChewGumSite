@@ -25,14 +25,20 @@
               <canvas id="game" width="320" height="200" aria-label="Game view"></canvas>
               <div class="scanlines" aria-hidden="true"></div>
             </div>
+            <div class="transport-panel">
+              <button id="audio-trigger" class="song-button" type="button">
+                MOVE THROUGH YOUR SONG
+              </button>
+              <p id="song-state" class="transport-state">
+                Press the button, then walk to wind the room up to 90 BPM.
+              </p>
+            </div>
           </div>
 
           <aside class="sidepanel">
             <div>
               <p class="panel-label">ENTER THE SONG IN YOUR HEART</p>
-              <div id="song-queue" class="song-queue" aria-live="polite">
-                <p class="song-queue-empty">Waiting for the walls to choose their notes.</p>
-              </div>
+              <div id="song-queue" class="song-queue" aria-live="polite"></div>
             </div>
 
             <div>
@@ -58,15 +64,6 @@
             </div>
           </aside>
         </section>
-
-        <div class="transport-panel">
-          <button id="audio-trigger" class="song-button" type="button">
-            MOVE THROUGH YOUR SONG
-          </button>
-          <p id="song-state" class="transport-state">
-            Press the button, then walk to wind the room up to 90 BPM.
-          </p>
-        </div>
       </main>
     </div>
 

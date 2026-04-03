@@ -92,6 +92,8 @@
 }
 
 .dead-beat-app .frame {
+  display: grid;
+  gap: 12px;
   padding: 14px;
 }
 
@@ -149,11 +151,6 @@
   gap: 10px;
 }
 
-.dead-beat-app .song-queue-empty {
-  color: var(--text-soft);
-  font-size: 1.2rem;
-}
-
 .dead-beat-app .queue-row {
   display: grid;
   gap: 8px;
@@ -193,20 +190,22 @@
 
 .dead-beat-app .transport-panel {
   display: grid;
-  gap: 10px;
-  margin-top: 18px;
-  justify-items: start;
+  gap: 8px;
+  width: 100%;
+  justify-items: stretch;
 }
 
 .dead-beat-app .song-button {
   border: 1px solid var(--accent-hot);
   background: #041107;
   color: var(--accent-hot);
-  padding: 0.85rem 1rem;
+  width: 100%;
+  padding: 0.95rem 1rem 0.85rem;
   font-family: var(--font-display);
   font-size: 0.88rem;
   letter-spacing: 0.08em;
   cursor: pointer;
+  text-align: left;
 }
 
 .dead-beat-app .song-button:hover,
@@ -218,7 +217,7 @@
 
 .dead-beat-app .transport-state {
   color: var(--text-soft);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   margin: 0;
 }
 
