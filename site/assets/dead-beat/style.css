@@ -145,10 +145,10 @@
 .dead-beat-app .wall-editor-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
 }
 
-.dead-beat-app .editor-panel {
+.dead-beat-app .queue-panel {
   display: grid;
   gap: 10px;
   padding-top: 4px;
@@ -157,6 +157,7 @@
 .dead-beat-app .song-queue {
   display: grid;
   gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .dead-beat-app .queue-row {
@@ -272,6 +273,10 @@
 
 @media (max-width: 1040px) {
   .dead-beat-app .stage {
+    grid-template-columns: 1fr;
+  }
+
+  .dead-beat-app .song-queue {
     grid-template-columns: 1fr;
   }
 }
