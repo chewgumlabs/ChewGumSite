@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dead Beat</title>
+    <meta
+      name="description"
+      content="A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text."
+    >
+    <link rel="canonical" href="https://shanecurry.com/blog/dead-beat/">
+    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="/assets/dead-beat/style.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dead Beat",
+        "description": "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
+        "datePublished": "2026-04-02",
+        "dateModified": "2026-04-02",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/dead-beat/",
+        "url": "https://shanecurry.com/blog/dead-beat/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "Rust",
+          "WebAssembly",
+          "software rendering",
+          "interactive art",
+          "browser game"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <p class="eyebrow">Blog Post</p>
+      <h1>Dead Beat</h1>
+      <p class="lead human-lead">
+        A small browser-based software-rendered room, written in Rust, where each wall can be
+        rewritten live.
+      </p>
+      <nav aria-label="Primary">
+        <ul class="link-list">
+          <li><a href="/">Home</a></li>
+          <li><a href="/animation/">Animation</a></li>
+          <li><a href="/blog/">Blog</a></li>
+        </ul>
+      </nav>
+      <p class="machine-link"><a href="/llms.txt">llms.txt</a></p>
+    </header>
+
+    <main>
+      <section class="machine-divider" aria-label="Machine boundary">
+        <p>
+          The paragraph above comes directly from Shane Curry. Everything below this line is
+          structured context and the live prototype.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Live Prototype</h2>
+        <div class="dead-beat-app">
+          <section class="shell">
+            <section class="hero">
+              <h1>DEAD BEAT</h1>
+              <p class="lede">I once loved. I was once loved.</p>
+            </section>
+
+            <section class="stage">
+              <div class="frame">
+                <div class="frame-bar">
+                  <span id="status">Booting...</span>
+                </div>
+                <div class="canvas-wrap">
+                  <canvas id="game" width="320" height="200" aria-label="Game view"></canvas>
+                  <div class="scanlines" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <aside class="sidepanel">
+                <div>
+                  <p class="panel-label">Runtime</p>
+                  <p id="telemetry">Standing by</p>
+                </div>
+
+                <div>
+                  <p class="panel-label">Wall Text</p>
+                  <div class="wall-editor-grid">
+                    <label class="wall-editor" for="north-text">
+                      <span>North</span>
+                      <textarea id="north-text" class="wall-input" spellcheck="false"></textarea>
+                    </label>
+                    <label class="wall-editor" for="east-text">
+                      <span>East</span>
+                      <textarea id="east-text" class="wall-input" spellcheck="false"></textarea>
+                    </label>
+                    <label class="wall-editor" for="south-text">
+                      <span>South</span>
+                      <textarea id="south-text" class="wall-input" spellcheck="false"></textarea>
+                    </label>
+                    <label class="wall-editor" for="west-text">
+                      <span>West</span>
+                      <textarea id="west-text" class="wall-input" spellcheck="false"></textarea>
+                    </label>
+                  </div>
+                </div>
+              </aside>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>What It Is</h2>
+        <p>
+          This page is a tiny software-rendered first-person room running directly in the browser.
+          The renderer is written in Rust, compiled to WebAssembly, and mounted here as static
+          files so it can ship with the rest of the site on GitHub Pages.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Controls</h2>
+        <ul>
+          <li><code>W</code> and <code>S</code> move forward and backward.</li>
+          <li><code>A</code> and <code>D</code> turn left and right.</li>
+          <li><code>Q</code> and <code>E</code> strafe left and right.</li>
+          <li>Click into the wall text boxes to rewrite each side of the room live.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <h2>Build Notes</h2>
+        <p>
+          The source for this experiment now lives inside the site repo, and the web build copies
+          its JavaScript, CSS, and WebAssembly bundle straight into the published <code>/site</code>
+          tree. That keeps the game portable without needing a separate host or framework.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Preferred Citation</h2>
+        <p>
+          Shane Curry, "Dead Beat," https://shanecurry.com/blog/dead-beat/, published April 2,
+          2026, updated April 2, 2026.
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <ul class="footer-links" aria-label="Elsewhere">
+        <li><a href="https://github.com/chewgumplaygames">GitHub</a></li>
+        <li><a href="https://www.linkedin.com/in/shanecurrycartoons/">LinkedIn</a></li>
+        <li><a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk">IMDb</a></li>
+      </ul>
+      <p>Author: Shane Curry</p>
+      <p>Updated: April 2, 2026</p>
+    </footer>
+
+    <script type="module" src="/assets/dead-beat/main.js"></script>
+  </body>
+</html>

@@ -5,7 +5,18 @@
     <link>https://shanecurry.com/</link>
     <description>Updates, blog posts, and durable technical pages by Shane Curry.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 30 Mar 2026 20:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 02 Apr 2026 20:00:00 GMT</lastBuildDate>
+
+    <item>
+      <title>Dead Beat</title>
+      <link>https://shanecurry.com/blog/dead-beat/</link>
+      <guid>https://shanecurry.com/blog/dead-beat/</guid>
+      <pubDate>Thu, 02 Apr 2026 20:00:00 GMT</pubDate>
+      <description>
+        A browser-playable software-rendered room written in Rust and WebAssembly, with
+        live-editable wall text on each outer wall.
+      </description>
+    </item>
 
     <item>
       <title>The Vagueness Was Protective</title>

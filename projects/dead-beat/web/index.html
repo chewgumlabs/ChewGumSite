@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sector 0</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="dead-beat-page">
+    <div class="dead-beat-app">
+      <main class="shell">
+        <section class="hero">
+          <h1>DEAD BEAT</h1>
+          <p class="lede">
+            I once loved. I was once loved.
+          </p>
+        </section>
+
+        <section class="stage">
+          <div class="frame">
+            <div class="frame-bar">
+              <span id="status">Booting...</span>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="game" width="320" height="200" aria-label="Game view"></canvas>
+              <div class="scanlines" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <aside class="sidepanel">
+            <div>
+              <p class="panel-label">Runtime</p>
+              <p id="telemetry">Standing by</p>
+            </div>
+
+            <div>
+              <p class="panel-label">Wall Text</p>
+              <div class="wall-editor-grid">
+                <label class="wall-editor" for="north-text">
+                  <span>North</span>
+                  <textarea id="north-text" class="wall-input" spellcheck="false"></textarea>
+                </label>
+                <label class="wall-editor" for="east-text">
+                  <span>East</span>
+                  <textarea id="east-text" class="wall-input" spellcheck="false"></textarea>
+                </label>
+                <label class="wall-editor" for="south-text">
+                  <span>South</span>
+                  <textarea id="south-text" class="wall-input" spellcheck="false"></textarea>
+                </label>
+                <label class="wall-editor" for="west-text">
+                  <span>West</span>
+                  <textarea id="west-text" class="wall-input" spellcheck="false"></textarea>
+                </label>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
