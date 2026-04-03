@@ -697,6 +697,15 @@ function readWallTexts() {
   };
 }
 
+function autosizeWallInput(input) {
+  if (!input) {
+    return;
+  }
+
+  input.style.height = "0px";
+  input.style.height = `${Math.max(input.scrollHeight, 96)}px`;
+}
+
 async function boot() {
   status.textContent = "Loading module";
   await init();
@@ -714,6 +723,10 @@ async function boot() {
   wallInputs[1].value = game.east_text();
   wallInputs[2].value = game.south_text();
   wallInputs[3].value = game.west_text();
+
+  for (const input of wallInputs) {
+    autosizeWallInput(input);
+  }
 
   musicBox.setWallTexts(readWallTexts());
   status.textContent = "Room waiting";
@@ -742,6 +755,7 @@ async function boot() {
 
   for (const input of wallInputs) {
     input.addEventListener("input", () => {
+      autosizeWallInput(input);
       status.textContent = "Updating walls";
       window.clearTimeout(inputTimer);
       inputTimer = window.setTimeout(applyWallText, 120);

@@ -240,9 +240,11 @@
   font-family: var(--font-mono);
   min-height: 96px;
   padding: 10px 12px;
-  resize: vertical;
+  overflow: hidden;
+  resize: none;
   font-size: 1.45rem;
   line-height: 1.05;
+  appearance: none;
 }
 
 .dead-beat-app .stage > * {
