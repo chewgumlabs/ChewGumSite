@@ -250,10 +250,20 @@
   min-height: 96px;
   padding: 10px 12px;
   overflow: hidden;
+  overflow-y: hidden;
   resize: none;
   font-size: 1.45rem;
   line-height: 1.05;
   appearance: none;
+  -webkit-appearance: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dead-beat-app .wall-input::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .dead-beat-app .stage > * {
