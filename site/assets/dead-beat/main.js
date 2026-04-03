@@ -361,7 +361,7 @@ function buildQueueMarkup(composition, voiceStates) {
       .join("");
 
     return `
-      <div class="queue-row">
+      <div class="queue-row" data-wall="${wall.id}">
         <span class="queue-wall">${wall.label}</span>
         <div class="queue-notes">${notesMarkup || '<span class="queue-note">...</span>'}</div>
       </div>
