@@ -32,7 +32,7 @@
 .dead-beat-app .shell {
   width: min(1120px, calc(100vw - 48px));
   margin: 0 auto;
-  padding: 48px 24px 64px 72px;
+  padding: 48px 24px 64px;
 }
 
 .dead-beat-app .hero {
@@ -173,7 +173,7 @@
 @media (max-width: 900px) {
   .dead-beat-app .shell {
     width: min(100vw - 24px, 720px);
-    padding: 32px 12px 48px 32px;
+    padding: 32px 12px 48px;
   }
 
   .dead-beat-app .stage {
