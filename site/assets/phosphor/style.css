@@ -1,0 +1,300 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap");
+
+:root {
+  --ph-bg: #000d04;
+  --ph-panel: rgba(0, 14, 6, 0.97);
+  --ph-border: #1a4528;
+  --ph-text: #c8ffd8;
+  --ph-soft: #72b888;
+  --ph-green: #33ff66;
+  --ph-amber: #ffd36b;
+  --ph-shadow: rgba(0, 0, 0, 0.52);
+  --ph-font-display: "Press Start 2P", "Courier New", monospace;
+  --ph-font-body: "VT323", "Courier New", monospace;
+}
+
+.phosphor-app *,
+.phosphor-page {
+  box-sizing: border-box;
+}
+
+.phosphor-app {
+  color: var(--ph-text);
+  font-family: var(--ph-font-body);
+}
+
+.phosphor-app .shell {
+  width: 100%;
+}
+
+.phosphor-app .hero {
+  margin-bottom: 28px;
+}
+
+.phosphor-app .hero .eyebrow,
+.phosphor-app .panel-label,
+.phosphor-app .frame-bar {
+  font-family: var(--ph-font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.phosphor-app .hero .eyebrow {
+  margin: 0 0 10px;
+  color: var(--ph-green);
+  text-shadow: 0 0 0.6rem rgba(51, 255, 102, 0.5);
+}
+
+.phosphor-app h2 {
+  margin: 0;
+  font-family: var(--ph-font-display);
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  color: var(--ph-green);
+  text-shadow: 0 0 1.2rem rgba(51, 255, 102, 0.4);
+}
+
+.phosphor-app .lede {
+  max-width: 42rem;
+  margin: 16px 0 0;
+  font-size: 1.52rem;
+  color: var(--ph-soft);
+}
+
+.phosphor-app .stage {
+  display: grid;
+  grid-template-columns: minmax(0, 760px) minmax(220px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.phosphor-app .frame,
+.phosphor-app .sidepanel {
+  border: 1px solid var(--ph-border);
+  background:
+    radial-gradient(circle at top, rgba(51, 255, 102, 0.06), transparent 36%),
+    var(--ph-panel);
+  box-shadow:
+    0 1rem 2rem var(--ph-shadow),
+    inset 0 0 0.75rem rgba(51, 255, 102, 0.04);
+}
+
+.phosphor-app .frame {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+}
+
+.phosphor-app .frame-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 6px 10px;
+  color: var(--ph-soft);
+  border-bottom: 1px solid rgba(51, 255, 102, 0.12);
+}
+
+.phosphor-app .canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(51, 255, 102, 0.2);
+  background: #000000;
+  box-shadow:
+    0 0 1.5rem rgba(51, 255, 102, 0.08),
+    inset 0 0 2rem rgba(0, 0, 0, 0.8);
+}
+
+.phosphor-app canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.phosphor-app .scanlines,
+.phosphor-app .vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.phosphor-app .scanlines {
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.025) 0,
+    rgba(255, 255, 255, 0.025) 1px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0) 3px
+  );
+  mix-blend-mode: screen;
+  opacity: 0.5;
+}
+
+.phosphor-app .vignette {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
+}
+
+.phosphor-app .transport-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.phosphor-app .arm-button {
+  width: 100%;
+  border: 1px solid var(--ph-green);
+  background:
+    linear-gradient(180deg, rgba(51, 255, 102, 0.08), rgba(51, 255, 102, 0.03)),
+    rgba(0, 14, 6, 0.92);
+  color: var(--ph-green);
+  padding: 0.95rem 1rem 0.85rem;
+  font-family: var(--ph-font-display);
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: 0 0 0.5rem rgba(51, 255, 102, 0.4);
+}
+
+.phosphor-app .arm-button:hover,
+.phosphor-app .arm-button:focus-visible {
+  background:
+    linear-gradient(180deg, rgba(51, 255, 102, 0.18), rgba(51, 255, 102, 0.07)),
+    rgba(0, 14, 6, 0.98);
+  color: #b0ffcc;
+  outline: none;
+}
+
+.phosphor-app .arm-button:disabled {
+  border-color: var(--ph-border);
+  color: var(--ph-soft);
+  cursor: default;
+  text-shadow: none;
+}
+
+.phosphor-app .transport-state {
+  margin: 0;
+  font-size: 1.06rem;
+  color: var(--ph-soft);
+}
+
+.phosphor-app .telemetry-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.phosphor-app .telemetry-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid rgba(51, 255, 102, 0.16);
+  background: rgba(0, 8, 2, 0.82);
+}
+
+.phosphor-app .telemetry-card strong {
+  font-family: var(--ph-font-display);
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--ph-green);
+}
+
+.phosphor-app .panel-label {
+  color: var(--ph-green);
+  opacity: 0.7;
+}
+
+.phosphor-app .meter {
+  position: relative;
+  overflow: hidden;
+  height: 8px;
+  border: 1px solid rgba(51, 255, 102, 0.18);
+  background: rgba(0, 8, 2, 0.96);
+}
+
+.phosphor-app .meter > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, rgba(51, 255, 102, 0.6), var(--ph-green));
+  box-shadow: 0 0 0.4rem rgba(51, 255, 102, 0.5);
+  transition: transform 0.1s linear;
+}
+
+.phosphor-app .danger-meter > span {
+  background: linear-gradient(90deg, var(--ph-green), var(--ph-amber), #ff8a66);
+  box-shadow: 0 0 0.6rem rgba(255, 211, 107, 0.5);
+}
+
+.phosphor-app .sidepanel {
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  align-content: start;
+}
+
+.phosphor-app .sidepanel p {
+  margin: 0 0 0.8rem;
+}
+
+.phosphor-app .sidepanel p:last-child {
+  margin-bottom: 0;
+}
+
+.phosphor-app .control-list {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.phosphor-app .control-list li + li {
+  margin-top: 0.4rem;
+}
+
+.phosphor-app code {
+  background: rgba(51, 255, 102, 0.08);
+}
+
+@media (max-width: 1040px) {
+  .phosphor-app .stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .phosphor-app .telemetry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .phosphor-app .hero .eyebrow,
+  .phosphor-app .panel-label,
+  .phosphor-app .frame-bar {
+    font-size: 0.72rem;
+  }
+
+  .phosphor-app .frame {
+    padding: 12px;
+  }
+
+  .phosphor-app .sidepanel {
+    padding: 16px;
+    font-size: 1.2rem;
+    line-height: 1.28;
+  }
+
+  .phosphor-app .telemetry-card strong {
+    font-size: 0.72rem;
+  }
+
+  .phosphor-app .transport-state {
+    font-size: 0.94rem;
+  }
+}
