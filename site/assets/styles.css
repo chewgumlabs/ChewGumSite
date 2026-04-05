@@ -205,6 +205,10 @@ blockquote {
   margin-bottom: 0.6rem;
 }
 
+.post-list article[data-type="experiment"] {
+  border-color: rgba(255, 211, 107, 0.45);
+}
+
 .machine-divider {
   margin: 0 0 1rem;
   padding: 0.85rem 0;
