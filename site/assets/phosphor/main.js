@@ -5,7 +5,6 @@ const HALF_FOV = FOV / 2;
 const MOVE_SPEED = 3.5;
 const TURN_SPEED = 2.2;
 const DECAY_ALPHA = 0.22;
-const BUCKETS = 20;
 const PHCOLOR = '51,255,102';
 
 // 14×14 map — 0 = open, 1 = wall
@@ -191,7 +190,10 @@ function castRay(px, py, angle) {
   return { dist: Math.max(0.05, dist), side };
 }
 
-// Oscilloscope renderer
+// Oscilloscope vector renderer
+// Draws only the outline of visible geometry — no fills, no solid columns.
+// Ceiling edge and floor edge are connected polylines (like a beam tracing the silhouette).
+// Wall corners are bright verticals where depth changes.
 function render() {
   // Phosphor persistence — dim previous frame rather than clear
   ctx.fillStyle = `rgba(0,0,0,${DECAY_ALPHA})`;
@@ -209,39 +211,47 @@ function render() {
 
   ctx.save();
   ctx.lineWidth = 1;
-  ctx.shadowBlur = 5;
+  ctx.lineCap = 'round';
+  ctx.shadowBlur = 6;
   ctx.shadowColor = `rgb(${PHCOLOR})`;
 
-  // Batch columns by brightness bucket to reduce draw calls
-  const buckets = Array.from({ length: BUCKETS }, () => []);
-  for (let x = 0; x < W; x++) {
-    const { dist, side } = cols[x];
-    const b = Math.min(1, 3.2 / (dist * 0.7 + 0.35)) * (side ? 0.52 : 1.0);
-    buckets[Math.min(BUCKETS - 1, (b * BUCKETS) | 0)].push(x);
-  }
-  for (let b = 0; b < BUCKETS; b++) {
-    if (!buckets[b].length) continue;
-    ctx.strokeStyle = `rgba(${PHCOLOR},${((b + 1) / BUCKETS).toFixed(2)})`;
+  // Draw the ceiling outline and floor outline as continuous polylines.
+  // The shape of the line IS the depth — close walls push the line far from centre,
+  // far walls keep it near the horizon. No fills.
+  function drawOutline(getY) {
+    ctx.strokeStyle = `rgba(${PHCOLOR},0.82)`;
     ctx.beginPath();
-    for (const x of buckets[b]) {
-      ctx.moveTo(x + 0.5, cols[x].top);
-      ctx.lineTo(x + 0.5, cols[x].bottom);
+    ctx.moveTo(0.5, getY(cols[0]));
+    for (let x = 1; x < W; x++) {
+      ctx.lineTo(x + 0.5, getY(cols[x]));
     }
     ctx.stroke();
   }
 
-  // Bright edge highlights at wall depth transitions
-  ctx.shadowBlur = 12;
-  ctx.strokeStyle = 'rgba(180,255,200,0.8)';
+  drawOutline((c) => c.top);
+  drawOutline((c) => c.bottom);
+
+  // Bright verticals at wall edge transitions (corners, doorways, depth breaks).
+  // These are the only solid vertical strokes — the "corners" of the scene.
+  ctx.shadowBlur = 14;
+  ctx.strokeStyle = 'rgba(180,255,200,0.9)';
   ctx.beginPath();
   for (let x = 1; x < W - 1; x++) {
-    if (Math.abs(cols[x].top - cols[x - 1].top) > 5) {
+    if (Math.abs(cols[x].top - cols[x - 1].top) > 4) {
       const eTop = Math.min(cols[x].top, cols[x - 1].top);
       const eBot = Math.max(cols[x].bottom, cols[x - 1].bottom);
       ctx.moveTo(x + 0.5, eTop);
       ctx.lineTo(x + 0.5, eBot);
     }
   }
+  ctx.stroke();
+
+  // Very faint horizon line — gives the oscilloscope a baseline reference
+  ctx.shadowBlur = 2;
+  ctx.strokeStyle = `rgba(${PHCOLOR},0.07)`;
+  ctx.beginPath();
+  ctx.moveTo(0, H / 2);
+  ctx.lineTo(W, H / 2);
   ctx.stroke();
 
   ctx.restore();
