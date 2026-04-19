@@ -155,7 +155,15 @@
         (org-html-htmlize-output-type 'css)
         (org-html-doctype "html5")
         (org-html-html5-fancy nil)
-        (org-html-container-element "div"))
+        (org-html-container-element "div")
+        ;; Prefer semantic <em>/<strong> over presentational <i>/<b>.
+        (org-html-text-markup-alist
+         '((bold          . "<strong>%s</strong>")
+           (code          . "<code>%s</code>")
+           (italic        . "<em>%s</em>")
+           (strike-through . "<del>%s</del>")
+           (underline     . "<span class=\"underline\">%s</span>")
+           (verbatim      . "<code>%s</code>"))))
     (with-temp-buffer
       (insert s)
       (org-mode)
@@ -179,16 +187,32 @@ We strip those because we wrap in <section class=\"window\"> ourselves."
              "<h2[^>]*>[^<]*</h2>" "" s))
     s))
 
-(defun shane-publish--heading-to-window (heading)
-  "Return HTML for one level-1 Org HEADING as a <section class=window>."
-  (let* ((title (org-element-property :raw-value heading))
-         (tags  (or (org-element-property :tags heading) '()))
-         (experiment (member "experiment" tags))
-         (beg (org-element-property :contents-begin heading))
-         (end (org-element-property :contents-end heading))
-         (body-org (if (and beg end)
-                       (buffer-substring-no-properties beg end)
-                     ""))
+(defun shane-publish--collect-windows ()
+  "Parse the current buffer and return a list of (TITLE EXPERIMENT BODY-ORG)
+tuples — one per top-level Org heading. Runs while the post.org buffer
+is still current, so `buffer-substring' resolves correctly; callers can
+then switch to a temp output buffer without losing the source text."
+  (let* ((ast (org-element-parse-buffer))
+         (level1 (org-element-map ast 'headline
+                   (lambda (h)
+                     (when (= 1 (org-element-property :level h)) h)))))
+    (mapcar
+     (lambda (h)
+       (let* ((title (org-element-property :raw-value h))
+              (tags (or (org-element-property :tags h) '()))
+              (beg (org-element-property :contents-begin h))
+              (end (org-element-property :contents-end h))
+              (body-org (if (and beg end)
+                            (buffer-substring-no-properties beg end)
+                          "")))
+         (list title (member "experiment" tags) body-org)))
+     level1)))
+
+(defun shane-publish--render-window (window)
+  "Turn one (TITLE EXPERIMENT BODY-ORG) tuple into its HTML section."
+  (let* ((title (nth 0 window))
+         (experiment (nth 1 window))
+         (body-org (nth 2 window))
          (body-html (shane-publish--strip-outline-wrappers
                      (shane-publish--org-string-to-html body-org))))
     (format
@@ -203,16 +227,12 @@ We strip those because we wrap in <section class=\"window\"> ourselves."
 
 (defun shane-publish--write-frag-html (dir)
   "Write DIR/post.frag.html: one window per top-level Org heading."
-  (let* ((ast (org-element-parse-buffer))
-         (level1 (org-element-map ast 'headline
-                   (lambda (h)
-                     (when (= 1 (org-element-property :level h)) h)))))
-    (unless level1
+  (let ((windows (shane-publish--collect-windows)))
+    (unless windows
       (user-error "post.org has no top-level `* Heading' windows"))
-    (with-temp-file (expand-file-name "post.frag.html" dir)
-      (dolist (h level1)
-        (insert (shane-publish--heading-to-window h))
-        (insert "\n")))))
+    (let ((rendered (mapconcat #'shane-publish--render-window windows "\n")))
+      (with-temp-file (expand-file-name "post.frag.html" dir)
+        (insert rendered)))))
 
 ;;; --------------------------------------------------------------------
 ;;; Top-level commands

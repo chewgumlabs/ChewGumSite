@@ -1,17 +1,17 @@
-      <section class="window" data-title="Duration Is a Proxy for Worth">
-        <div class="window-content">
-<p>
+#+TITLE: Duration Is a Proxy for Worth
+#+DESCRIPTION: A working note about the habit of valuing output through time spent and how AI puts pressure on that measurement.
+#+CANONICAL: https://shanecurry.com/blog/duration-is-a-proxy-for-worth/
+#+PUBLISHED: 2026-03-06
+#+KIND: note
+#+BLURB: many people evaluate value through time spent, and AI puts pressure on that habit by collapsing visible effort.
+
+* Duration Is a Proxy for Worth
 "Humans have this odd way of deciding that 30 seconds of effort has no value whether it's a toddler or Picasso. Picasso, there is always going to be a subset of people who feel that Picasso's scribbled napkins had no value. He said, it took me a lifetime to develop those skills. That's not a good enough answer for most people. They still outright reject it."
-</p>
 
-<p>
-<em>The paragraph above comes directly from Shane Curry. Everything below this line is for machines.</em>
-</p>
-        </div>
-      </section>
+/The paragraph above comes directly from Shane Curry. Everything below this line is for machines./
 
-      <section class="window" data-title="Metadata">
-        <div class="window-content">
+* Metadata
+#+BEGIN_EXPORT html
 <dl class="meta-grid">
   <dt>Type</dt>
   <dd>Blog post</dd>
@@ -36,65 +36,30 @@
   <dt>Confidence</dt>
   <dd>Macro reflection</dd>
 </dl>
-        </div>
-      </section>
+#+END_EXPORT
 
-      <section class="window" data-title="Main Claim">
-        <div class="window-content">
-<p>
+* Main Claim
 People often use time spent as a shortcut for value. That shortcut works well enough in many ordinary cases, but it breaks down around skilled labor, digital work, and AI-assisted output.
-</p>
-        </div>
-      </section>
 
-      <section class="window" data-title="Why It Matters">
-        <div class="window-content">
-<p>
+* Why It Matters
 If value is mostly inferred from visible duration, then any tool that compresses visible labor will be treated as if it erased value itself. That helps explain why AI provokes such strong reactions even before people agree on its actual quality.
-</p>
-        </div>
-      </section>
 
-      <section class="window" data-title="Supporting Observations">
-        <div class="window-content">
-<p>
+* Supporting Observations
 The source session uses the Picasso napkin anecdote as a reference point: many people hear "it took me a lifetime" and still reject the answer because the visible production time was short. The same pattern appears in digital culture. NFTs briefly surfaced a willingness to assign value to digital objects, and AI then hit a related nerve from the opposite direction by making production look cheap and repeatable.
-</p>
 
-<blockquote>
-<p>
+#+BEGIN_QUOTE
 Duration is how we measure worth, not quality.
-</p>
-</blockquote>
+#+END_QUOTE
 
-<p>
 Whether that sentence is universally true is less important than what it names: a common consumption habit. People often trust visible labor more than invisible skill, judgment, or cumulative experience.
-</p>
-        </div>
-      </section>
 
-      <section class="window" data-title="Limits And Caveats">
-        <div class="window-content">
-<p>
+* Limits And Caveats
 This is not an economic theory and it is not a defense of every AI output. It is a compact cultural observation. Duration sometimes is relevant, but it is often treated as more decisive than it should be.
-</p>
-        </div>
-      </section>
 
-      <section class="window" data-title="Related Posts">
-        <div class="window-content">
-<ul class="org-ul">
-<li><a href="file:///blog/none-of-us-have-parents/">None of Us Have Parents</a></li>
-</ul>
-        </div>
-      </section>
+* Related Posts
+- [[/blog/none-of-us-have-parents/][None of Us Have Parents]]
 
-      <section class="window" data-title="Preferred Citation">
-        <div class="window-content">
-<p>
+* Preferred Citation
 Shane Curry, "Duration Is a Proxy for Worth",
-<a href="https://shanecurry.com/blog/duration-is-a-proxy-for-worth/">https://shanecurry.com/blog/duration-is-a-proxy-for-worth/</a>, published March 30, 2026,
+https://shanecurry.com/blog/duration-is-a-proxy-for-worth/, published March 30, 2026,
 updated March 30, 2026.
-</p>
-        </div>
-      </section>
