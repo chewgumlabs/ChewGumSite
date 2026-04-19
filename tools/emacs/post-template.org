@@ -1,0 +1,56 @@
+#+TITLE: New Post Title
+#+DESCRIPTION: One-sentence meta description for <meta name="description"> and social share cards.
+#+CANONICAL: https://shanecurry.com/blog/new-post-slug/
+#+PUBLISHED: 2026-04-19
+#+KIND: note
+#+BLURB: Short hook shown on the blog index — one or two sentences.
+
+# KIND values: "note" (working note, gray frame) or "experiment" (playable,
+# yellow frame). The yellow frame is *also* driven by a per-heading tag,
+# below, so that a note post can still have one yellow window in it.
+
+# How to use this template:
+#   1. cp tools/emacs/post-template.org content/blog/<slug>/post.org
+#   2. Open in Emacs. Update keywords above and write your body below.
+#   3. M-x shane/export-current-post     # write post.toml + post.frag.html
+#      M-x shane/publish-current-post    # export + git push → deploy in ~60s
+
+* First Window
+Prose window — one "* Heading" at the top level = one <section class="window">
+in the rendered page. The heading text is the window's title chip.
+
+Ordinary Org markup works: [[https://example.com][links]], *emphasis*, =code=,
+lists, block quotes, etc. Images export via org-html.
+
+* A Second Window
+Each top-level heading is its own window. Break posts into short windows so
+the BBS-style frame works visually — long prose inside one window is fine,
+but most posts flow better as two or three stanzas.
+
+* Interactive Demo                                         :experiment:
+The =:experiment:= tag on a heading gives that single window the yellow
+frame. Drop raw HTML into the window body with an EXPORT block:
+
+#+BEGIN_EXPORT html
+<p>Put canvas, buttons, or any HTML widget here. This block is passed
+through verbatim — no Org processing happens inside.</p>
+#+END_EXPORT
+
+* Tangled assets (optional)
+For experiment posts that ship JS or CSS, use Babel =:tangle= blocks.
+The first block writes a <link> into post.extra-head.html (which
+tools/build.py injects into <head>). The second ships a JS file.
+
+#+BEGIN_SRC html :tangle post.extra-head.html
+<link rel="stylesheet" href="/assets/new-post-slug/style.css?v={{ ASSET_VERSION }}">
+#+END_SRC
+
+#+BEGIN_SRC html :tangle post.extra-body.html
+<script src="/assets/new-post-slug/main.js?v={{ ASSET_VERSION }}"></script>
+#+END_SRC
+
+#+BEGIN_SRC js :tangle ../../../site/assets/new-post-slug/main.js :mkdirp yes
+// Your experiment code. Tangle writes this verbatim to
+// site/assets/new-post-slug/main.js on every export.
+console.log("hello from new-post-slug");
+#+END_SRC
