@@ -1,2 +1,12 @@
 .DS_Store
 legacy_thoughts/
+
+# Generated HTML — built from content/ by tools/build.py. CI rebuilds
+# on every push; committing the output invites source/output drift.
+# site/assets/, site/feed.xml, site/llms.txt, site/robots.txt,
+# site/sitemap.xml remain hand-maintained and tracked.
+site/index.html
+site/**/index.html
+
+# Python bytecode cache from tools/build.py
+tools/__pycache__/
