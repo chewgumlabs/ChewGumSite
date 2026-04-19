@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Emotional Scope Creep",
+        "description": "A working note about a utility project that grew because the characters inside it kept demanding more emotional and structural attention.",
+        "datePublished": "2026-03-30",
+        "dateModified": "2026-03-30",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/emotional-scope-creep/",
+        "url": "https://shanecurry.com/blog/emotional-scope-creep/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "scope creep",
+          "creative process",
+          "ChewGumOS",
+          "characters"
+        ]
+      }
+    </script>

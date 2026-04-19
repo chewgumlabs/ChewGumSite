@@ -1,0 +1,10 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": "https://shanecurry.com/animation/",
+        "name": "Animation",
+        "description": "Independent animation work by Shane Curry across multiple tools, mediums, and custom rigging systems.",
+        "author": { "@id": "https://shanecurry.com/#person" }
+      }
+    </script>

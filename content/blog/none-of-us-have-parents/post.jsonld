@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "None of Us Have Parents",
+        "description": "A working note about the current AI moment as a collective sketchbook phase with no stable mentor class above it.",
+        "datePublished": "2026-03-30",
+        "dateModified": "2026-03-30",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/none-of-us-have-parents/",
+        "url": "https://shanecurry.com/blog/none-of-us-have-parents/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "AI",
+          "learning",
+          "sketchbook phase",
+          "culture"
+        ]
+      }
+    </script>

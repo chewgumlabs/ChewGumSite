@@ -1,16 +1,47 @@
+<!--
+  Page chrome template — rendered by tools/build.py for every site/ page.
+
+  Per-page content lives in content/<rel>/{index,post}.{toml,frag.html,jsonld,
+  extra-head.html,extra-body.html}.
+
+  ──────────────────────────────────────────────────────────────────────
+  TWO WINDOW MODES (declare with data-window-mode on each .window):
+
+  data-window-mode="text"  ← default for prose
+    JS wraps every paragraph line with ║ … ║ characters. Full ANSI
+    authenticity. Use when content is only <p> + <a> + inline emphasis.
+
+  data-window-mode="rich"  ← for interactive content
+    JS renders only top (╔══╗) and bottom (╚══╝) frames as <pre>. The
+    body sits between them as a normal-flow div with 1px CSS borders
+    in panel-border color simulating ║ sides. Use whenever content
+    includes <canvas>, <button>, <form>, <table>, <dl>, custom widgets,
+    or any element that can't be word-wrapped into character cells.
+
+  Mode is auto-detected if data-window-mode is omitted: any element
+  outside the prose set forces rich. Authors can override.
+
+  data-experiment (boolean attr): yellow frame + yellow title chip for
+  experiment posts. Independent of mode.
+
+  ──────────────────────────────────────────────────────────────────────
+  PER-POST EXTRAS:
+
+  post.extra-head.html  → injected here (custom <link>/<style>)
+  post.extra-body.html  → injected at end of <body> (custom <script>)
+
+  These keep experiment-specific assets (e.g. /assets/phosphor/style.css
+  and /assets/phosphor/main.js) wired up without polluting the template.
+-->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Phosphor</title>
-    <meta
-      name="description"
-      content="A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay."
-    >
+    <meta name="description" content="A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay.">
     <link rel="canonical" href="https://shanecurry.com/blog/phosphor/">
-    <link rel="stylesheet" href="/assets/styles.css">
-    <link rel="stylesheet" href="/assets/phosphor/style.css?v=20260404a">
+    <link rel="stylesheet" href="/assets/styles.css?v=20260419110742">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -38,147 +69,246 @@
         ]
       }
     </script>
+    <link rel="stylesheet" href="/assets/phosphor/style.css?v=20260404a">
   </head>
   <body>
-    <header class="site-header">
-      <p class="eyebrow">Software Rendering</p>
-      <h1>Phosphor</h1>
-      <p class="lead human-lead">
-        I wondered what a DOOM engine looks like if you draw it with a beam instead of pixels. The
-        walls are lines. The corners are bright. Old frames decay.
-      </p>
-      <nav aria-label="Primary">
-        <ul class="link-list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog/">Blog</a></li>
-        </ul>
-      </nav>
-      <p class="machine-link"><a href="/llms.txt">llms.txt</a></p>
-    </header>
+
+    <div class="bbs-header" aria-hidden="true">
+    <div class="ansi-art">
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey">   </span><span class="c-dk-grey">░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░</span><span class="c-lt-grey">░░</span><span class="c-black">░░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-black">░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░</span><span class="c-lt-grey">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░</span><span class="c-lt-grey">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-black">░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░</span><span class="c-lt-grey">░░░░░░░░░</span><span class="c-black">░</span><span class="c-lt-grey">░</span><span class="c-black">░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-lt-grey">░░░░░░</span><span class="c-black">░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-brown">      </span><span class="c-lt-grey">░░░░░░░░░░░░░░</span><span class="c-black">░░░░░░░░░░</span><span class="c-lt-grey">      ░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">            </span><span class="c-lt-grey">░░░░░░░</span><span class="c-black">░░░░░░░░░░░</span><span class="c-lt-grey">           ░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-brown">             </span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">             </span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">        </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░</span><span class="c-brown">░</span><span class="c-black">░░</span><span class="c-brown">░</span><span class="c-black">░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">    </span><span class="c-black">░</span><span class="c-brown">░░</span><span class="c-black">░░░░░░░░░░░░░░</span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">   </span><span class="c-brown">░</span><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░░</span><span class="c-lt-grey">         </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-brown">░</span><span class="c-lt-grey">        </span><span class="c-dk-grey">░░░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">       </span><span class="c-brown">░░░░░░</span><span class="c-lt-grey">         </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░</span><span class="c-brown">░░</span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">         </span><span class="c-brown">░░</span><span class="c-lt-grey">          </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">  </span><span class="c-brown">░░░░░</span><span class="c-lt-grey">        </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-dk-grey">░</span><span class="c-brown">░░░░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-dk-grey">░░░░</span><span class="c-brown">░░</span><span class="c-lt-grey">       </span><span class="c-brown">░░</span><span class="c-lt-grey">          </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░</span><span class="c-lt-grey">       </span><span class="c-green">░░░</span><span class="c-brown">░</span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░</span><span class="c-brown">░░</span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░░</span><span class="c-brown">░░░░</span><span class="c-green">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░░</span><span class="c-lt-grey"> </span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░░</span><span class="c-lt-grey"> </span><span class="c-green">░</span><span class="c-lt-grey">      </span><span class="c-green">░</span></pre>
+      <pre class="ansi-row"><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░</span><span class="c-lt-green">░</span><span class="c-green">░</span><span class="c-lt-green">░</span><span class="c-green">░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-brown">░</span><span class="c-green">░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░</span><span class="c-lt-green">░</span><span class="c-brown">░░</span><span class="c-lt-green">░</span><span class="c-green">░░</span><span class="c-lt-green">░</span><span class="c-green">░░░</span><span class="c-brown">░</span><span class="c-green">░░░░</span><span class="c-lt-green">░░</span><span class="c-green">░░░</span><span class="c-brown">░░░░</span><span class="c-green">░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░</span><span class="c-brown">░░</span><span class="c-green">░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-brown">░░</span><span class="c-green">░░░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-lt-blue">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span></pre>
+    </div>
+    </div>
+
+    <nav class="menubar" aria-label="Primary">
+      <details>
+        <summary><span class="hk">F</span>ile</summary>
+        <div class="menu-panel" role="menu">
+          <a href="/" role="menuitem"><span class="hk">H</span>ome</a>
+          <a href="/blog/" role="menuitem"><span class="hk">B</span>log</a>
+          <a href="/animation/" role="menuitem"><span class="hk">A</span>nimation</a>
+          <span class="sep" aria-hidden="true"></span>
+          <a href="/llms.txt" role="menuitem"><span class="hk">L</span>lms.txt</a>
+          <a href="/feed.xml" role="menuitem">RSS <span class="hk">F</span>eed</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">B</span>log</summary>
+        <div class="menu-panel" role="menu">
+          <a href="/blog/" role="menuitem"><span class="hk">A</span>ll posts</a>
+          <a href="/blog/phosphor/" role="menuitem"><span class="hk">P</span>hosphor</a>
+          <a href="/blog/dead-beat/" role="menuitem"><span class="hk">D</span>ead Beat</a>
+          <a href="/blog/emotional-scope-creep/" role="menuitem"><span class="hk">E</span>motional Scope Creep</a>
+          <a href="/blog/the-vagueness-was-protective/" role="menuitem"><span class="hk">V</span>agueness Was Protective</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">L</span>inks</summary>
+        <div class="menu-panel" role="menu">
+          <a href="https://github.com/chewgumplaygames" role="menuitem"><span class="hk">G</span>itHub</a>
+          <a href="https://www.linkedin.com/in/shanecurrycartoons/" role="menuitem">Linked<span class="hk">I</span>n</a>
+          <a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk" role="menuitem">I<span class="hk">M</span>Db</a>
+          <a href="https://www.youtube.com/@infinitehush" role="menuitem"><span class="hk">Y</span>ouTube</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">H</span>elp</summary>
+        <div class="menu-panel" role="menu">
+          <a href="#colophon" role="menuitem"><span class="hk">C</span>olophon</a>
+        </div>
+      </details>
+      <span class="menu-spacer"></span>
+      <span class="menu-clock" aria-hidden="true">2026-04-19</span>
+    </nav>
 
     <main>
-      <section class="panel">
-        <div class="phosphor-app">
-          <section class="shell">
-            <section class="hero">
-              <p class="eyebrow">Oscilloscope Raycaster</p>
-              <h2>PHOSPHOR</h2>
-              <p class="lede">
-                A DOOM-style engine where each wall is a glowing vertical line. Navigate a
-                14&times;14 labyrinth. The phosphor screen never fully clears — old views linger
-                and decay behind the new one.
-              </p>
-            </section>
-
-            <section class="stage">
-              <section class="frame">
-                <div class="frame-bar">
-                  <span id="status">Initialising</span>
-                  <span id="cells-bar-label">0 cells traced</span>
-                </div>
-
-                <div class="canvas-wrap">
-                  <canvas
-                    id="scene"
-                    width="320"
-                    height="200"
-                    aria-label="Software-rendered first-person raycaster view"
-                  ></canvas>
-                  <div class="scanlines" aria-hidden="true"></div>
-                  <div class="vignette" aria-hidden="true"></div>
-                </div>
-
-                <div class="transport-panel">
-                  <button id="audio-trigger" class="arm-button" type="button">
-                    ARM THE SIGNAL
-                  </button>
-                  <p id="scope-state" class="transport-state">
-                    Arm the signal, then walk the labyrinth with
-                    <code>WASD</code> or the arrow keys.
-                    <code>A</code> / <code>D</code> turn. Close walls chime.
-                  </p>
-                </div>
-
-                <div class="telemetry-grid" aria-label="Telemetry">
-                  <div class="telemetry-card">
-                    <span class="panel-label">Cells Traced</span>
-                    <strong id="cells-readout">0 / —</strong>
-                    <div class="meter"><span id="cells-meter"></span></div>
-                  </div>
-                  <div class="telemetry-card">
-                    <span class="panel-label">Facing</span>
-                    <strong id="angle-readout">0°</strong>
-                    <div class="meter"><span id="angle-meter"></span></div>
-                  </div>
-                  <div class="telemetry-card">
-                    <span class="panel-label">Wall Distance</span>
-                    <strong id="dist-readout">— m</strong>
-                    <div class="meter danger-meter"><span id="dist-meter"></span></div>
-                  </div>
-                </div>
-              </section>
-
-              <aside class="sidepanel">
-                <section>
-                  <p class="panel-label">Controls</p>
-                  <ul class="control-list">
-                    <li><code>W</code> / <code>Arrow Up</code>: move forward.</li>
-                    <li><code>S</code> / <code>Arrow Down</code>: move backward.</li>
-                    <li><code>A</code> / <code>Arrow Left</code>: turn left.</li>
-                    <li><code>D</code> / <code>Arrow Right</code>: turn right.</li>
-                  </ul>
-                </section>
-
-                <section>
-                  <p class="panel-label">Build Notes</p>
-                  <p>
-                    The scene uses a standard DDA raycaster — the same algorithm behind DOOM and
-                    Wolfenstein 3D. Instead of filling each column with a textured stripe, each
-                    column is a single-pixel vertical line stroke. Distance maps to brightness.
-                  </p>
-                  <p>
-                    The oscilloscope effect comes from two canvas tricks: the screen is never fully
-                    cleared — a semi-transparent black fill decays the previous frame each tick,
-                    like phosphor persistence — and <code>shadowBlur</code> adds the green glow
-                    around each line.
-                  </p>
-                </section>
-
-                <section>
-                  <p class="panel-label">Edge Logic</p>
-                  <p>
-                    Wall corners glow brightest. When adjacent ray columns land on different
-                    surfaces, the transition is drawn as a second, wider line in near-white — the
-                    beam dwelling on the edge of something.
-                  </p>
-                </section>
-              </aside>
-            </section>
-          </section>
+      <section class="window" data-title="Phosphor" data-window-mode="text" data-experiment>
+        <div class="window-content">
+          <p>I wondered what a DOOM engine looks like if you draw it with a beam instead of pixels. The
+                  walls are lines. The corners are bright. Old frames decay.</p>
         </div>
       </section>
 
-      <section class="panel">
-        <h2>What It Is</h2>
-        <p>
-          The oscilloscope aesthetic reverses what software rendering usually hides. In a normal
-          raycaster, filled columns make distance invisible — every wall looks opaque and solid.
-          Here, the thinness of the line is the rendering. Far walls are barely there. Close walls
-          are bright enough to glow. The room only exists as a trace.
-        </p>
+      <section class="window" data-title="PHOSPHOR" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="phosphor-app">
+                    <section class="shell">
+                      <section class="hero">
+                        <p class="eyebrow">Oscilloscope Raycaster</p>
+                        <p class="lede">
+                          A DOOM-style engine where each wall is a glowing vertical line. Navigate a
+                          14&times;14 labyrinth. The phosphor screen never fully clears — old views linger
+                          and decay behind the new one.
+                        </p>
+                      </section>
+
+                      <section class="stage">
+                        <section class="frame">
+                          <div class="frame-bar">
+                            <span id="status">Initialising</span>
+                            <span id="cells-bar-label">0 cells traced</span>
+                          </div>
+
+                          <div class="canvas-wrap">
+                            <canvas
+                              id="scene"
+                              width="320"
+                              height="200"
+                              aria-label="Software-rendered first-person raycaster view"
+                            ></canvas>
+                            <div class="scanlines" aria-hidden="true"></div>
+                            <div class="vignette" aria-hidden="true"></div>
+                          </div>
+
+                          <div class="transport-panel">
+                            <button id="audio-trigger" class="arm-button" type="button">
+                              ARM THE SIGNAL
+                            </button>
+                            <p id="scope-state" class="transport-state">
+                              Arm the signal, then walk the labyrinth with
+                              <code>WASD</code> or the arrow keys.
+                              <code>A</code> / <code>D</code> turn. Close walls chime.
+                            </p>
+                          </div>
+
+                          <div class="telemetry-grid" aria-label="Telemetry">
+                            <div class="telemetry-card">
+                              <span class="panel-label">Cells Traced</span>
+                              <strong id="cells-readout">0 / —</strong>
+                              <div class="meter"><span id="cells-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Facing</span>
+                              <strong id="angle-readout">0°</strong>
+                              <div class="meter"><span id="angle-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Wall Distance</span>
+                              <strong id="dist-readout">— m</strong>
+                              <div class="meter danger-meter"><span id="dist-meter"></span></div>
+                            </div>
+                          </div>
+                        </section>
+
+                        <aside class="sidepanel">
+                          <section>
+                            <p class="panel-label">Controls</p>
+                            <ul class="control-list">
+                              <li><code>W</code> / <code>Arrow Up</code>: move forward.</li>
+                              <li><code>S</code> / <code>Arrow Down</code>: move backward.</li>
+                              <li><code>A</code> / <code>Arrow Left</code>: turn left.</li>
+                              <li><code>D</code> / <code>Arrow Right</code>: turn right.</li>
+                            </ul>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Build Notes</p>
+                            <p>
+                              The scene uses a standard DDA raycaster — the same algorithm behind DOOM and
+                              Wolfenstein 3D. Instead of filling each column with a textured stripe, each
+                              column is a single-pixel vertical line stroke. Distance maps to brightness.
+                            </p>
+                            <p>
+                              The oscilloscope effect comes from two canvas tricks: the screen is never fully
+                              cleared — a semi-transparent black fill decays the previous frame each tick,
+                              like phosphor persistence — and <code>shadowBlur</code> adds the green glow
+                              around each line.
+                            </p>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Edge Logic</p>
+                            <p>
+                              Wall corners glow brightest. When adjacent ray columns land on different
+                              surfaces, the transition is drawn as a second, wider line in near-white — the
+                              beam dwelling on the edge of something.
+                            </p>
+                          </section>
+                        </aside>
+                      </section>
+                    </section>
+                  </div>
+        </div>
       </section>
+
+      <section class="window" data-title="What It Is" data-window-mode="text">
+        <div class="window-content">
+          <p>
+                    The oscilloscope aesthetic reverses what software rendering usually hides. In a normal
+                    raycaster, filled columns make distance invisible — every wall looks opaque and solid.
+                    Here, the thinness of the line is the rendering. Far walls are barely there. Close walls
+                    are bright enough to glow. The room only exists as a trace.
+                  </p>
+        </div>
+      </section>
+
+      <footer class="site-footer" id="colophon">
+        <ul class="footer-links" aria-label="Elsewhere">
+          <li><a href="https://github.com/chewgumplaygames">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/shanecurrycartoons/">LinkedIn</a></li>
+          <li><a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk">IMDb</a></li>
+          <li><a href="https://www.youtube.com/@infinitehush">YouTube</a></li>
+        </ul>
+        <p>Author: Shane Curry &mdash; Updated: 2026-04-19</p>
+        <p class="attribution">
+          Bitmap fonts from VileR's
+          <a href="https://int10h.org/oldschool-pc-fonts/">Ultimate Oldschool PC Font Pack</a>
+          (CC BY-SA 4.0).
+        </p>
+      </footer>
     </main>
 
-    <footer class="site-footer">
-      <ul class="footer-links" aria-label="Elsewhere">
-        <li><a href="https://github.com/chewgumplaygames">GitHub</a></li>
-        <li><a href="https://www.linkedin.com/in/shanecurrycartoons/">LinkedIn</a></li>
-        <li><a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk">IMDb</a></li>
-      </ul>
-      <p>Author: Shane Curry</p>
-      <p>Updated: April 4, 2026</p>
-    </footer>
+    <div class="statusbar" role="contentinfo" aria-label="Status">
+      <span><span class="key">F1</span> Help</span>
+      <span><span class="key">F2</span> Blog</span>
+      <span><span class="key">F3</span> Anim</span>
+      <span><span class="key">F10</span> Menu</span>
+      <span class="sb-spacer"></span>
+      <span>NUM</span>
+      <span>UTF-8</span>
+      <span>2026-04-19</span>
+    </div>
 
+    <script>
+      // Menubar mutex: opening one dropdown closes the others.
+      (() => {
+        const menus = Array.from(document.querySelectorAll('.menubar details'));
+        menus.forEach(d => {
+          d.addEventListener('toggle', () => {
+            if (d.open) menus.forEach(o => { if (o !== d) o.open = false; });
+          });
+        });
+        document.addEventListener('click', e => {
+          if (!e.target.closest('.menubar')) {
+            menus.forEach(d => { d.open = false; });
+          }
+        });
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') menus.forEach(d => { d.open = false; });
+        });
+      })();
+    </script>
+    <script src="/assets/window-frames.js?v=20260419110742"></script>
     <script type="module" src="/assets/phosphor/main.js?v=20260404a"></script>
   </body>
 </html>

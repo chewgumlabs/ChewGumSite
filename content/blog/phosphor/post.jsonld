@@ -1,0 +1,27 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Phosphor",
+        "description": "A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay.",
+        "datePublished": "2026-04-04",
+        "dateModified": "2026-04-04",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/phosphor/",
+        "url": "https://shanecurry.com/blog/phosphor/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "raycaster",
+          "software rendering",
+          "oscilloscope",
+          "interactive art",
+          "DOOM",
+          "JavaScript"
+        ]
+      }
+    </script>

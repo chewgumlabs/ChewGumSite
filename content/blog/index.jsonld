@@ -1,0 +1,10 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "url": "https://shanecurry.com/blog/",
+        "name": "Shane Curry Blog",
+        "description": "Chronological publishing index for notes, thought chunks, and technical posts by Shane Curry.",
+        "author": { "@id": "https://shanecurry.com/#person" }
+      }
+    </script>

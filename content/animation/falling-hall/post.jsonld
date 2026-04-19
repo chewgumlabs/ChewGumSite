@@ -1,0 +1,12 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "url": "https://shanecurry.com/animation/falling-hall/",
+        "name": "Falling Hall",
+        "description": "A software-rendered faceted tunnel that feels like falling down a bell-lined hole.",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        }
+      }
+    </script>

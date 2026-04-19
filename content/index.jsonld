@@ -1,0 +1,34 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://shanecurry.com/#website",
+            "url": "https://shanecurry.com/",
+            "name": "Shane Curry",
+            "description": "Home page for Shane Curry, professional animator and software builder.",
+            "publisher": { "@id": "https://shanecurry.com/#person" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://shanecurry.com/#person",
+            "name": "Shane Curry",
+            "url": "https://shanecurry.com/",
+            "jobTitle": "Professional animator",
+            "description": "Shane Curry is a professional animator with 10 years experience in primetime television and streaming. His independent cartoons span 2D and 3D, including extensive animation, rigging, and systems building in Blender, Unreal Engine, ToonBoom Harmony, Unity, Godot, Roblox, and most recently, vanilla JavaScript and C with the help of AI. He is currently building his own Vector Based Animation Software.",
+            "knowsAbout": [
+              "2D animation","3D animation","animation rigging","animation systems",
+              "Blender","Unreal Engine","ToonBoom Harmony","Unity","Godot","Roblox",
+              "vanilla JavaScript","C","AI","Vector Based Animation Software"
+            ],
+            "sameAs": [
+              "https://github.com/chewgumplaygames",
+              "https://www.linkedin.com/in/shanecurrycartoons/",
+              "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
+              "https://www.youtube.com/@infinitehush"
+            ]
+          }
+        ]
+      }
+    </script>

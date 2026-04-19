@@ -1,0 +1,3 @@
+title = "Dead Beat"
+description = "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text."
+canonical = "https://shanecurry.com/blog/dead-beat/"

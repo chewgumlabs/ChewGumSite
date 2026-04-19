@@ -1,0 +1,26 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Dead Beat",
+        "description": "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
+        "datePublished": "2026-04-02",
+        "dateModified": "2026-04-02",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/dead-beat/",
+        "url": "https://shanecurry.com/blog/dead-beat/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "Rust",
+          "WebAssembly",
+          "software rendering",
+          "interactive art",
+          "browser game"
+        ]
+      }
+    </script>

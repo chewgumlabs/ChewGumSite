@@ -1,0 +1,119 @@
+      <section class="window" data-title="Phosphor" data-window-mode="text" data-experiment>
+        <div class="window-content">
+          <p>I wondered what a DOOM engine looks like if you draw it with a beam instead of pixels. The
+                  walls are lines. The corners are bright. Old frames decay.</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="PHOSPHOR" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="phosphor-app">
+                    <section class="shell">
+                      <section class="hero">
+                        <p class="eyebrow">Oscilloscope Raycaster</p>
+                        <p class="lede">
+                          A DOOM-style engine where each wall is a glowing vertical line. Navigate a
+                          14&times;14 labyrinth. The phosphor screen never fully clears — old views linger
+                          and decay behind the new one.
+                        </p>
+                      </section>
+
+                      <section class="stage">
+                        <section class="frame">
+                          <div class="frame-bar">
+                            <span id="status">Initialising</span>
+                            <span id="cells-bar-label">0 cells traced</span>
+                          </div>
+
+                          <div class="canvas-wrap">
+                            <canvas
+                              id="scene"
+                              width="320"
+                              height="200"
+                              aria-label="Software-rendered first-person raycaster view"
+                            ></canvas>
+                            <div class="scanlines" aria-hidden="true"></div>
+                            <div class="vignette" aria-hidden="true"></div>
+                          </div>
+
+                          <div class="transport-panel">
+                            <button id="audio-trigger" class="arm-button" type="button">
+                              ARM THE SIGNAL
+                            </button>
+                            <p id="scope-state" class="transport-state">
+                              Arm the signal, then walk the labyrinth with
+                              <code>WASD</code> or the arrow keys.
+                              <code>A</code> / <code>D</code> turn. Close walls chime.
+                            </p>
+                          </div>
+
+                          <div class="telemetry-grid" aria-label="Telemetry">
+                            <div class="telemetry-card">
+                              <span class="panel-label">Cells Traced</span>
+                              <strong id="cells-readout">0 / —</strong>
+                              <div class="meter"><span id="cells-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Facing</span>
+                              <strong id="angle-readout">0°</strong>
+                              <div class="meter"><span id="angle-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Wall Distance</span>
+                              <strong id="dist-readout">— m</strong>
+                              <div class="meter danger-meter"><span id="dist-meter"></span></div>
+                            </div>
+                          </div>
+                        </section>
+
+                        <aside class="sidepanel">
+                          <section>
+                            <p class="panel-label">Controls</p>
+                            <ul class="control-list">
+                              <li><code>W</code> / <code>Arrow Up</code>: move forward.</li>
+                              <li><code>S</code> / <code>Arrow Down</code>: move backward.</li>
+                              <li><code>A</code> / <code>Arrow Left</code>: turn left.</li>
+                              <li><code>D</code> / <code>Arrow Right</code>: turn right.</li>
+                            </ul>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Build Notes</p>
+                            <p>
+                              The scene uses a standard DDA raycaster — the same algorithm behind DOOM and
+                              Wolfenstein 3D. Instead of filling each column with a textured stripe, each
+                              column is a single-pixel vertical line stroke. Distance maps to brightness.
+                            </p>
+                            <p>
+                              The oscilloscope effect comes from two canvas tricks: the screen is never fully
+                              cleared — a semi-transparent black fill decays the previous frame each tick,
+                              like phosphor persistence — and <code>shadowBlur</code> adds the green glow
+                              around each line.
+                            </p>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Edge Logic</p>
+                            <p>
+                              Wall corners glow brightest. When adjacent ray columns land on different
+                              surfaces, the transition is drawn as a second, wider line in near-white — the
+                              beam dwelling on the edge of something.
+                            </p>
+                          </section>
+                        </aside>
+                      </section>
+                    </section>
+                  </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="What It Is" data-window-mode="text">
+        <div class="window-content">
+          <p>
+                    The oscilloscope aesthetic reverses what software rendering usually hides. In a normal
+                    raycaster, filled columns make distance invisible — every wall looks opaque and solid.
+                    Here, the thinness of the line is the rendering. Far walls are barely there. Close walls
+                    are bright enough to glow. The room only exists as a trace.
+                  </p>
+        </div>
+      </section>

@@ -1,15 +1,47 @@
+<!--
+  Page chrome template — rendered by tools/build.py for every site/ page.
+
+  Per-page content lives in content/<rel>/{index,post}.{toml,frag.html,jsonld,
+  extra-head.html,extra-body.html}.
+
+  ──────────────────────────────────────────────────────────────────────
+  TWO WINDOW MODES (declare with data-window-mode on each .window):
+
+  data-window-mode="text"  ← default for prose
+    JS wraps every paragraph line with ║ … ║ characters. Full ANSI
+    authenticity. Use when content is only <p> + <a> + inline emphasis.
+
+  data-window-mode="rich"  ← for interactive content
+    JS renders only top (╔══╗) and bottom (╚══╝) frames as <pre>. The
+    body sits between them as a normal-flow div with 1px CSS borders
+    in panel-border color simulating ║ sides. Use whenever content
+    includes <canvas>, <button>, <form>, <table>, <dl>, custom widgets,
+    or any element that can't be word-wrapped into character cells.
+
+  Mode is auto-detected if data-window-mode is omitted: any element
+  outside the prose set forces rich. Authors can override.
+
+  data-experiment (boolean attr): yellow frame + yellow title chip for
+  experiment posts. Independent of mode.
+
+  ──────────────────────────────────────────────────────────────────────
+  PER-POST EXTRAS:
+
+  post.extra-head.html  → injected here (custom <link>/<style>)
+  post.extra-body.html  → injected at end of <body> (custom <script>)
+
+  These keep experiment-specific assets (e.g. /assets/phosphor/style.css
+  and /assets/phosphor/main.js) wired up without polluting the template.
+-->
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blog</title>
-    <meta
-      name="description"
-      content="Chronological publishing index for Shane Curry's notes, thought chunks, and machine-ready technical posts."
-    >
+    <title>Blog — Shane Curry</title>
+    <meta name="description" content="Chronological publishing index for Shane Curry's notes, thought chunks, and machine-ready technical posts.">
     <link rel="canonical" href="https://shanecurry.com/blog/">
-    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="/assets/styles.css?v=20260419110742">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -17,121 +49,226 @@
         "url": "https://shanecurry.com/blog/",
         "name": "Shane Curry Blog",
         "description": "Chronological publishing index for notes, thought chunks, and technical posts by Shane Curry.",
-        "author": {
-          "@id": "https://shanecurry.com/#person"
-        }
+        "author": { "@id": "https://shanecurry.com/#person" }
       }
     </script>
   </head>
   <body>
-    <header class="site-header">
-      <p class="eyebrow">Publishing Index</p>
-      <h1>Blog</h1>
-      <p class="lead">
-        This page will collect published thought chunks as they are turned into stable, crawlable
-        HTML pages.
-      </p>
-      <nav aria-label="Primary">
-        <ul class="link-list">
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog/" aria-current="page">Blog</a></li>
-        </ul>
-      </nav>
-      <p class="machine-link"><a href="/llms.txt">llms.txt</a></p>
-    </header>
+
+    <div class="bbs-header" aria-hidden="true">
+    <div class="ansi-art">
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey">   </span><span class="c-dk-grey">░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-black">░░░░░░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░</span><span class="c-lt-grey"> </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░░░░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░</span><span class="c-lt-grey">░░</span><span class="c-black">░░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-black">░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░</span><span class="c-lt-grey">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░</span><span class="c-lt-grey">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-black">░░░░░░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░</span><span class="c-lt-grey">░░░░░░░░░</span><span class="c-black">░</span><span class="c-lt-grey">░</span><span class="c-black">░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">            </span><span class="c-black">░░</span><span class="c-dk-grey">░░</span><span class="c-lt-grey">░░░░░░</span><span class="c-black">░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">     </span><span class="c-black">░░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-brown">      </span><span class="c-lt-grey">░░░░░░░░░░░░░░</span><span class="c-black">░░░░░░░░░░</span><span class="c-lt-grey">      ░░░░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">            </span><span class="c-lt-grey">░░░░░░░</span><span class="c-black">░░░░░░░░░░░</span><span class="c-lt-grey">           ░░░░░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-brown">             </span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░░░░░░░░░░░░░░░░░</span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░░░░</span><span class="c-brown">             </span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">        </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">      </span><span class="c-black">░</span><span class="c-brown">░</span><span class="c-black">░░</span><span class="c-brown">░</span><span class="c-black">░░░░░░░░░░░░</span><span class="c-dk-grey">░░░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">    </span><span class="c-black">░</span><span class="c-brown">░░</span><span class="c-black">░░░░░░░░░░░░░░</span><span class="c-dk-grey">░</span><span class="c-yellow">░</span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">   </span><span class="c-brown">░</span><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░░</span><span class="c-lt-grey">         </span><span class="c-brown">░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-brown">░</span><span class="c-lt-grey">        </span><span class="c-dk-grey">░░░░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░</span><span class="c-yellow">░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">       </span><span class="c-brown">░░░░░░</span><span class="c-lt-grey">         </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey"> </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-brown">░</span><span class="c-lt-grey">  </span><span class="c-brown">░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░</span><span class="c-brown">░░</span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">     </span><span class="c-brown">░</span><span class="c-lt-grey">      </span><span class="c-dk-grey">░░░░</span><span class="c-lt-grey">         </span><span class="c-brown">░░</span><span class="c-lt-grey">          </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-lt-grey">  </span><span class="c-brown">░░░░░</span><span class="c-lt-grey">        </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-dk-grey">░</span><span class="c-brown">░░░░</span><span class="c-dk-grey">░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-lt-grey">       </span><span class="c-dk-grey">░░░░</span><span class="c-brown">░░</span><span class="c-lt-grey">       </span><span class="c-brown">░░</span><span class="c-lt-grey">          </span><span class="c-brown">░░</span></pre>
+      <pre class="ansi-row"><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░</span><span class="c-lt-grey">       </span><span class="c-green">░░░</span><span class="c-brown">░</span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░</span><span class="c-brown">░░</span><span class="c-dk-grey">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░</span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-dk-grey">░░</span><span class="c-brown">░░░░</span><span class="c-green">░░░</span><span class="c-lt-grey">    </span><span class="c-brown">░░</span><span class="c-lt-grey"> </span><span class="c-green">░░</span><span class="c-lt-grey">     </span><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░░</span><span class="c-lt-grey"> </span><span class="c-green">░</span><span class="c-lt-grey">      </span><span class="c-green">░</span></pre>
+      <pre class="ansi-row"><span class="c-green">░░</span><span class="c-brown">░░</span><span class="c-green">░</span><span class="c-lt-green">░</span><span class="c-green">░</span><span class="c-lt-green">░</span><span class="c-green">░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-brown">░</span><span class="c-green">░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░</span><span class="c-lt-green">░</span><span class="c-brown">░░</span><span class="c-lt-green">░</span><span class="c-green">░░</span><span class="c-lt-green">░</span><span class="c-green">░░░</span><span class="c-brown">░</span><span class="c-green">░░░░</span><span class="c-lt-green">░░</span><span class="c-green">░░░</span><span class="c-brown">░░░░</span><span class="c-green">░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░</span><span class="c-brown">░░</span><span class="c-green">░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-brown">░░</span><span class="c-green">░░░░░░░</span><span class="c-lt-green">░</span><span class="c-green">░░░░</span><span class="c-lt-blue">░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</span></pre>
+    </div>
+    </div>
+
+    <nav class="menubar" aria-label="Primary">
+      <details>
+        <summary><span class="hk">F</span>ile</summary>
+        <div class="menu-panel" role="menu">
+          <a href="/" role="menuitem"><span class="hk">H</span>ome</a>
+          <a href="/blog/" role="menuitem"><span class="hk">B</span>log</a>
+          <a href="/animation/" role="menuitem"><span class="hk">A</span>nimation</a>
+          <span class="sep" aria-hidden="true"></span>
+          <a href="/llms.txt" role="menuitem"><span class="hk">L</span>lms.txt</a>
+          <a href="/feed.xml" role="menuitem">RSS <span class="hk">F</span>eed</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">B</span>log</summary>
+        <div class="menu-panel" role="menu">
+          <a href="/blog/" role="menuitem"><span class="hk">A</span>ll posts</a>
+          <a href="/blog/phosphor/" role="menuitem"><span class="hk">P</span>hosphor</a>
+          <a href="/blog/dead-beat/" role="menuitem"><span class="hk">D</span>ead Beat</a>
+          <a href="/blog/emotional-scope-creep/" role="menuitem"><span class="hk">E</span>motional Scope Creep</a>
+          <a href="/blog/the-vagueness-was-protective/" role="menuitem"><span class="hk">V</span>agueness Was Protective</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">L</span>inks</summary>
+        <div class="menu-panel" role="menu">
+          <a href="https://github.com/chewgumplaygames" role="menuitem"><span class="hk">G</span>itHub</a>
+          <a href="https://www.linkedin.com/in/shanecurrycartoons/" role="menuitem">Linked<span class="hk">I</span>n</a>
+          <a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk" role="menuitem">I<span class="hk">M</span>Db</a>
+          <a href="https://www.youtube.com/@infinitehush" role="menuitem"><span class="hk">Y</span>ouTube</a>
+        </div>
+      </details>
+      <details>
+        <summary><span class="hk">H</span>elp</summary>
+        <div class="menu-panel" role="menu">
+          <a href="#colophon" role="menuitem"><span class="hk">C</span>olophon</a>
+        </div>
+      </details>
+      <span class="menu-spacer"></span>
+      <span class="menu-clock" aria-hidden="true">2026-04-19</span>
+    </nav>
 
     <main>
-      <section class="post-list" aria-label="Published posts">
-        <article class="panel" data-type="experiment">
-          <p class="eyebrow">Experiment</p>
-          <h2><a href="/blog/phosphor/">Phosphor</a></h2>
+      <section class="window" data-title="Blog Index">
+        <div class="window-content">
           <p>
-            A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners
-            glow. Old frames decay behind the new ones.
+            Published thought chunks, working notes, and live experiments &mdash;
+            newest first. Experiments framed in yellow.
           </p>
-          <p class="status-line">Status: playable prototype | Published: April 4, 2026</p>
-        </article>
+        </div>
+      </section>
 
-        <article class="panel" data-type="experiment">
-          <p class="eyebrow">Experiment</p>
-          <h2><a href="/animation/falling-hall/">Falling Hall</a></h2>
+      <section class="window" data-title="Phosphor" data-experiment>
+        <div class="window-content">
           <p>
-            A 2.5D software-rendered tunnel that drops you through a faceted bell-lined shaft.
-            Drift with WASD and ring the walls.
+            <a href="/blog/phosphor/">Phosphor</a>: a DOOM-style raycaster
+            rendered as oscilloscope line art. Walls are beams. Corners glow.
+            Old frames decay behind the new ones.
           </p>
-          <p class="status-line">Status: playable prototype | Published: April 4, 2026</p>
-        </article>
+          <p>status: playable prototype &middot; published: 2026-04-04</p>
+        </div>
+      </section>
 
-        <article class="panel" data-type="experiment">
-          <p class="eyebrow">Experiment</p>
-          <h2><a href="/blog/dead-beat/">Dead Beat</a></h2>
+      <section class="window" data-title="Falling Hall" data-experiment>
+        <div class="window-content">
           <p>
-            A browser-playable software-rendered room written in Rust and WebAssembly, with
+            <a href="/animation/falling-hall/">Falling Hall</a>: a 2.5D
+            software-rendered tunnel that drops you through a faceted bell-lined
+            shaft. Drift with WASD and ring the walls.
+          </p>
+          <p>status: playable prototype &middot; published: 2026-04-04</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Dead Beat" data-experiment>
+        <div class="window-content">
+          <p>
+            <a href="/blog/dead-beat/">Dead Beat</a>: a browser-playable
+            software-rendered room written in Rust and WebAssembly, with
             live-editable wall text on each outer wall.
           </p>
-          <p class="status-line">Status: playable prototype | Published: April 2, 2026</p>
-        </article>
-
-        <article class="panel" data-type="note">
-          <p class="eyebrow">Working Note</p>
-          <h2><a href="/blog/the-vagueness-was-protective/">The Vagueness Was Protective</a></h2>
-          <p>
-            When AI removed the technical barrier, the missing piece turned out to be internal
-            specificity rather than language or code.
-          </p>
-          <p class="status-line">Status: working note | Source session: March 5, 2026</p>
-        </article>
-
-        <article class="panel" data-type="note">
-          <p class="eyebrow">Working Note</p>
-          <h2><a href="/blog/emotional-scope-creep/">Emotional Scope Creep</a></h2>
-          <p>
-            A utility project stopped being only a utility because the characters inside it kept
-            demanding more structure, attention, and care.
-          </p>
-          <p class="status-line">Status: working note | Source session: March 5, 2026</p>
-        </article>
-
-        <article class="panel" data-type="note">
-          <p class="eyebrow">Working Note</p>
-          <h2><a href="/blog/ai-ended-the-loneliness-of-making/">AI Ended the Loneliness of Making</a></h2>
-          <p>
-            The practical company of working with Claude changed the emotional experience of solo
-            development as much as the technical output did.
-          </p>
-          <p class="status-line">Status: working note | Source session: March 5, 2026</p>
-        </article>
-
-        <article class="panel" data-type="note">
-          <p class="eyebrow">Working Note</p>
-          <h2><a href="/blog/duration-is-a-proxy-for-worth/">Duration Is a Proxy for Worth</a></h2>
-          <p>
-            Many people evaluate value through time spent, and AI puts pressure on that habit by
-            collapsing visible effort.
-          </p>
-          <p class="status-line">Status: working note | Source session: March 6, 2026</p>
-        </article>
-
-        <article class="panel" data-type="note">
-          <p class="eyebrow">Working Note</p>
-          <h2><a href="/blog/none-of-us-have-parents/">None of Us Have Parents</a></h2>
-          <p>
-            The current AI moment feels like a collective sketchbook phase in which nobody is far
-            enough ahead to function as a stable mentor class.
-          </p>
-          <p class="status-line">Status: working note | Source session: March 6, 2026</p>
-        </article>
+          <p>status: playable prototype &middot; published: 2026-04-02</p>
+        </div>
       </section>
+
+      <section class="window" data-title="The Vagueness Was Protective">
+        <div class="window-content">
+          <p>
+            <a href="/blog/the-vagueness-was-protective/">The Vagueness Was Protective</a>:
+            when AI removed the technical barrier, the missing piece turned out
+            to be internal specificity rather than language or code.
+          </p>
+          <p>working note &middot; source session: 2026-03-05</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Emotional Scope Creep">
+        <div class="window-content">
+          <p>
+            <a href="/blog/emotional-scope-creep/">Emotional Scope Creep</a>:
+            a utility project stopped being only a utility because the
+            characters inside it kept demanding more structure, attention, and
+            care.
+          </p>
+          <p>working note &middot; source session: 2026-03-05</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="AI Ended the Loneliness of Making">
+        <div class="window-content">
+          <p>
+            <a href="/blog/ai-ended-the-loneliness-of-making/">AI Ended the Loneliness of Making</a>:
+            the practical company of working with Claude changed the emotional
+            experience of solo development as much as the technical output did.
+          </p>
+          <p>working note &middot; source session: 2026-03-05</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Duration Is a Proxy for Worth">
+        <div class="window-content">
+          <p>
+            <a href="/blog/duration-is-a-proxy-for-worth/">Duration Is a Proxy for Worth</a>:
+            many people evaluate value through time spent, and AI puts pressure
+            on that habit by collapsing visible effort.
+          </p>
+          <p>working note &middot; source session: 2026-03-06</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="None of Us Have Parents">
+        <div class="window-content">
+          <p>
+            <a href="/blog/none-of-us-have-parents/">None of Us Have Parents</a>:
+            the current AI moment feels like a collective sketchbook phase in
+            which nobody is far enough ahead to function as a stable mentor
+            class.
+          </p>
+          <p>working note &middot; source session: 2026-03-06</p>
+        </div>
+      </section>
+
+      <footer class="site-footer" id="colophon">
+        <ul class="footer-links" aria-label="Elsewhere">
+          <li><a href="https://github.com/chewgumplaygames">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/shanecurrycartoons/">LinkedIn</a></li>
+          <li><a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk">IMDb</a></li>
+          <li><a href="https://www.youtube.com/@infinitehush">YouTube</a></li>
+        </ul>
+        <p>Author: Shane Curry &mdash; Updated: 2026-04-19</p>
+        <p class="attribution">
+          Bitmap fonts from VileR's
+          <a href="https://int10h.org/oldschool-pc-fonts/">Ultimate Oldschool PC Font Pack</a>
+          (CC BY-SA 4.0).
+        </p>
+      </footer>
     </main>
 
-    <footer class="site-footer">
-      <ul class="footer-links" aria-label="Elsewhere">
-        <li><a href="https://github.com/chewgumplaygames">GitHub</a></li>
-        <li><a href="https://www.linkedin.com/in/shanecurrycartoons/">LinkedIn</a></li>
-        <li><a href="https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk">IMDb</a></li>
-      </ul>
-      <p>Author: Shane Curry</p>
-      <p>Updated: April 2, 2026</p>
-    </footer>
+    <div class="statusbar" role="contentinfo" aria-label="Status">
+      <span><span class="key">F1</span> Help</span>
+      <span><span class="key">F2</span> Blog</span>
+      <span><span class="key">F3</span> Anim</span>
+      <span><span class="key">F10</span> Menu</span>
+      <span class="sb-spacer"></span>
+      <span>NUM</span>
+      <span>UTF-8</span>
+      <span>2026-04-19</span>
+    </div>
+
+    <script>
+      // Menubar mutex: opening one dropdown closes the others.
+      (() => {
+        const menus = Array.from(document.querySelectorAll('.menubar details'));
+        menus.forEach(d => {
+          d.addEventListener('toggle', () => {
+            if (d.open) menus.forEach(o => { if (o !== d) o.open = false; });
+          });
+        });
+        document.addEventListener('click', e => {
+          if (!e.target.closest('.menubar')) {
+            menus.forEach(d => { d.open = false; });
+          }
+        });
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape') menus.forEach(d => { d.open = false; });
+        });
+      })();
+    </script>
+    <script src="/assets/window-frames.js?v=20260419110742"></script>
   </body>
 </html>

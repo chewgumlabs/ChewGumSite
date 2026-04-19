@@ -1,0 +1,3 @@
+title = "Phosphor"
+description = "A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay."
+canonical = "https://shanecurry.com/blog/phosphor/"

@@ -1,0 +1,118 @@
+      <section class="window" data-title="Falling Hall" data-window-mode="text" data-experiment>
+        <div class="window-content">
+          <p>A faceted shaft that never resolves into a square room. Drift through it. Brush the wall.
+                  Let it ring.</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="FALLING HALL" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="falling-hall-app">
+                    <section class="shell">
+                      <section class="hero">
+                        <p class="eyebrow">Software Rendered Descent</p>
+                        <p class="lede">
+                          A 2.5D falling scene rendered on the CPU, with a bell tone lifted from the same
+                          synth logic that powered <a href="/blog/dead-beat/">Dead Beat</a>.
+                        </p>
+                      </section>
+
+                      <section class="stage">
+                        <section class="frame">
+                          <div class="frame-bar">
+                            <span id="status">Calibrating descent</span>
+                            <span id="impact-readout">0 chimes</span>
+                          </div>
+
+                          <div class="canvas-wrap">
+                            <canvas
+                              id="scene"
+                              width="160"
+                              height="120"
+                              aria-label="Software-rendered view into a falling tunnel"
+                            ></canvas>
+                            <div class="scanlines" aria-hidden="true"></div>
+                            <div class="vignette" aria-hidden="true"></div>
+                          </div>
+
+                          <div class="transport-panel">
+                            <button id="audio-trigger" class="song-button" type="button">
+                              START THE FALL
+                            </button>
+                            <p id="fall-state" class="transport-state">
+                              Arm audio, then drift with <code>WASD</code> or the arrow keys. The shaft
+                              chimes when you strike the wall.
+                            </p>
+                          </div>
+
+                          <div class="telemetry-grid" aria-label="Telemetry">
+                            <div class="telemetry-card">
+                              <span class="panel-label">Depth</span>
+                              <strong id="depth-readout">0 m</strong>
+                              <div class="meter"><span id="depth-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Drift</span>
+                              <strong id="drift-readout">0.00</strong>
+                              <div class="meter"><span id="drift-meter"></span></div>
+                            </div>
+                            <div class="telemetry-card">
+                              <span class="panel-label">Wall Proximity</span>
+                              <strong id="danger-readout">Centered</strong>
+                              <div class="meter danger-meter"><span id="danger-meter"></span></div>
+                            </div>
+                          </div>
+                        </section>
+
+                        <aside class="sidepanel">
+                          <section>
+                            <p class="panel-label">Controls</p>
+                            <ul class="control-list">
+                              <li><code>W</code> / <code>Arrow Up</code>: drift upward inside the shaft.</li>
+                              <li>
+                                <code>S</code> / <code>Arrow Down</code>: drift downward inside the shaft.
+                              </li>
+                              <li><code>A</code> / <code>Arrow Left</code>: drift left.</li>
+                              <li><code>D</code> / <code>Arrow Right</code>: drift right.</li>
+                              <li><code>Shift</code>: lean into a faster drop.</li>
+                            </ul>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Build Notes</p>
+                            <p>
+                              The tunnel is not a square room. It is a long faceted tube whose cross section
+                              shifts ring by ring, so it reads more like an icosphere stretched into an
+                              endless hallway.
+                            </p>
+                            <p>
+                              The view is rendered into a low-resolution framebuffer and scaled back up with
+                              crisp pixels and scanlines, so it stays close to the site’s existing software
+                              rendering experiments.
+                            </p>
+                          </section>
+
+                          <section>
+                            <p class="panel-label">Bell Logic</p>
+                            <p>
+                              Each wall strike triggers a small bell built from the same triangle-wave
+                              generator pattern introduced on <a href="/blog/dead-beat/">Dead Beat</a>.
+                            </p>
+                          </section>
+                        </aside>
+                      </section>
+                    </section>
+                  </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="What It Is" data-window-mode="text">
+        <div class="window-content">
+          <p>
+                    This piece treats falling like navigation. You are always descending, but the tunnel
+                    pulls and twists just enough to make the drop feel physical. The center stays dark and
+                    distant while the walls pick up ring seams, facet edges, and impact flashes as they rush
+                    past.
+                  </p>
+        </div>
+      </section>

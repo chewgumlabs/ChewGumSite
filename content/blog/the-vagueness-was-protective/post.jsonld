@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The Vagueness Was Protective",
+        "description": "A working note about how impossibility allowed a creative vision to remain emotionally comforting and undefined until AI removed the technical barrier.",
+        "datePublished": "2026-03-30",
+        "dateModified": "2026-03-30",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/the-vagueness-was-protective/",
+        "url": "https://shanecurry.com/blog/the-vagueness-was-protective/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "AI",
+          "clarity",
+          "creative process",
+          "self-knowledge"
+        ]
+      }
+    </script>

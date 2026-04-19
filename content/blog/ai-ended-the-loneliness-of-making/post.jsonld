@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "AI Ended the Loneliness of Making",
+        "description": "A working note about how conversational collaboration with Claude reduced the emotional isolation of solo development work.",
+        "datePublished": "2026-03-30",
+        "dateModified": "2026-03-30",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/",
+        "url": "https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "AI collaboration",
+          "solo work",
+          "loneliness",
+          "creative process"
+        ]
+      }
+    </script>
