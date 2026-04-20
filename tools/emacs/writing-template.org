@@ -1,0 +1,38 @@
+#+TITLE: <TITLE>
+#+DESCRIPTION: TODO(ai)
+#+CANONICAL: https://shanecurry.com/blog/<SLUG>/
+#+PUBLISHED: <PUBLISHED>
+#+KIND: note
+#+BLURB: TODO(ai)
+
+# Writing posts are prose only.
+# 1. Write the voice paragraph below, replacing TODO(human).
+# 2. M-x shane/ai-draft-machine-sections — fills everything marked TODO(ai).
+# 3. Review. Edit. M-x shane/publish-current-post.
+
+* <TITLE>
+TODO(human): One paragraph in Shane's voice — direct quote from the source
+session, unedited. End with the sentinel line below on its own.
+
+/The paragraph above comes directly from Shane Curry. Everything below this line is for machines./
+
+* Metadata
+TODO(ai)
+
+* Main Claim
+TODO(ai)
+
+* Why It Matters
+TODO(ai)
+
+* Supporting Observations
+TODO(ai)
+
+* Limits And Caveats
+TODO(ai)
+
+* Related Posts
+TODO(ai)
+
+* Preferred Citation
+TODO(ai)

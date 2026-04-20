@@ -1,0 +1,39 @@
+#+TITLE: <TITLE>
+#+DESCRIPTION: TODO(ai)
+#+CANONICAL: https://shanecurry.com/blog/<SLUG>/
+#+PUBLISHED: <PUBLISHED>
+#+KIND: experiment
+#+BLURB: TODO(ai)
+
+# Experiment posts ship a runnable thing at site/assets/<SLUG>/.
+# 1. Iterate with the agent from this buffer: M-x shane/agent-request.
+#    View at http://localhost:8765/assets/<SLUG>/ while `make watch` runs.
+# 2. When it works, write the voice paragraph below, replacing TODO(human).
+# 3. M-x shane/ai-draft-machine-sections — fills What It Is / Controls /
+#    Build Notes / Preferred Citation.
+# 4. Review. Edit. M-x shane/publish-current-post.
+
+* <TITLE>
+TODO(human): One paragraph in Shane's voice — what the toy is and why you
+built it. Written AFTER the experiment works, not before.
+
+/The paragraph above comes directly from Shane Curry. Everything below this line is structured context and the live prototype./
+
+* <TITLE>                                                  :experiment:
+#+BEGIN_EXPORT html
+<link rel="stylesheet" href="/assets/<SLUG>/style.css?v={{ ASSET_VERSION }}">
+<div id="<SLUG>-mount"></div>
+<script src="/assets/<SLUG>/main.js?v={{ ASSET_VERSION }}"></script>
+#+END_EXPORT
+
+* What It Is
+TODO(ai)
+
+* Controls
+TODO(ai)
+
+* Build Notes
+TODO(ai)
+
+* Preferred Citation
+TODO(ai)
