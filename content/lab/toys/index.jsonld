@@ -1,0 +1,11 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "url": "https://shanecurry.com/lab/toys/",
+        "name": "Toys",
+        "description": "Placeholder index for small research-driven interactive toy notes by Shane Curry.",
+        "author": { "@id": "https://shanecurry.com/#person" },
+        "isPartOf": "https://shanecurry.com/lab/"
+      }
+    </script>

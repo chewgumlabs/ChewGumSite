@@ -1,0 +1,30 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Timing vs. Spacing",
+        "description": "A small interactive toy note showing how two motions can share duration while distributing spacing differently.",
+        "datePublished": "2026-04-22",
+        "dateModified": "2026-04-22",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/lab/toys/timing-vs-spacing/",
+        "url": "https://shanecurry.com/lab/toys/timing-vs-spacing/",
+        "isPartOf": {
+          "@type": "CollectionPage",
+          "url": "https://shanecurry.com/lab/toys/"
+        },
+        "about": [
+          "timing",
+          "spacing",
+          "animation fundamentals",
+          "motion readability"
+        ],
+        "keywords": [
+          "timing vs spacing animation",
+          "animation spacing explained visually",
+          "interactive animation timing principle"
+        ]
+      }
+    </script>

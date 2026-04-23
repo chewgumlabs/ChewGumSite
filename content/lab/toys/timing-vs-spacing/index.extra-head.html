@@ -1,0 +1,147 @@
+<style>
+  .timing-demo {
+    display: grid;
+    gap: 16px;
+  }
+
+  .timing-demo > p {
+    margin: 0;
+  }
+
+  .timing-demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+    margin: 0;
+    padding: 8px 16px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .timing-demo-controls label {
+    display: grid;
+    gap: 8px;
+    min-width: 12rem;
+    color: var(--ega-yellow);
+    text-transform: uppercase;
+  }
+
+  .timing-demo-controls input,
+  .timing-demo-controls select,
+  .timing-demo-controls button {
+    appearance: none;
+    font: inherit;
+    color: var(--ega-white);
+    background: var(--ega-black);
+    border: 1px solid var(--ega-lt-cyan);
+    padding: 8px;
+    min-height: 32px;
+  }
+
+  .timing-demo-controls input[type="range"] {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .timing-demo-controls button {
+    cursor: pointer;
+    min-width: 7rem;
+    background: var(--ega-magenta);
+    color: var(--ega-yellow);
+    border-color: var(--ega-yellow);
+  }
+
+  .timing-demo-controls button:hover {
+    background: var(--ega-yellow);
+    color: var(--ega-black);
+  }
+
+  .timing-demo-controls input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: var(--ega-dk-grey);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .timing-demo-controls input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    background: var(--ega-yellow);
+    border: 1px solid var(--ega-black);
+  }
+
+  .timing-demo-controls input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: var(--ega-dk-grey);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .timing-demo-controls input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--ega-yellow);
+    border: 1px solid var(--ega-black);
+    border-radius: 0;
+  }
+
+  .timing-demo-stage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--ega-lt-cyan);
+    background: var(--ega-blue);
+    shape-rendering: geometricPrecision;
+  }
+
+  .timing-demo-stage-frame {
+    fill: rgba(0, 0, 0, 0.18);
+    stroke: var(--ega-lt-cyan);
+    stroke-width: 1;
+  }
+
+  .timing-demo-label {
+    fill: var(--ega-yellow);
+    font-family: "VGA", monospace;
+    font-size: 8px;
+  }
+
+  .timing-demo-track {
+    stroke: var(--ega-white);
+    stroke-width: 2;
+  }
+
+  .timing-demo-ghost-even {
+    fill: var(--ega-lt-cyan);
+    opacity: 0.6;
+  }
+
+  .timing-demo-ghost-eased {
+    fill: var(--ega-yellow);
+    opacity: 0.7;
+  }
+
+  .timing-demo-marker {
+    stroke: var(--ega-black);
+    stroke-width: 2;
+  }
+
+  .timing-demo-marker-even {
+    fill: var(--ega-white);
+  }
+
+  .timing-demo-marker-eased {
+    fill: var(--ega-yellow);
+  }
+
+  .timing-demo-readout {
+    margin: 0;
+    padding: 8px 16px;
+    border: 1px solid var(--ega-lt-cyan);
+    background: var(--ega-blue);
+    color: var(--ega-white);
+    text-transform: uppercase;
+  }
+</style>

@@ -1,10 +1,30 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "url": "https://shanecurry.com/animation/",
-        "name": "Animation",
-        "description": "Independent animation work by Shane Curry across multiple tools, mediums, and custom rigging systems.",
-        "author": { "@id": "https://shanecurry.com/#person" }
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shanecurry.com/animation/#webpage",
+            "url": "https://shanecurry.com/animation/",
+            "name": "Animation",
+            "description": "Flagship page for Shane Curry's animation work, ChewGum Animation, animation systems, and AI-assisted prototyping.",
+            "author": { "@id": "https://shanecurry.com/#person" },
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "mainEntity": { "@id": "https://shanecurry.com/#chewgum-animation" },
+            "about": [
+              { "@id": "https://shanecurry.com/#person" },
+              { "@id": "https://shanecurry.com/#chewgum-animation" }
+            ]
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://shanecurry.com/#chewgum-animation",
+            "name": "ChewGum Animation",
+            "url": "https://shanecurry.com/animation/",
+            "description": "Flagship animation-software and animation-systems direction documented by Shane Curry on shanecurry.com.",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "publisher": { "@id": "https://shanecurry.com/#chewgum-labs" }
+          }
+        ]
       }
     </script>

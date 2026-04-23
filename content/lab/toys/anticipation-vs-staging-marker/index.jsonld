@@ -1,0 +1,28 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Anticipation Before Action",
+  "description": "A research-driven toy note draft exploring anticipation against direct action through a bounded interactive comparison.",
+  "datePublished": "2026-04-22",
+  "dateModified": "2026-04-22",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/anticipation-vs-staging-marker/",
+  "url": "https://shanecurry.com/lab/toys/anticipation-vs-staging-marker/",
+  "about": [
+    "anticipation",
+    "staging",
+    "animation fundamentals",
+    "motion readability"
+  ],
+  "keywords": [
+    "anticipation before action animation",
+    "anticipation before action toy",
+    "anticipation animation principle",
+    "what is anticipation in animation",
+    "anticipation vs direct action animation"
+  ]
+}
+    </script>

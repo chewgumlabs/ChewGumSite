@@ -1,0 +1,168 @@
+<script>
+  (() => {
+    const root = document.getElementById('toy-anticipation-vs-staging-marker');
+    if (!root) return;
+
+    const slider = document.getElementById('anticipation-progress');
+    const play = document.getElementById('anticipation-play');
+    const stagingMarker = document.getElementById('staging-marker');
+    const anticipationMarker = document.getElementById('anticipation-marker');
+    const stagingPayoff = document.getElementById('staging-payoff');
+    const anticipationPayoff = document.getElementById('anticipation-payoff');
+    const anticipationCue = document.getElementById('anticipation-cue');
+    const readout = document.getElementById('anticipation-readout');
+    const note = document.getElementById('anticipation-note');
+
+    const startX = 118;
+    const backX = 88;
+    const endX = 333;
+    const stagingY = 34;
+    const anticipationY = 100;
+    const markerSize = 12;
+    const durationMs = 2500;
+    const setupBeat = 0.30;
+    const stagingMoveStart = 0.18;
+    const stagingMoveEnd = 0.5;
+    let rafId = 0;
+    let playing = false;
+
+    const clamp = value => Math.max(0, Math.min(1, value));
+    const lerp = (start, end, amount) => start + (end - start) * amount;
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    const easeInOut = t => (
+      t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2
+    );
+
+    const setMarker = (node, centerX, centerY, width, height) => {
+      node.setAttribute('x', String(centerX - width / 2));
+      node.setAttribute('y', String(centerY - height / 2));
+      node.setAttribute('width', String(width));
+      node.setAttribute('height', String(height));
+    };
+
+    const noAnticipationPhase = progress => {
+      if (progress < stagingMoveStart) return 'IDLE';
+      if (progress < stagingMoveEnd) return 'DIRECT MOVE';
+      return 'PAYOFF HELD';
+    };
+
+    const anticipationPhase = progress => {
+      const actionEnd = Math.min(0.9, setupBeat + 0.24);
+      if (progress < setupBeat * 0.65) return 'PULLS BACK';
+      if (progress < setupBeat) return 'HOLDS SETUP';
+      if (progress < actionEnd) return 'RELEASES';
+      return 'PAYOFF HELD';
+    };
+
+    const explanation = progress => {
+      if (progress < stagingMoveStart) {
+        return 'The top row is still idle. The bottom row is already starting to load the move.';
+      }
+      if (progress < setupBeat) {
+        return 'No anticipation fires straight ahead. Anticipation spends this time on the setup beat.';
+      }
+      if (progress < Math.min(0.9, setupBeat + 0.24)) {
+        return 'Anticipation fires after the pullback. The top row is already in its direct move.';
+      }
+      return 'Both rows reach the payoff, but only the bottom row loaded the action before release.';
+    };
+
+    const render = rawProgress => {
+      const progress = clamp(rawProgress);
+      const actionEnd = Math.min(0.9, setupBeat + 0.24);
+      const percent = Math.round(progress * 100);
+
+      let stagingX = startX;
+      if (progress > stagingMoveStart) {
+        const moveProgress = clamp((progress - stagingMoveStart) / (stagingMoveEnd - stagingMoveStart));
+        stagingX = lerp(startX, endX, easeOut(moveProgress));
+      }
+      setMarker(stagingMarker, stagingX, stagingY, markerSize, markerSize);
+      stagingPayoff.setAttribute(
+        'opacity',
+        String(progress < stagingMoveStart ? 0.35 : 0.35 + 0.5 * clamp((progress - stagingMoveStart) / (stagingMoveEnd - stagingMoveStart)))
+      );
+
+      let anticipationX = startX;
+      let anticipationWidth = markerSize;
+      let anticipationHeight = markerSize;
+      let cueOpacity = 0.85;
+      if (progress < setupBeat) {
+        const local = clamp(progress / setupBeat);
+        const pullback = local < 0.7 ? easeInOut(local / 0.7) : 1;
+        anticipationX = lerp(startX, backX, pullback);
+        const squash = local < 0.7 ? pullback : 1;
+        anticipationWidth = markerSize + squash * 3;
+        anticipationHeight = markerSize - squash * 2;
+        cueOpacity = 0.85 - local * 0.3;
+      } else {
+        const local = clamp((progress - setupBeat) / (actionEnd - setupBeat || 0.001));
+        anticipationX = lerp(backX, endX, easeOut(local));
+        cueOpacity = Math.max(0, 0.3 - local * 0.3);
+      }
+      setMarker(
+        anticipationMarker,
+        anticipationX,
+        anticipationY,
+        anticipationWidth,
+        anticipationHeight
+      );
+      anticipationCue.setAttribute('opacity', String(cueOpacity));
+      anticipationPayoff.setAttribute(
+        'opacity',
+        String(progress < setupBeat ? 0.12 : 0.12 + 0.7 * clamp((progress - setupBeat) / (actionEnd - setupBeat || 0.001)))
+      );
+
+      readout.textContent =
+        'TIME ' + String(percent).padStart(3, '0') + '% | NO ANTICIPATION ' +
+        noAnticipationPhase(progress) + ' | ANTICIPATION ' +
+        anticipationPhase(progress);
+      note.textContent = explanation(progress);
+      slider.value = String(percent);
+    };
+
+    const stop = () => {
+      playing = false;
+      play.textContent = 'Play';
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
+    const start = () => {
+      stop();
+      playing = true;
+      play.textContent = 'Stop';
+      const started = performance.now() - (Number(slider.value) / 100) * durationMs;
+      const tick = now => {
+        if (!playing) return;
+        const progress = clamp((now - started) / durationMs);
+        render(progress);
+        if (progress >= 1) {
+          stop();
+          return;
+        }
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+    };
+
+    slider.addEventListener('input', () => {
+      stop();
+      render(Number(slider.value) / 100);
+    });
+
+    play.addEventListener('click', () => {
+      if (playing) {
+        stop();
+      } else {
+        start();
+      }
+    });
+
+    render(0);
+  })();
+</script>

@@ -1,0 +1,173 @@
+<style>
+  .anticipation-demo {
+    display: grid;
+    gap: 16px;
+  }
+
+  .anticipation-demo > p {
+    margin: 0;
+  }
+
+  .anticipation-demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: end;
+    margin: 0;
+    padding: 8px 16px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .anticipation-demo-controls label {
+    display: grid;
+    gap: 8px;
+    min-width: 12rem;
+    color: var(--ega-yellow);
+    text-transform: uppercase;
+  }
+
+  .anticipation-demo-controls input,
+  .anticipation-demo-controls button {
+    appearance: none;
+    font: inherit;
+    color: var(--ega-white);
+    background: var(--ega-black);
+    border: 1px solid var(--ega-lt-cyan);
+    padding: 8px;
+    min-height: 32px;
+  }
+
+  .anticipation-demo-controls input[type="range"] {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .anticipation-demo-controls button {
+    cursor: pointer;
+    min-width: 7rem;
+    background: var(--ega-magenta);
+    color: var(--ega-yellow);
+    border-color: var(--ega-yellow);
+  }
+
+  .anticipation-demo-controls button:hover {
+    background: var(--ega-yellow);
+    color: var(--ega-black);
+  }
+
+  .anticipation-demo-controls input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: var(--ega-dk-grey);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .anticipation-demo-controls input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    background: var(--ega-yellow);
+    border: 1px solid var(--ega-black);
+  }
+
+  .anticipation-demo-controls input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: var(--ega-dk-grey);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .anticipation-demo-controls input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--ega-yellow);
+    border: 1px solid var(--ega-black);
+    border-radius: 0;
+  }
+
+  .anticipation-demo-stage {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--ega-lt-cyan);
+    background: var(--ega-blue);
+    shape-rendering: geometricPrecision;
+  }
+
+  .anticipation-demo-stage-frame {
+    fill: rgba(0, 0, 0, 0.18);
+    stroke: var(--ega-lt-cyan);
+    stroke-width: 1;
+  }
+
+  .anticipation-demo-label {
+    fill: var(--ega-yellow);
+    font-family: "VGA", monospace;
+    font-size: 8px;
+  }
+
+  .anticipation-demo-track {
+    stroke: var(--ega-white);
+    stroke-width: 2;
+  }
+
+  .anticipation-demo-slot {
+    fill: rgba(0, 0, 0, 0.22);
+    stroke: var(--ega-cyan);
+    stroke-width: 1;
+  }
+
+  .anticipation-demo-payoff {
+    stroke: var(--ega-black);
+    stroke-width: 1.5;
+  }
+
+  .anticipation-demo-payoff-stage {
+    fill: var(--ega-white);
+  }
+
+  .anticipation-demo-payoff-anticipation {
+    fill: var(--ega-magenta);
+  }
+
+  .anticipation-demo-marker {
+    stroke: var(--ega-black);
+    stroke-width: 1.5;
+  }
+
+  .anticipation-demo-marker-stage {
+    fill: var(--ega-white);
+  }
+
+  .anticipation-demo-marker-anticipation {
+    fill: var(--ega-yellow);
+  }
+
+  .anticipation-demo-cue-line {
+    stroke: var(--ega-yellow);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+  }
+
+  .anticipation-demo-cue-arrow {
+    fill: var(--ega-yellow);
+  }
+
+  .anticipation-demo-readout,
+  .anticipation-demo-note {
+    margin: 0;
+    padding: 8px 16px;
+    border: 1px solid var(--ega-lt-cyan);
+    background: var(--ega-blue);
+  }
+
+  .anticipation-demo-readout {
+    color: var(--ega-white);
+    text-transform: uppercase;
+  }
+
+  .anticipation-demo-note {
+    color: var(--ega-lt-cyan);
+  }
+</style>

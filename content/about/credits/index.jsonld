@@ -1,0 +1,87 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shanecurry.com/about/credits/#webpage",
+            "url": "https://shanecurry.com/about/credits/",
+            "name": "Credits",
+            "description": "Full credits page for Shane Curry's television and streaming animation work, maintained on shanecurry.com as a primary-source summary.",
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "about": { "@id": "https://shanecurry.com/#person" },
+            "mainEntity": { "@id": "https://shanecurry.com/about/credits/#credits" },
+            "keywords": [
+              "Shane Curry credits",
+              "Shane Curry animation credits",
+              "American Dad animator",
+              "sheet timer animation",
+              "She-Ra and the Princesses of Power timing director",
+              "Trolls The Beat Goes On timing director",
+              "Duncanville timing director",
+              "HouseBroken timing director"
+            ]
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://shanecurry.com/about/credits/#credits",
+            "name": "Television and streaming credits for Shane Curry",
+            "itemListOrder": "https://schema.org/ItemListUnordered",
+            "numberOfItems": 5,
+            "about": { "@id": "https://shanecurry.com/#person" },
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "item": {
+                  "@type": "TVSeries",
+                  "name": "American Dad!",
+                  "url": "https://www.imdb.com/title/tt0397306/",
+                  "description": "Years worked: 2018-present. IMDb-linked roles include timing supervisor and animation timer."
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "item": {
+                  "@type": "TVSeries",
+                  "name": "She-Ra and the Princesses of Power",
+                  "url": "https://www.imdb.com/title/tt7745956/",
+                  "description": "Years worked: 2018-2020. IMDb-linked role: timing director."
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "item": {
+                  "@type": "TVSeries",
+                  "name": "Trolls: The Beat Goes On!",
+                  "url": "https://www.imdb.com/title/tt7539608/",
+                  "description": "Years worked: 2018-2019. IMDb-linked role: timing director."
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "item": {
+                  "@type": "TVSeries",
+                  "name": "Duncanville",
+                  "url": "https://www.imdb.com/title/tt9073898/",
+                  "description": "Years worked: 2020-2021. IMDb-linked role: timing director."
+                }
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "item": {
+                  "@type": "TVSeries",
+                  "name": "HouseBroken",
+                  "url": "https://www.imdb.com/title/tt9610166/",
+                  "description": "Years worked: 2021-2022. IMDb-linked role: timing director."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>

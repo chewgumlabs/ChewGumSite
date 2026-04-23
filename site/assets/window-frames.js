@@ -55,6 +55,22 @@
   // works normally inside.
   const ATOMIC_TAGS = new Set(['A']);
 
+  function collapseWhitespace(text) {
+    return text.replace(/\s+/g, ' ').trim();
+  }
+
+  function normalizedAtomicMarkup(node) {
+    const clone = node.cloneNode(true);
+    const walker = document.createTreeWalker(clone, NodeFilter.SHOW_TEXT);
+    while (walker.nextNode()) {
+      walker.currentNode.nodeValue = collapseWhitespace(walker.currentNode.nodeValue);
+    }
+    return {
+      visible: collapseWhitespace(clone.textContent),
+      markup: clone.outerHTML,
+    };
+  }
+
   /** Word-wrap a single line of HTML to `cols` visible chars per row. */
   function wrapHtmlLine(html, cols) {
     const tmp = document.createElement('div');
@@ -77,9 +93,10 @@
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (ATOMIC_TAGS.has(node.tagName)) {
           // Whole element stays together as one wrap unit.
+          const atomic = normalizedAtomicMarkup(node);
           words.push({
-            visible: node.textContent,
-            markup: openTags + node.outerHTML + closeTags,
+            visible: atomic.visible,
+            markup: openTags + atomic.markup + closeTags,
           });
           return;
         }
@@ -175,16 +192,17 @@
 
   /** Render one window section. */
   function renderWindow(section, charPx) {
-    // Cache original source so we can re-render on resize.
-    if (!section.dataset.frameSrc) {
-      const content = section.querySelector('.window-content');
-      if (!content) return;
-      section.dataset.frameSrc = content.innerHTML;
+    const sourceContent = section.querySelector('.window-content');
+    if (!section.dataset.frameTitle) {
       section.dataset.frameTitle = section.dataset.title || '';
-      // Auto-detect mode if not explicitly set in source.
-      if (!section.dataset.windowMode) {
-        section.dataset.windowMode = autoDetectMode(content);
-      }
+    }
+    if (!section.dataset.windowMode) {
+      if (!sourceContent) return;
+      section.dataset.windowMode = autoDetectMode(sourceContent);
+    }
+    if (section.dataset.windowMode === 'text' && !section.dataset.frameSrc) {
+      if (!sourceContent) return;
+      section.dataset.frameSrc = sourceContent.innerHTML;
     }
     const title = section.dataset.frameTitle;
     const mode = section.dataset.windowMode;
@@ -200,15 +218,34 @@
     const expCls = section.dataset.experiment !== undefined ? ' experiment' : '';
 
     if (mode === 'rich') {
-      // Top + bottom frames as <pre>; body is normal-flow with CSS borders.
-      // All three pieces are exactly totalWidth ch wide. The body's 1px
-      // CSS borders sit INSIDE that width (box-sizing: border-box), so the
-      // right edge lines up with the ╗ / ╝ corners of the frames.
       const w = `${totalWidth}ch`;
-      section.innerHTML =
-        `<pre class="ansi-window-frame ansi-window-top${expCls}" style="width:${w};">${top}</pre>` +
-        `<div class="ansi-window-body${expCls}" style="width:${w};">${section.dataset.frameSrc}</div>` +
-        `<pre class="ansi-window-frame ansi-window-bot${expCls}" style="width:${w};">${bottom}</pre>`;
+      let topFrame = section.querySelector(':scope > .ansi-window-top');
+      let body = section.querySelector(':scope > .ansi-window-body');
+      let bottomFrame = section.querySelector(':scope > .ansi-window-bot');
+
+      if (!topFrame || !body || !bottomFrame) {
+        const content = sourceContent;
+        if (!content) return;
+
+        topFrame = document.createElement('pre');
+        body = document.createElement('div');
+        bottomFrame = document.createElement('pre');
+
+        while (content.firstChild) {
+          body.appendChild(content.firstChild);
+        }
+
+        section.replaceChildren(topFrame, body, bottomFrame);
+      }
+
+      topFrame.className = `ansi-window-frame ansi-window-top${expCls}`;
+      body.className = `ansi-window-body${expCls}`;
+      bottomFrame.className = `ansi-window-frame ansi-window-bot${expCls}`;
+      topFrame.style.width = w;
+      body.style.width = w;
+      bottomFrame.style.width = w;
+      topFrame.innerHTML = top;
+      bottomFrame.innerHTML = bottom;
       section.classList.add('window-rich');
       section.classList.remove('window-text');
       return;
@@ -247,6 +284,7 @@
     if (!sections.length) return;
     const charPx = measureCharWidth(sections[0]);
     sections.forEach(s => renderWindow(s, charPx));
+    document.dispatchEvent(new CustomEvent('ansi-windows-rendered'));
   }
 
   // Re-renders need the original source preserved. The first render caches

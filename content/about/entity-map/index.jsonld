@@ -1,0 +1,47 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shanecurry.com/about/entity-map/#webpage",
+            "url": "https://shanecurry.com/about/entity-map/",
+            "name": "Entity Map",
+            "description": "Disambiguation page connecting Shane Curry, ChewGum Labs, ChewGum Animation, and Shane Curry's public profiles.",
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "about": [
+              { "@id": "https://shanecurry.com/#person" },
+              { "@id": "https://shanecurry.com/#chewgum-labs" },
+              { "@id": "https://shanecurry.com/#chewgum-animation" }
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://shanecurry.com/#person",
+            "name": "Shane Curry",
+            "url": "https://shanecurry.com/",
+            "sameAs": [
+              "https://github.com/chewgumlabs",
+              "https://www.linkedin.com/in/shanecurrycartoons/",
+              "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
+              "https://www.youtube.com/@infinitehush"
+            ]
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://shanecurry.com/#chewgum-labs",
+            "name": "ChewGum Labs",
+            "url": "https://shanecurry.com/about/entity-map/",
+            "founder": { "@id": "https://shanecurry.com/#person" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://shanecurry.com/#chewgum-animation",
+            "name": "ChewGum Animation",
+            "url": "https://shanecurry.com/animation/",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "publisher": { "@id": "https://shanecurry.com/#chewgum-labs" }
+          }
+        ]
+      }
+    </script>

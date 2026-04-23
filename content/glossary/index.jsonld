@@ -1,0 +1,130 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "DefinedTermSet",
+      "@id": "https://shanecurry.com/glossary/#termset",
+      "name": "Shane Curry Glossary",
+      "url": "https://shanecurry.com/glossary/",
+      "description": "Animation basics and working terms used across Shane Curry's site, starting with core animation concepts that can link outward to toys and essays.",
+      "creator": {
+        "@id": "https://shanecurry.com/#person"
+      },
+      "isPartOf": {
+        "@id": "https://shanecurry.com/#website"
+      },
+      "hasDefinedTerm": [
+        {
+          "@type": "DefinedTerm",
+          "name": "Timing",
+          "description": "Timing is how long an action takes to complete.",
+          "url": "https://shanecurry.com/glossary/#timing",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Spacing",
+          "description": "Spacing is how positions cluster or spread across a path over time.",
+          "url": "https://shanecurry.com/glossary/#spacing",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Ease In",
+          "description": "Ease in concentrates spacing near the end of a move so motion settles into the stop.",
+          "url": "https://shanecurry.com/glossary/#ease-in",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Ease Out",
+          "description": "Ease out concentrates spacing near the beginning of a move so motion accelerates away from the start.",
+          "url": "https://shanecurry.com/glossary/#ease-out",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Ease In + Out",
+          "description": "Ease in and out clusters spacing near both ends so motion starts and stops gently.",
+          "url": "https://shanecurry.com/glossary/#ease-in-out",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Arcs",
+          "description": "Arcs describe curved motion paths that make movement feel more organic and less mechanical.",
+          "url": "https://shanecurry.com/glossary/#arcs",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Anticipation",
+          "description": "Anticipation is a preparatory action that sets up the main action and helps the audience read it.",
+          "url": "https://shanecurry.com/glossary/#anticipation",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Staging",
+          "description": "Staging is the arrangement of poses, timing, and composition so the audience reads the intended idea clearly.",
+          "url": "https://shanecurry.com/glossary/#staging",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Silhouette",
+          "description": "Silhouette is the readable outer shape of a pose when internal details are removed.",
+          "url": "https://shanecurry.com/glossary/#silhouette",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Key Pose",
+          "description": "A key pose is a major storytelling or structural pose that defines the important beats of an action.",
+          "url": "https://shanecurry.com/glossary/#key-pose",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Follow Through",
+          "description": "Follow through is the continuation of motion after the main body has stopped or changed direction.",
+          "url": "https://shanecurry.com/glossary/#follow-through",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Overlap",
+          "description": "Overlap is the offset timing between connected parts so they do not all start and stop at once.",
+          "url": "https://shanecurry.com/glossary/#overlap",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>

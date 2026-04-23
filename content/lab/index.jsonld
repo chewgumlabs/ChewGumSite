@@ -1,0 +1,11 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "url": "https://shanecurry.com/lab/",
+        "name": "Lab",
+        "description": "Adjacent research lines, toy-note staging, and small interactive directions by Shane Curry.",
+        "author": { "@id": "https://shanecurry.com/#person" },
+        "isPartOf": { "@id": "https://shanecurry.com/#website" }
+      }
+    </script>

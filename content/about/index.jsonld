@@ -3,12 +3,21 @@
         "@context": "https://schema.org",
         "@graph": [
           {
-            "@type": "WebSite",
-            "@id": "https://shanecurry.com/#website",
-            "url": "https://shanecurry.com/",
-            "name": "Shane Curry",
-            "description": "Home page for Shane Curry, professional animator and software builder.",
-            "publisher": { "@id": "https://shanecurry.com/#person" }
+            "@type": "AboutPage",
+            "@id": "https://shanecurry.com/about/#webpage",
+            "url": "https://shanecurry.com/about/",
+            "name": "About Shane Curry",
+            "description": "Stable profile page for Shane Curry, animator and systems builder working across television, independent animation, tools, and AI-assisted software practice.",
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "mainEntity": { "@id": "https://shanecurry.com/#person" },
+            "hasPart": [
+              { "@id": "https://shanecurry.com/about/credits/#webpage" }
+            ],
+            "about": [
+              { "@id": "https://shanecurry.com/#person" },
+              { "@id": "https://shanecurry.com/#chewgum-labs" },
+              { "@id": "https://shanecurry.com/#chewgum-animation" }
+            ]
           },
           {
             "@type": "Person",
@@ -16,12 +25,7 @@
             "name": "Shane Curry",
             "url": "https://shanecurry.com/",
             "jobTitle": "Animator and systems builder",
-            "description": "Shane Curry is an animator and systems builder with 10 years of experience in primetime television and streaming. His independent work spans 2D and 3D animation, rigging, animation systems, interactive experiments, and AI-assisted software prototyping. He is currently documenting and building the ChewGum Animation direction on shanecurry.com.",
-            "knowsAbout": [
-              "2D animation","3D animation","animation rigging","animation systems",
-              "Blender","Unreal Engine","ToonBoom Harmony","Unity","Godot","Roblox",
-              "vanilla JavaScript","C","AI-assisted software practice","ChewGum Animation"
-            ],
+            "description": "Shane Curry is an animator and systems builder with 10 years of experience in primetime television and streaming. His work spans animation, rigging, animation systems, and AI-assisted software prototyping.",
             "sameAs": [
               "https://github.com/chewgumlabs",
               "https://www.linkedin.com/in/shanecurrycartoons/",

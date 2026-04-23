@@ -1096,7 +1096,7 @@ GitHub Actions rebuilds site/ and deploys."
         (erase-buffer)
         (insert git-output)
         (display-buffer (current-buffer)))
-      (message "Pushed %s — watch: https://github.com/chewgumplaygames/shanecurryblog/actions"
+      (message "Pushed %s — watch: https://github.com/chewgumlabs/ChewGumSite/actions"
                commit-msg))))
 
 (provide 'shane-publish)

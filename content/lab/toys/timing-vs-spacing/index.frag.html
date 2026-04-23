@@ -1,0 +1,154 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface timing-demo" id="toy-timing-vs-spacing">
+            <p>
+              Both tracks take the same amount of time to finish. The top track
+              keeps even spacing. The bottom track changes how positions cluster
+              along the path.
+            </p>
+            <form class="timing-demo-controls">
+              <label>
+                Timing
+                <input id="timing-progress" type="range" min="0" max="100" value="0">
+              </label>
+              <label>
+                Spacing
+                <select id="timing-mode">
+                  <option value="ease-in">Ease In</option>
+                  <option value="ease-out">Ease Out</option>
+                  <option value="ease-in-out" selected>Ease In + Out</option>
+                </select>
+              </label>
+              <button id="timing-play" type="button">Play</button>
+            </form>
+            <svg class="timing-demo-stage" viewBox="0 0 400 140" role="img" aria-labelledby="timing-demo-title timing-demo-desc">
+              <title id="timing-demo-title">Timing versus spacing comparison</title>
+              <desc id="timing-demo-desc">Two markers move over equal duration. One uses even spacing while the other changes clustering along the path.</desc>
+              <rect class="timing-demo-stage-frame" x="8" y="8" width="384" height="124"></rect>
+              <text class="timing-demo-label" x="22" y="38">EVEN</text>
+              <text class="timing-demo-label" x="22" y="98">UNEVEN</text>
+              <line class="timing-demo-track" x1="112" y1="34" x2="364" y2="34"></line>
+              <line class="timing-demo-track" x1="112" y1="94" x2="364" y2="94"></line>
+              <g id="timing-even-ghosts"></g>
+              <g id="timing-eased-ghosts"></g>
+              <circle id="timing-even-marker" class="timing-demo-marker timing-demo-marker-even" cx="112" cy="34" r="7"></circle>
+              <circle id="timing-eased-marker" class="timing-demo-marker timing-demo-marker-eased" cx="112" cy="94" r="7"></circle>
+            </svg>
+            <p id="timing-readout" class="timing-demo-readout" aria-live="polite">
+              TIMING 000% | EVEN 000% | UNEVEN 000% | SPACING EASE IN + OUT
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Prototype</dd>
+            <dt>Published</dt>
+            <dd>April 22, 2026</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/timing-vs-spacing/">https://shanecurry.com/lab/toys/timing-vs-spacing/</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+            <dt>Scope</dt>
+            <dd>Animation fundamentals, visible motion comparison</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Timing answers when something happens. Spacing answers where the
+            object clusters between those moments.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Two markers travel the same distance in the same duration, but one
+            keeps even spacing while the other bunches near the start or end.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            This is the kind of small visual distinction that becomes much
+            clearer when it is demonstrated instead of described. A tiny page is
+            enough, if the contrast is real.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Facts And Definitions" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Timing</dt>
+            <dd>The duration and placement of events in time.</dd>
+            <dt>Spacing</dt>
+            <dd>The distribution of positions between those events.</dd>
+            <dt>Even spacing</dt>
+            <dd>Equal position intervals across the path.</dd>
+            <dt>Variable spacing</dt>
+            <dd>Position intervals that cluster or stretch while the duration stays fixed.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            This first public toy was promoted from the local staging lane as a
+            prototype demonstration page. A richer public research trail will be
+            attached to later toy notes once the research-to-publish workflow is
+            fully hardened.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>timing</li>
+            <li>spacing</li>
+            <li>animation fundamentals</li>
+            <li>motion readability</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Project" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            ChewGum Animation
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Timing vs. Spacing,"
+            https://shanecurry.com/lab/toys/timing-vs-spacing/, published April
+            22, 2026.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The point here is not polish. It is contrast. If two motions finish
+            together but distribute their positions differently, the read
+            changes immediately. That is enough to earn a page.
+          </p>
+        </div>
+      </section>

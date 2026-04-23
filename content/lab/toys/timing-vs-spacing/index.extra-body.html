@@ -1,0 +1,131 @@
+<script>
+  (() => {
+    const root = document.getElementById('toy-timing-vs-spacing');
+    if (!root) return;
+
+    const slider = document.getElementById('timing-progress');
+    const mode = document.getElementById('timing-mode');
+    const play = document.getElementById('timing-play');
+    const evenMarker = document.getElementById('timing-even-marker');
+    const easedMarker = document.getElementById('timing-eased-marker');
+    const evenGhosts = document.getElementById('timing-even-ghosts');
+    const easedGhosts = document.getElementById('timing-eased-ghosts');
+    const readout = document.getElementById('timing-readout');
+
+    const startX = 112;
+    const endX = 364;
+    const evenY = 34;
+    const easedY = 94;
+    const samples = 9;
+    let rafId = 0;
+    let playing = false;
+
+    const clamp = value => Math.max(0, Math.min(1, value));
+
+    const easeMap = {
+      'ease-in': t => t * t,
+      'ease-out': t => 1 - Math.pow(1 - t, 2),
+      'ease-in-out': t => (
+        t < 0.5
+          ? 2 * t * t
+          : 1 - Math.pow(-2 * t + 2, 2) / 2
+      ),
+    };
+    const modeLabels = {
+      'ease-in': 'EASE IN',
+      'ease-out': 'EASE OUT',
+      'ease-in-out': 'EASE IN + OUT',
+    };
+
+    const xFor = progress => startX + (endX - startX) * progress;
+
+    const makeGhost = (className, cx, cy) => {
+      const ghost = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      ghost.setAttribute('class', className);
+      ghost.setAttribute('cx', String(cx));
+      ghost.setAttribute('cy', String(cy));
+      ghost.setAttribute('r', '4');
+      return ghost;
+    };
+
+    const rebuildGhosts = () => {
+      evenGhosts.replaceChildren();
+      easedGhosts.replaceChildren();
+      const easing = easeMap[mode.value] || easeMap['ease-in-out'];
+      for (let index = 0; index < samples; index += 1) {
+        const t = index / (samples - 1);
+        evenGhosts.appendChild(makeGhost('timing-demo-ghost-even', xFor(t), evenY));
+        easedGhosts.appendChild(makeGhost('timing-demo-ghost-eased', xFor(easing(t)), easedY));
+      }
+    };
+
+    const updateReadout = t => {
+      const easing = easeMap[mode.value] || easeMap['ease-in-out'];
+      const eased = easing(t);
+      const percent = Math.round(t * 100);
+      const spacingPercent = Math.round(eased * 100);
+      readout.textContent =
+        'TIMING ' + String(percent).padStart(3, '0') + '% | EVEN ' +
+        String(percent).padStart(3, '0') + '% | UNEVEN ' +
+        String(spacingPercent).padStart(3, '0') + '% | SPACING ' +
+        (modeLabels[mode.value] || modeLabels['ease-in-out']);
+    };
+
+    const render = t => {
+      const clamped = clamp(t);
+      const easing = easeMap[mode.value] || easeMap['ease-in-out'];
+      evenMarker.setAttribute('cx', String(xFor(clamped)));
+      easedMarker.setAttribute('cx', String(xFor(easing(clamped))));
+      slider.value = String(Math.round(clamped * 100));
+      updateReadout(clamped);
+    };
+
+    const stop = () => {
+      playing = false;
+      play.textContent = 'Play';
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
+    const start = () => {
+      stop();
+      playing = true;
+      play.textContent = 'Stop';
+      const started = performance.now() - (Number(slider.value) / 100) * 2400;
+      const tick = now => {
+        if (!playing) return;
+        const progress = clamp((now - started) / 2400);
+        render(progress);
+        if (progress >= 1) {
+          stop();
+          return;
+        }
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+    };
+
+    slider.addEventListener('input', () => {
+      stop();
+      render(Number(slider.value) / 100);
+    });
+
+    mode.addEventListener('change', () => {
+      rebuildGhosts();
+      render(Number(slider.value) / 100);
+    });
+
+    play.addEventListener('click', () => {
+      if (playing) {
+        stop();
+      } else {
+        start();
+      }
+    });
+
+    rebuildGhosts();
+    render(0);
+  })();
+</script>
