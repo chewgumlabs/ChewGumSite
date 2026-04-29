@@ -7,6 +7,24 @@
         "description": "A software-rendered faceted tunnel that feels like falling down a bell-lined hole.",
         "author": {
           "@id": "https://shanecurry.com/#person"
-        }
+        },
+        "about": [
+          "software rendering",
+          "raymarching",
+          "procedural tunnel",
+          "bell synthesis",
+          "interactive descent"
+        ],
+        "keywords": [
+          "software-rendered animation",
+          "CPU raymarching demo",
+          "bell-lined tunnel",
+          "Dead Beat triangle wave"
+        ],
+        "mentions": [
+          {
+            "@id": "https://shanecurry.com/blog/dead-beat/"
+          }
+        ]
       }
     </script>

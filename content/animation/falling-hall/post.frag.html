@@ -116,3 +116,43 @@
                   </p>
         </div>
       </section>
+
+      <section class="window" data-title="Render Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Framebuffer</dt>
+            <dd>160 &times; 120 px (4:3), low-resolution by design, scaled up with crisp pixels and a scanlines overlay.</dd>
+            <dt>Projection</dt>
+            <dd>Per-pixel raymarch with focal length 1.05; aspect 4:3 baked into screen-space sample arrays.</dd>
+            <dt>Raymarch budget</dt>
+            <dd>28 steps per pixel, max distance 40 units, surface epsilon 0.035; adaptive step <code>0.045 &le; &Delta; &le; 1.15</code>.</dd>
+            <dt>Tunnel SDF</dt>
+            <dd>18 facets per ring, ring spacing 1.35; per-facet radius from <code>1.78 + sin(ring &middot; 0.43) &middot; 0.16 + sin(ring &middot; 0.15 + 1.7) &middot; 0.1</code> with hash-based coarse and fine noise plus a dimple term.</dd>
+            <dt>Camera physics</dt>
+            <dd>Base fall 4.1 u/s; boosted 6.2 u/s (Shift); drift acceleration 5.8 u/s&sup2;; lateral drag 3.4; center pull 1.05; player radius 0.17.</dd>
+            <dt>Timestep</dt>
+            <dd>Variable, capped at 50 ms per frame to keep physics stable on stutter.</dd>
+            <dt>Fog</dt>
+            <dd>Exponential: <code>fog = exp(&minus;travel &middot; 0.078)</code>; impact flash adds a per-channel additive term.</dd>
+            <dt>Lighting</dt>
+            <dd>Single directional light at <code>normalize(&minus;0.42, &minus;0.26, &minus;0.87)</code>; rim term <code>(1 &minus; view&middot;n)<sup>2.4</sup></code>; per-ring seam highlight.</dd>
+            <dt>Audio: bell synth</dt>
+            <dd>Master gain 0.16; bandpass at fundamental &times; 2.2 (Q 2.4, capped at 3200 Hz); 3-voice triangle + sine harmonics at &times;2.01 and &times;3.17; envelope 0.02 s attack, 1.45 s primary decay.</dd>
+            <dt>Audio: triangle wave</dt>
+            <dd>NES-style 32-step staircase reconstructed as a Web Audio <code>PeriodicWave</code> from 24 cosine/sine harmonics. Same generator family used in <a href="/blog/dead-beat/">Dead Beat</a>.</dd>
+            <dt>Bell scale</dt>
+            <dd>MIDI [69, 72, 76, 79, 81, 84] &mdash; A4, C5, E5, G5, A5, C6. Impact intensity currently raises the selected scale note by up to 6 semitones through the collision path.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Live demo source: <a href="/assets/falling-hall/main.js"><code>/assets/falling-hall/main.js</code></a> on this site. No separate public repo yet.</li>
+            <li>Bell synthesis lineage: the triangle-wave generator pattern is shared with <a href="/blog/dead-beat/">Dead Beat</a>; the audio approach is a planned extraction target for the upcoming <code>chewgum-dsp</code> public repo.</li>
+            <li>Rendering approach: signed-distance raymarching against a procedural facet tunnel, with adaptive per-pixel step size, exponential fog, and a single directional light with rim and seam terms.</li>
+            <li>Implementation note: pure CPU rendering into a 160 &times; 120 <code>ImageData</code> buffer, scaled up by the browser. No WebGL, no shaders. Physics and audio triggering run from the same main loop; synthesis is scheduled through Web Audio.</li>
+          </ul>
+        </div>
+      </section>
