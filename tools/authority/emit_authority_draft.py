@@ -7,7 +7,7 @@ SwarmLab, in JSON form) and emits a draft directory under
 _Internal/authority-drafts/<YYYY-MM-DD>-<slug>/. Then runs the validator.
 
 Hard rules:
-  - never writes outside _Internal/authority-drafts/
+  - never writes outside a private _Internal/ authority draft root
   - never edits content/, site/sitemap.xml, or site/llms.txt
   - never auto-publishes
   - emits scaffolds only; the live demo (post.extra-body.html) and any
@@ -37,7 +37,8 @@ import re
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-DRAFTS_ROOT = REPO / "_Internal" / "authority-drafts"
+INTERNAL_ROOT = REPO / "_Internal"
+DEFAULT_DRAFTS_ROOT = INTERNAL_ROOT / "authority-drafts"
 VALIDATOR = Path(__file__).with_name("validate_authority_draft.py")
 
 KIND_TO_TOML_KIND = {
@@ -63,12 +64,12 @@ MANAGED_FILES = (
 )
 
 
-def _clean_managed_files(draft_dir: Path) -> None:
+def _clean_managed_files(draft_dir: Path, drafts_root: Path) -> None:
     """Remove adapter-owned files from a draft directory before re-emit.
 
-    Refuses to operate outside DRAFTS_ROOT to prevent accidental deletion.
+    Refuses to operate outside drafts_root to prevent accidental deletion.
     """
-    drafts_root = DRAFTS_ROOT.resolve()
+    drafts_root = drafts_root.resolve()
     target = draft_dir.resolve()
     try:
         target.relative_to(drafts_root)
@@ -84,6 +85,7 @@ def _clean_managed_files(draft_dir: Path) -> None:
 
 def main() -> int:
     args = _parse_args()
+    drafts_root = _resolve_draft_root(args.draft_root)
     packet_path = Path(args.packet).resolve()
     if not packet_path.exists():
         print(f"error: packet not found: {packet_path}", file=sys.stderr)
@@ -110,9 +112,9 @@ def main() -> int:
         packet["recommended_output"] = output
 
     today = _dt.date.today().isoformat()
-    draft_dir = DRAFTS_ROOT / f"{today}-{slug}"
+    draft_dir = drafts_root / f"{today}-{slug}"
     draft_dir.mkdir(parents=True, exist_ok=True)
-    _clean_managed_files(draft_dir)
+    _clean_managed_files(draft_dir, drafts_root)
 
     _write_packet(draft_dir, packet)
     _write_source_trail(draft_dir, packet)
@@ -144,11 +146,38 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("packet", help="path to authority packet JSON file")
     parser.add_argument("--slug", help="override draft slug")
     parser.add_argument(
+        "--draft-root",
+        help=(
+            "private output root under _Internal/ "
+            "(default: _Internal/authority-drafts)"
+        ),
+    )
+    parser.add_argument(
         "--kind",
         choices=["toy", "index", "note", "hold", "reject"],
         help="override recommended_output from the packet",
     )
     return parser.parse_args()
+
+
+def _resolve_draft_root(value: str | None) -> Path:
+    if value:
+        root = Path(value)
+        if not root.is_absolute():
+            root = REPO / root
+    else:
+        root = DEFAULT_DRAFTS_ROOT
+    root = root.resolve()
+    internal = INTERNAL_ROOT.resolve()
+    try:
+        root.relative_to(internal)
+    except ValueError:
+        print(
+            f"error: draft root must be under {internal}: {root}",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+    return root
 
 
 def _slug_from_packet(packet: dict) -> str | None:

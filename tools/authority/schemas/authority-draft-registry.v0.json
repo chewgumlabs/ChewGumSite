@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/authority-draft-registry.v0.json",
+  "title": "Authority Draft Registry v0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "drafts_root",
+    "summary",
+    "entries"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "authority-draft-registry.v0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "drafts_root": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total",
+        "excluded_test_drafts",
+        "ready_for_review",
+        "needs_revision",
+        "held",
+        "rejected",
+        "promoted",
+        "drafted",
+        "superseded"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded_test_drafts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ready_for_review": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "needs_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "held": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rejected": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "promoted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drafted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "superseded": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/registry_entry"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "registry_entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "created_at",
+        "updated_at",
+        "source_kind",
+        "source_ref",
+        "recommended_output",
+        "status",
+        "target_public_path",
+        "canonical_url",
+        "claim_summary",
+        "public_source_trail_count",
+        "private_evidence_present",
+        "validation_report",
+        "promotion_decision",
+        "promotion_commit",
+        "review_owner"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "source_kind": {
+          "enum": [
+            "public_page",
+            "public_repo",
+            "swarmlab_packet",
+            "internal_truth_packet",
+            "operator_note",
+            "external_source"
+          ]
+        },
+        "source_ref": {
+          "type": "string"
+        },
+        "recommended_output": {
+          "enum": [
+            "toy",
+            "index",
+            "note",
+            "hold",
+            "reject",
+            ""
+          ]
+        },
+        "status": {
+          "enum": [
+            "drafted",
+            "validated",
+            "needs_revision",
+            "held",
+            "rejected",
+            "promoted",
+            "superseded"
+          ]
+        },
+        "target_public_path": {
+          "type": "string"
+        },
+        "canonical_url": {
+          "type": "string"
+        },
+        "claim_summary": {
+          "type": "string"
+        },
+        "public_source_trail_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "private_evidence_present": {
+          "type": "boolean"
+        },
+        "validation_report": {
+          "$ref": "#/$defs/validation_report"
+        },
+        "promotion_decision": {
+          "$ref": "#/$defs/promotion_decision"
+        },
+        "promotion_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "review_owner": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "validation_report": {
+      "type": "object",
+      "required": [
+        "path",
+        "passed",
+        "blocking",
+        "warnings"
+      ],
+      "properties": {
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "passed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "blocking": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "promotion_decision": {
+      "type": "object",
+      "required": [
+        "state",
+        "reason",
+        "human_promotion_required"
+      ],
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "human_promotion_required": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

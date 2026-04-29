@@ -23,6 +23,9 @@ tools/authority/
   validate_authority_draft.py     public-safety gate on a draft directory
   run_authority_smoke.py          deterministic fixture matrix runner
   audit_public_surface.py         read-only audit of public site surfaces
+  index_authority_registry.py     index private drafts into a review queue
+  schemas/
+    authority-draft-registry.v0.json
   fixtures/
     triangle-engines.packet.json
                                           known-good fixture
@@ -45,9 +48,10 @@ committed.
 ## Requirements
 
 - Python 3.11+ (uses `tomllib`). The Makefile uses
-  `/opt/homebrew/bin/python3`; both scripts hard-fail with a clear
-  message if invoked under an older Python (e.g., macOS system
-  `/usr/bin/python3` 3.9). Use the same Python that runs `make build`.
+  `/opt/homebrew/bin/python3`; the Python authority scripts hard-fail
+  with a clear message if invoked under an older Python (e.g., macOS
+  system `/usr/bin/python3` 3.9). Use the same Python that runs
+  `make build`.
 - No third-party dependencies.
 
 ## Usage
@@ -67,6 +71,10 @@ Runs the full fixture matrix:
 - all bad fixtures must block
 - the triangle fixture emitted as `--kind hold` must leave zero `post.*`
   files
+- smoke drafts are written to `_Internal/authority-smoke-drafts/`, not
+  the operational `_Internal/authority-drafts/` root
+- stale passing validation must be re-run before registry readiness
+- fixture drafts must be excluded from the default registry view
 - `_Internal/` must not be tracked by git
 
 ```sh
@@ -91,6 +99,25 @@ Runs a read-only audit of `content/`, `site/llms.txt`, and
 `_Internal/authority-audits/<YYYY-MM-DD>/audit.md` and
 `_Internal/authority-audits/<YYYY-MM-DD>/audit.json`. The audit reports
 blocking findings and warnings but does not edit public files.
+
+```sh
+make authority-registry
+```
+
+Revalidates and indexes existing private draft directories under
+`_Internal/authority-drafts/`, reads their `packet.json` files and fresh
+`validation.json` reports, then writes:
+
+- `_Internal/authority-registry/registry.json`
+- `_Internal/authority-registry/registry.md`
+
+The tracked schema is
+`tools/authority/schemas/authority-draft-registry.v0.json`. The private
+registry records ready-for-review, held, rejected, promoted, drafted, and
+needs-revision states. Fixture and edge-case drafts are skipped by
+default so smoke tests do not dominate the operational queue. It is a
+queue and review surface only; no registry entry implies automatic
+publication.
 
 ### Emit a draft
 
@@ -127,11 +154,13 @@ Returns nonzero on blocking failures.
 ### Optional flags
 
 ```sh
-emit_authority_draft.py <packet> [--slug <slug>] [--kind toy|index|note|hold|reject]
+emit_authority_draft.py <packet> [--slug <slug>] [--kind toy|index|note|hold|reject] [--draft-root <private-root>]
 ```
 
 `--kind` overrides `recommended_output` from the packet. `--slug`
-overrides the slug derived from `target_public_path`.
+overrides the slug derived from `target_public_path`. `--draft-root`
+must stay under `_Internal/`; it exists so smoke tests can write to a
+separate private test root.
 
 ## What the validator checks
 

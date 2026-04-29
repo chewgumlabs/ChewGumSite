@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -24,6 +24,8 @@ help:
 	@echo "              validate an existing private authority draft"
 	@echo "make authority-audit"
 	@echo "              audit public content, llms.txt, and sitemap.xml"
+	@echo "make authority-registry"
+	@echo "              revalidate and index private authority drafts into _Internal/authority-registry/"
 
 build:
 	@$(PYTHON) tools/build.py
@@ -63,3 +65,6 @@ authority-validate:
 
 authority-audit:
 	@$(PYTHON) tools/authority/audit_public_surface.py
+
+authority-registry:
+	@$(PYTHON) tools/authority/index_authority_registry.py
