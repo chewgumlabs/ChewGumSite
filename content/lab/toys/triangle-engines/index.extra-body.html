@@ -1,0 +1,170 @@
+<script>
+  (() => {
+    const root = document.getElementById('toy-triangle-engines');
+    if (!root) return;
+
+    // Source: chewgum-dsp v0.1.0 (vendored)
+    // https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0
+
+    function createNesTriangleWave(audioContext) {
+      const stepValues = [
+        15, 14, 13, 12, 11, 10, 9, 8,
+        7, 6, 5, 4, 3, 2, 1, 0,
+        0, 1, 2, 3, 4, 5, 6, 7,
+        8, 9, 10, 11, 12, 13, 14, 15,
+      ];
+      const normalized = stepValues.map((value) => (value / 15) * 2 - 1);
+      const mean = normalized.reduce((sum, value) => sum + value, 0) / normalized.length;
+      const samples = normalized.map((value) => value - mean);
+      const harmonicCount = 24;
+      const real = new Float32Array(harmonicCount + 1);
+      const imag = new Float32Array(harmonicCount + 1);
+
+      for (let harmonic = 1; harmonic <= harmonicCount; harmonic += 1) {
+        let cosineSum = 0;
+        let sineSum = 0;
+        for (let sampleIndex = 0; sampleIndex < samples.length; sampleIndex += 1) {
+          const phase = (2 * Math.PI * harmonic * sampleIndex) / samples.length;
+          cosineSum += samples[sampleIndex] * Math.cos(phase);
+          sineSum += samples[sampleIndex] * Math.sin(phase);
+        }
+        real[harmonic] = (2 / samples.length) * cosineSum;
+        imag[harmonic] = (2 / samples.length) * sineSum;
+      }
+
+      return audioContext.createPeriodicWave(real, imag, { disableNormalization: true });
+    }
+
+    function midiToFrequency(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function scheduleVoice(audioContext, opts) {
+      const oscillator = new OscillatorNode(audioContext, { type: opts.type });
+      const gain = new GainNode(audioContext, { gain: 0.0001 });
+      if (opts.periodicWave) {
+        oscillator.setPeriodicWave(opts.periodicWave);
+      }
+      oscillator.frequency.setValueAtTime(opts.frequency, opts.time);
+      gain.gain.setValueAtTime(0.0001, opts.time);
+      gain.gain.linearRampToValueAtTime(opts.peak, opts.time + 0.02);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, opts.peak * 0.42), opts.time + opts.decay * 0.35);
+      gain.gain.exponentialRampToValueAtTime(0.0001, opts.time + opts.decay);
+      oscillator.connect(gain);
+      gain.connect(opts.destination);
+      oscillator.start(opts.time);
+      oscillator.stop(opts.time + opts.decay + 0.1);
+    }
+
+    function strikeBell(audioContext, destination, periodicWave, options) {
+      const opts = options || {};
+      const midi = opts.midi == null ? 69 : opts.midi;
+      const intensity = opts.intensity == null ? 1 : opts.intensity;
+      const pan = opts.pan == null ? 0 : opts.pan;
+
+      const time = audioContext.currentTime + 0.01;
+      const clampedIntensity = clamp(intensity, 0.18, 1.2);
+      const fundamental = midiToFrequency(midi);
+
+      const output = typeof StereoPannerNode === 'function'
+        ? new StereoPannerNode(audioContext, { pan: clamp(pan, -1, 1) })
+        : new GainNode(audioContext);
+      output.connect(destination);
+
+      const filter = new BiquadFilterNode(audioContext, {
+        type: 'bandpass',
+        frequency: Math.min(3200, fundamental * 2.2),
+        Q: 2.4,
+      });
+      filter.connect(output);
+
+      const bus = new GainNode(audioContext, { gain: 1 });
+      bus.connect(output);
+
+      const shimmer = new GainNode(audioContext, { gain: 1 });
+      shimmer.connect(filter);
+
+      scheduleVoice(audioContext, {
+        type: 'triangle',
+        frequency: fundamental,
+        peak: 0.08 * clampedIntensity,
+        decay: 1.45,
+        time,
+        destination: bus,
+        periodicWave,
+      });
+
+      scheduleVoice(audioContext, {
+        type: 'sine',
+        frequency: fundamental * 2.01,
+        peak: 0.07 * clampedIntensity,
+        decay: 1.08,
+        time,
+        destination: shimmer,
+      });
+
+      scheduleVoice(audioContext, {
+        type: 'sine',
+        frequency: fundamental * 3.17,
+        peak: 0.05 * clampedIntensity,
+        decay: 0.8,
+        time,
+        destination: shimmer,
+      });
+
+      window.setTimeout(() => {
+        output.disconnect();
+        bus.disconnect();
+        shimmer.disconnect();
+        filter.disconnect();
+      }, 2200);
+    }
+
+    // Demo glue
+    const buttonNative = document.getElementById('ring-native');
+    const buttonNes = document.getElementById('ring-nes');
+    const readout = document.getElementById('triangle-readout');
+    const SCALE = [69, 72, 76, 79, 81, 84];
+
+    let audioContext = null;
+    let masterGain = null;
+    let triangleWave = null;
+
+    async function ensureAudio() {
+      if (!audioContext) {
+        const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioContextCtor();
+        masterGain = new GainNode(audioContext, { gain: 0.16 });
+        masterGain.connect(audioContext.destination);
+        triangleWave = createNesTriangleWave(audioContext);
+      }
+      await audioContext.resume();
+    }
+
+    function pickMidi() {
+      return SCALE[Math.floor(Math.random() * SCALE.length)];
+    }
+
+    if (buttonNative) {
+      buttonNative.addEventListener('click', async () => {
+        await ensureAudio();
+        const midi = pickMidi();
+        strikeBell(audioContext, masterGain, null, { midi, intensity: 0.9 });
+        if (readout) readout.textContent = `Native triangle · MIDI ${midi}`;
+      });
+    }
+
+    if (buttonNes) {
+      buttonNes.addEventListener('click', async () => {
+        await ensureAudio();
+        const midi = pickMidi();
+        strikeBell(audioContext, masterGain, triangleWave, { midi, intensity: 0.9 });
+        if (readout) readout.textContent = `NES-style PeriodicWave · MIDI ${midi}`;
+      });
+    }
+  })();
+</script>

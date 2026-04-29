@@ -1,0 +1,38 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "LearningResource"],
+  "learningResourceType": "interactive simulation",
+  "headline": "Native Triangle vs. NES-Style Triangle",
+  "description": "An A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall.",
+  "datePublished": "2026-04-29",
+  "dateModified": "2026-04-29",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/triangle-engines/",
+  "url": "https://shanecurry.com/lab/toys/triangle-engines/",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/toys/"
+  },
+  "about": [
+    "web audio",
+    "triangle wave",
+    "nes audio",
+    "periodic wave",
+    "audio synthesis"
+  ],
+  "keywords": [
+    "native triangle vs nes triangle",
+    "web audio periodic wave",
+    "nes audio synthesis browser",
+    "chewgum-dsp"
+  ],
+  "mentions": [
+    { "@id": "https://shanecurry.com/blog/dead-beat/" },
+    { "@id": "https://shanecurry.com/animation/falling-hall/" },
+    { "@id": "https://shanecurry.com/blog/phosphor/" }
+  ]
+}
+    </script>

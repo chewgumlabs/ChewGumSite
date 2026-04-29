@@ -1,0 +1,146 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface triangle-demo" id="toy-triangle-engines">
+            <p>
+              Both buttons trigger the same bell synthesis through the same
+              envelope, added sine partials, and bandpass filter. The only
+              difference is the triangle wave source.
+            </p>
+            <ul>
+              <li><strong>Native</strong> uses the browser's built-in <code>oscillator.type = 'triangle'</code>.</li>
+              <li><strong>NES-style</strong> uses a Web Audio <code>PeriodicWave</code> built by <code>createNesTriangleWave</code> from a 32-step NES-style source table, projected onto 24 cosine/sine harmonics with the DC offset removed.</li>
+            </ul>
+            <form class="triangle-demo-controls">
+              <button id="ring-native" type="button">Ring (Native)</button>
+              <button id="ring-nes" type="button">Ring (NES-Style)</button>
+            </form>
+            <p id="triangle-readout" class="triangle-demo-readout" aria-live="polite">
+              Audio dormant. Click either button to arm and play.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Active toy note</dd>
+            <dt>Published</dt>
+            <dd>2026-04-29</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/triangle-engines/">https://shanecurry.com/lab/toys/triangle-engines/</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+            <dt>Source library</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">chewgum-dsp v0.1.0</a></dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            A 32-step NES-style source table reconstructed as a 24-harmonic
+            <code>PeriodicWave</code> is a different audio artifact from the
+            browser's native triangle oscillator. The contrast is audible
+            when both pass through identical bell synthesis.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The page shows two buttons. Each click triggers a bell tone at a
+            random MIDI note from the same scale. The only thing that changes
+            between the two paths is the triangle wave source passed to
+            <code>strikeBell</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The chewgum-dsp library exists because the NES-style PeriodicWave
+            has a different audible character from the browser's native
+            triangle oscillator. This page is the proof: same envelope, same
+            filter, same scale, only the wave differs.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Source library</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">chewgum-dsp v0.1.0</a> (vendored inline on this page)</dd>
+            <dt>NES-style wave</dt>
+            <dd>32-step source table &rarr; 24-harmonic Web Audio <code>PeriodicWave</code> with DC offset removed</dd>
+            <dt>Native wave</dt>
+            <dd>Browser's built-in <code>oscillator.type = 'triangle'</code></dd>
+            <dt>Bell synthesis (shared)</dt>
+            <dd>3-voice (triangle fundamental + sine harmonics at &times;2.01 and &times;3.17), bandpass filter (Q 2.4, capped at 3200 Hz), 1.45 s primary decay</dd>
+            <dt>Master gain</dt>
+            <dd>0.16</dd>
+            <dt>Scale</dt>
+            <dd>MIDI [69, 72, 76, 79, 81, 84] &mdash; one note picked per click</dd>
+            <dt>Intensity</dt>
+            <dd>0.9 per ring</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Library: <a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">chewgum-dsp v0.1.0</a> on GitHub. Source for <code>createNesTriangleWave</code>, <code>midiToFrequency</code>, and <code>strikeBell</code>.</li>
+            <li>NES-style PeriodicWave deployed in <a href="/blog/dead-beat/">Dead Beat</a> (bell tones) and <a href="/animation/falling-hall/">Falling Hall</a> (wall-strike chimes).</li>
+            <li>Native triangle oscillator deployed in <a href="/blog/phosphor/">Phosphor</a>, used here as the contrast point.</li>
+            <li>Implementation note: this page vendors the chewgum-dsp v0.1.0 source inline and uses the same <code>strikeBell</code> call for both buttons; the only difference is whether the <code>PeriodicWave</code> is passed.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>web audio</li>
+            <li>triangle wave</li>
+            <li>periodic wave</li>
+            <li>nes audio</li>
+            <li>audio synthesis</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Project" data-window-mode="text">
+        <div class="window-content">
+          <p>ChewGum Animation</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Native Triangle vs. NES-Style Triangle,"
+            https://shanecurry.com/lab/toys/triangle-engines/, published
+            2026-04-29.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The point is to listen. Same envelope, same filter, same scale.
+            One button passes a 24-harmonic NES-style <code>PeriodicWave</code>
+            into the triangle voice; the other passes <code>null</code>, so
+            <code>strikeBell</code> uses the browser's native triangle. That
+            is what chewgum-dsp v0.1.0 actually buys.
+          </p>
+        </div>
+      </section>

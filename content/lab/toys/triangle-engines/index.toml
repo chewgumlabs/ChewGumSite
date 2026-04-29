@@ -1,0 +1,6 @@
+title = "Native Triangle vs. NES-Style Triangle"
+description = "An A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall."
+canonical = "https://shanecurry.com/lab/toys/triangle-engines/"
+published = 2026-04-29
+kind = "toy-note"
+blurb = "an A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall."
