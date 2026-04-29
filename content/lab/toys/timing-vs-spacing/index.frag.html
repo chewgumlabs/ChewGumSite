@@ -47,7 +47,7 @@
             <dt>Type</dt>
             <dd>Toy note</dd>
             <dt>Status</dt>
-            <dd>Prototype</dd>
+            <dd>Active toy note</dd>
             <dt>Published</dt>
             <dd>April 22, 2026</dd>
             <dt>Canonical URL</dt>
@@ -103,14 +103,48 @@
         </div>
       </section>
 
-      <section class="window" data-title="Source Trail" data-window-mode="text">
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
         <div class="window-content">
-          <p>
-            This first public toy was promoted from the local staging lane as a
-            prototype demonstration page. A richer public research trail will be
-            attached to later toy notes once the research-to-publish workflow is
-            fully hardened.
-          </p>
+          <dl class="meta-grid">
+            <dt>Track length</dt>
+            <dd>252 px (startX 112, endX 364)</dd>
+            <dt>Sample ghosts per track</dt>
+            <dd>9</dd>
+            <dt>Animation duration</dt>
+            <dd>2400 ms per play cycle</dd>
+            <dt>Even-track Y</dt>
+            <dd>34 px</dd>
+            <dt>Eased-track Y</dt>
+            <dd>94 px</dd>
+            <dt>Easing options</dt>
+            <dd>Ease In, Ease Out, Ease In + Out (quadratic)</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Easing Formulas" data-window-mode="rich">
+        <div class="window-content">
+          <p>Each easing function maps a linear timing input <code>t</code> in [0, 1] to an eased output that determines spacing along the path.</p>
+          <dl class="meta-grid">
+            <dt>Ease In</dt>
+            <dd><code>t&sup2;</code> &mdash; quadratic acceleration; the eased track starts slow and ends fast.</dd>
+            <dt>Ease Out</dt>
+            <dd><code>1 &minus; (1 &minus; t)&sup2;</code> &mdash; quadratic deceleration; the eased track starts fast and ends slow.</dd>
+            <dt>Ease In + Out</dt>
+            <dd><code>t &lt; 0.5 ? 2t&sup2; : 1 &minus; (&minus;2t + 2)&sup2; / 2</code> &mdash; piecewise quadratic; slow at both ends, fast in the middle.</dd>
+          </dl>
+          <p>These are quadratic easings (degree 2). Cross-link: see also the cubic easings used in the <a href="/lab/toys/anticipation-vs-staging-marker/">Anticipation Before Action</a> toy.</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Timing is one of the Twelve Principles of Animation described by Frank Thomas and Ollie Johnston in <em>The Illusion of Life</em>; spacing is the visible distribution of positions that makes timing readable.</li>
+            <li>Cross-link: the <a href="/lab/toys/anticipation-vs-staging-marker/">Anticipation Before Action</a> toy isolates a complementary axis of motion readability &mdash; the setup beat before the payoff.</li>
+            <li>Glossary cross-references: <a href="/glossary/#timing">timing</a>, <a href="/glossary/#spacing">spacing</a>, <a href="/glossary/#ease-in">ease in</a>, <a href="/glossary/#ease-out">ease out</a>, <a href="/glossary/#ease-in-out">ease in + out</a>.</li>
+            <li>Implementation note: this toy is implemented inline on this page with SVG markers, a timeline slider, and quadratic easing functions. No separate public repo exists yet.</li>
+          </ul>
         </div>
       </section>
 

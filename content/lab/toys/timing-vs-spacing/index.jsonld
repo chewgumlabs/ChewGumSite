@@ -1,7 +1,15 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": ["Article", "LearningResource"],
+        "learningResourceType": "interactive simulation",
+        "teaches": [
+          "https://shanecurry.com/glossary/#timing",
+          "https://shanecurry.com/glossary/#spacing",
+          "https://shanecurry.com/glossary/#ease-in",
+          "https://shanecurry.com/glossary/#ease-out",
+          "https://shanecurry.com/glossary/#ease-in-out"
+        ],
         "headline": "Timing vs. Spacing",
         "description": "A small interactive toy note showing how two motions can share duration while distributing spacing differently.",
         "datePublished": "2026-04-22",

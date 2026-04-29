@@ -122,6 +122,42 @@
           "inDefinedTermSet": {
             "@id": "https://shanecurry.com/glossary/#termset"
           }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Contract-First",
+          "description": "Contract-first is a methodology where formal contracts and validators are written before implementation, so creative software stays auditable as it grows. The contract specifies inputs, outputs, and invariants; the implementation must satisfy the contract. ChewGum Animation uses contract-first as its primary discipline.",
+          "url": "https://shanecurry.com/glossary/#contract-first",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Interpretation Context",
+          "description": "An interpretation context is a named context that determines how drawn stroke data is read. The same stroke can become a line on a page, a motion path, or a musical note depending on which interpretation context is active.",
+          "url": "https://shanecurry.com/glossary/#interpretation-context",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Chew",
+          "description": "Chew is a character role across ChewGum products representing exploration, play, surprise, variant generation, and what-if thinking. Chew is paired with Gum across all ChewGum interfaces.",
+          "url": "https://shanecurry.com/glossary/#chew",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Gum",
+          "description": "Gum is a character role across ChewGum products representing truth, cleanup, contracts, provenance, and verification. Gum is paired with Chew across all ChewGum interfaces.",
+          "url": "https://shanecurry.com/glossary/#gum",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
         }
       ]
     }
