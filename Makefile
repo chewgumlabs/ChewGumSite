@@ -9,13 +9,21 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit help
 
 help:
 	@echo "make build    regenerate site/ from content/"
 	@echo "make serve    serve site/ on http://localhost:$(PORT)"
 	@echo "make watch    serve + rebuild on every content/ or tools/ change"
 	@echo "make clean    remove generated site/*.html (preserves assets/, content/)"
+	@echo "make authority-smoke"
+	@echo "              run the authority fixture matrix"
+	@echo "make authority-emit PACKET=tools/authority/fixtures/triangle-engines.packet.json"
+	@echo "              emit and validate a private authority draft"
+	@echo "make authority-validate DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"
+	@echo "              validate an existing private authority draft"
+	@echo "make authority-audit"
+	@echo "              audit public content, llms.txt, and sitemap.xml"
 
 build:
 	@$(PYTHON) tools/build.py
@@ -41,3 +49,17 @@ watch:
 clean:
 	@find site -name 'index.html' -delete
 	@echo "removed generated site/**/index.html (assets and content untouched)"
+
+authority-smoke:
+	@$(PYTHON) tools/authority/run_authority_smoke.py
+
+authority-emit:
+	@[ -n "$(PACKET)" ] || { echo "usage: make authority-emit PACKET=tools/authority/fixtures/triangle-engines.packet.json"; exit 2; }
+	@$(PYTHON) tools/authority/emit_authority_draft.py "$(PACKET)"
+
+authority-validate:
+	@[ -n "$(DRAFT)" ] || { echo "usage: make authority-validate DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"; exit 2; }
+	@$(PYTHON) tools/authority/validate_authority_draft.py "$(DRAFT)"
+
+authority-audit:
+	@$(PYTHON) tools/authority/audit_public_surface.py

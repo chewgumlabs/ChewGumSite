@@ -21,6 +21,8 @@ tools/authority/
   README.md                       this file
   emit_authority_draft.py         packet -> private draft scaffold
   validate_authority_draft.py     public-safety gate on a draft directory
+  run_authority_smoke.py          deterministic fixture matrix runner
+  audit_public_surface.py         read-only audit of public site surfaces
   fixtures/
     triangle-engines.packet.json
                                           known-good fixture
@@ -49,6 +51,46 @@ committed.
 - No third-party dependencies.
 
 ## Usage
+
+### Make targets
+
+All authority targets use the Makefile `PYTHON` variable, which defaults
+to `/opt/homebrew/bin/python3`.
+
+```sh
+make authority-smoke
+```
+
+Runs the full fixture matrix:
+
+- the triangle fixture must pass
+- all bad fixtures must block
+- the triangle fixture emitted as `--kind hold` must leave zero `post.*`
+  files
+- `_Internal/` must not be tracked by git
+
+```sh
+make authority-emit PACKET=tools/authority/fixtures/triangle-engines.packet.json
+```
+
+Emits and validates a private authority draft from a packet. The target
+only writes under `_Internal/authority-drafts/`.
+
+```sh
+make authority-validate DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug
+```
+
+Validates an existing private authority draft directory.
+
+```sh
+make authority-audit
+```
+
+Runs a read-only audit of `content/`, `site/llms.txt`, and
+`site/sitemap.xml`, then writes private reports to
+`_Internal/authority-audits/<YYYY-MM-DD>/audit.md` and
+`_Internal/authority-audits/<YYYY-MM-DD>/audit.json`. The audit reports
+blocking findings and warnings but does not edit public files.
 
 ### Emit a draft
 
