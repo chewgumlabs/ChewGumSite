@@ -15,3 +15,10 @@ tools/__pycache__/
 # smoke-test scripts. Never meant for GitHub; may contain fragments
 # of unrelated work-in-progress.
 .claude/
+
+# Authority-draft staging area. Drafts emitted by tools/authority/ are
+# private working artifacts (scaffolds, validation reports, promotion
+# notes). Promotion happens by hand-moving files into content/.
+# tools/authority/fixtures/ stays tracked so the smoke tests are
+# reproducible.
+_Internal/

@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "bad-public-draft-residue-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/bad-public-draft-residue/",
+  "canonical_url": "https://shanecurry.com/lab/toys/bad-public-draft-residue/",
+  "canonical_title": "Bad Fixture: public draft residue",
+  "title": "Bad Fixture: public draft residue",
+  "description": "A prototype draft fixture intended to fail validation by self-labeling as a draft in the TOML description.",
+  "blurb": "a prototype draft fixture intended to fail validation by self-labeling as a draft.",
+  "one_sentence_claim": "If a candidate's description self-labels as a prototype draft, the validator must block it.",
+  "why_this_matters": "Public-safety regression test for the description-label detector.",
+  "principle": "(test fixture)",
+  "what_changes_on_screen": "(none -- this is a fixture)",
+  "user_interaction": "(none -- this is a fixture)",
+  "demo_parameters": [
+    {"label": "expected_outcome", "value": "validator blocks on description self-labeling as prototype draft"}
+  ],
+  "validation_idea": "(none -- this is a fixture)",
+  "related_terms": ["validator", "fixture", "regression"],
+  "related_public_surfaces": [
+    "https://shanecurry.com/lab/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_trail": [
+    {
+      "text": "Library reference: chewgum-dsp v0.1.0.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [],
+    "internal_only_terms": [],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "n/a (fixture)",
+    "terminology_steward": "n/a (fixture)",
+    "entity_steward": "n/a (fixture)",
+    "publication_gate": "n/a (fixture)"
+  },
+  "human_promotion_required": true
+}

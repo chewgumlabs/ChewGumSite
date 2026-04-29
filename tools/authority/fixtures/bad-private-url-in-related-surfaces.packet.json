@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "bad-private-url-in-related-surfaces-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/bad-private-url-in-related-surfaces/",
+  "canonical_url": "https://shanecurry.com/lab/toys/bad-private-url-in-related-surfaces/",
+  "canonical_title": "Bad Fixture: private URL in related_public_surfaces",
+  "title": "Bad Fixture: private URL in related_public_surfaces",
+  "description": "A fixture intended to fail validation by including a non-public URL in related_public_surfaces, which the adapter renders into the post.jsonld mentions array.",
+  "blurb": "a fixture intended to fail validation by including a non-public URL in related_public_surfaces.",
+  "one_sentence_claim": "If a non-public URL appears in related_public_surfaces, the validator's public-candidate URL scan must catch it in the rendered post.jsonld.",
+  "why_this_matters": "Public-safety regression test: source_trail isn't the only place private URLs can leak; canonical fields, JSON-LD mentions/about, and rendered HTML hrefs all need scanning.",
+  "principle": "(test fixture)",
+  "what_changes_on_screen": "(none -- this is a fixture)",
+  "user_interaction": "(none -- this is a fixture)",
+  "demo_parameters": [
+    {"label": "expected_outcome", "value": "validator blocks on non-public URL in post.jsonld mentions"}
+  ],
+  "validation_idea": "(none -- this is a fixture)",
+  "related_terms": ["validator", "fixture", "regression"],
+  "related_public_surfaces": [
+    "https://shanecurry.com/lab/",
+    "http://localhost:8765/preview/lab/toys/preview-only/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_trail": [
+    {
+      "text": "Public reference: chewgum-dsp v0.1.0.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [],
+    "internal_only_terms": ["localhost"],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "n/a (fixture)",
+    "terminology_steward": "n/a (fixture)",
+    "entity_steward": "n/a (fixture)",
+    "publication_gate": "n/a (fixture)"
+  },
+  "human_promotion_required": true
+}

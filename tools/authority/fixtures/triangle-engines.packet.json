@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "triangle-engines-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/triangle-engines/",
+  "canonical_url": "https://shanecurry.com/lab/toys/triangle-engines/",
+  "canonical_title": "Native Triangle vs. NES-Style Triangle",
+  "title": "Native Triangle vs. NES-Style Triangle",
+  "description": "An A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall.",
+  "blurb": "an A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall.",
+  "one_sentence_claim": "A 32-step NES-style source table reconstructed as a 24-harmonic PeriodicWave is a different audio artifact from the browser's native triangle oscillator, and the contrast is audible when both pass through identical bell synthesis.",
+  "why_this_matters": "The chewgum-dsp library exists because the NES-style PeriodicWave has a different audible character from the browser's native triangle oscillator. This page is the proof: same envelope, same filter, same scale, only the wave differs.",
+  "principle": "two distinct triangle wave sources, isolated by holding everything else constant",
+  "what_changes_on_screen": "Two buttons trigger a bell tone at a random MIDI note from the same scale; the only thing that changes between the two paths is the triangle wave source passed to strikeBell.",
+  "user_interaction": "Click Ring (Native) or Ring (NES-Style); audio is dormant until first click, then a bell tone plays per click.",
+  "demo_parameters": [
+    {
+      "label": "Source library",
+      "value": "chewgum-dsp v0.1.0 (vendored inline on this page)"
+    },
+    {
+      "label": "NES-style wave",
+      "value": "32-step source table -> 24-harmonic Web Audio PeriodicWave with DC offset removed"
+    },
+    {
+      "label": "Native wave",
+      "value": "Browser's built-in oscillator.type = 'triangle'"
+    },
+    {
+      "label": "Bell synthesis (shared)",
+      "value": "3-voice (triangle fundamental + sine harmonics at x2.01 and x3.17), bandpass filter (Q 2.4, capped at 3200 Hz), 1.45 s primary decay"
+    },
+    {
+      "label": "Master gain",
+      "value": "0.16"
+    },
+    {
+      "label": "Scale",
+      "value": "MIDI [69, 72, 76, 79, 81, 84] -- one note picked per click"
+    },
+    {
+      "label": "Intensity",
+      "value": "0.9 per ring"
+    }
+  ],
+  "validation_idea": "Listen on both buttons with the same fixed master gain; the contrast must be audible to a human reviewer.",
+  "related_terms": [
+    "web audio",
+    "triangle wave",
+    "periodic wave",
+    "nes audio",
+    "audio synthesis"
+  ],
+  "related_public_surfaces": [
+    "https://shanecurry.com/blog/dead-beat/",
+    "https://shanecurry.com/animation/falling-hall/",
+    "https://shanecurry.com/blog/phosphor/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_library": {
+    "label": "chewgum-dsp v0.1.0",
+    "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+  },
+  "source_trail": [
+    {
+      "text": "Library: chewgum-dsp v0.1.0 on GitHub. Source for createNesTriangleWave, midiToFrequency, and strikeBell.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    },
+    {
+      "text": "NES-style PeriodicWave deployed in Dead Beat (bell tones).",
+      "url": "https://shanecurry.com/blog/dead-beat/"
+    },
+    {
+      "text": "NES-style PeriodicWave deployed in Falling Hall (wall-strike chimes).",
+      "url": "https://shanecurry.com/animation/falling-hall/"
+    },
+    {
+      "text": "Native triangle oscillator deployed in Phosphor (contrast point, not a deployment of this library).",
+      "url": "https://shanecurry.com/blog/phosphor/"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [
+      "createNesTriangleWave",
+      "PeriodicWave",
+      "chewgum-dsp",
+      "native triangle oscillator"
+    ],
+    "internal_only_terms": [],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "approved",
+    "terminology_steward": "approved",
+    "entity_steward": "approved",
+    "publication_gate": "approved"
+  },
+  "preferred_citation": "Shane Curry, \"Native Triangle vs. NES-Style Triangle,\" https://shanecurry.com/lab/toys/triangle-engines/, published 2026-04-29.",
+  "human_promotion_required": true
+}

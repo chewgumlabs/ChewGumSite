@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "bad-private-path-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/bad-private-path/",
+  "canonical_url": "https://shanecurry.com/lab/toys/bad-private-path/",
+  "canonical_title": "Bad Fixture: private path leak",
+  "title": "Bad Fixture: private path leak",
+  "description": "A fixture intended to fail validation by leaking a private filesystem path through the source trail into post.frag.html.",
+  "blurb": "a fixture intended to fail validation by leaking a private filesystem path.",
+  "one_sentence_claim": "If a private path appears in a public candidate file, the validator must block the draft.",
+  "why_this_matters": "Public-safety regression test for the path-leak detector.",
+  "principle": "(test fixture)",
+  "what_changes_on_screen": "(none -- this is a fixture)",
+  "user_interaction": "(none -- this is a fixture)",
+  "demo_parameters": [
+    {"label": "expected_outcome", "value": "validator blocks on private path pattern"}
+  ],
+  "validation_idea": "(none -- this is a fixture)",
+  "related_terms": ["validator", "fixture", "regression"],
+  "related_public_surfaces": [
+    "https://shanecurry.com/lab/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_trail": [
+    {
+      "text": "Library reference: chewgum-dsp v0.1.0.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    },
+    {
+      "text": "Internal swarmlab evidence at _swarmlab/runs/2026-04-29/whatever (this should NEVER end up in a public file).",
+      "url": "https://shanecurry.com/lab/"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [],
+    "internal_only_terms": ["_swarmlab/"],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "n/a (fixture)",
+    "terminology_steward": "n/a (fixture)",
+    "entity_steward": "n/a (fixture)",
+    "publication_gate": "n/a (fixture)"
+  },
+  "human_promotion_required": true
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "bad-null-source-trail-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/bad-null-source-trail/",
+  "canonical_url": "https://shanecurry.com/lab/toys/bad-null-source-trail/",
+  "canonical_title": "Bad Fixture: null source trail",
+  "title": "Bad Fixture: null source trail",
+  "description": "A fixture intended to fail validation by setting source_trail to null instead of a non-empty list.",
+  "blurb": "a fixture intended to fail validation by setting source_trail to null.",
+  "one_sentence_claim": "If source_trail is null, the validator must block the draft, same as if it were missing or empty.",
+  "why_this_matters": "Public-safety regression test: null must not silently pass.",
+  "principle": "(test fixture)",
+  "what_changes_on_screen": "(none -- this is a fixture)",
+  "user_interaction": "(none -- this is a fixture)",
+  "demo_parameters": [
+    {"label": "expected_outcome", "value": "validator blocks on source_trail = null"}
+  ],
+  "validation_idea": "(none -- this is a fixture)",
+  "related_terms": ["validator", "fixture", "regression"],
+  "related_public_surfaces": [
+    "https://shanecurry.com/lab/",
+    "https://shanecurry.com/about/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_trail": null,
+  "public_internal_boundary": {
+    "public_safe_terms": [],
+    "internal_only_terms": [],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "n/a (fixture)",
+    "terminology_steward": "n/a (fixture)",
+    "entity_steward": "n/a (fixture)",
+    "publication_gate": "n/a (fixture)"
+  },
+  "human_promotion_required": true
+}

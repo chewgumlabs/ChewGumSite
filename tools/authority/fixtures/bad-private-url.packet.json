@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "bad-private-url-fixture",
+  "recommended_output": "toy",
+  "target_public_path": "/lab/toys/bad-private-url/",
+  "canonical_url": "https://shanecurry.com/lab/toys/bad-private-url/",
+  "canonical_title": "Bad Fixture: private URL leak",
+  "title": "Bad Fixture: private URL leak",
+  "description": "A fixture intended to fail validation by referencing a private host URL in the source trail.",
+  "blurb": "a fixture intended to fail validation by referencing a private host URL.",
+  "one_sentence_claim": "If a private host URL appears in source_trail, the validator must block the draft.",
+  "why_this_matters": "Public-safety regression test for the URL public-host detector.",
+  "principle": "(test fixture)",
+  "what_changes_on_screen": "(none -- this is a fixture)",
+  "user_interaction": "(none -- this is a fixture)",
+  "demo_parameters": [
+    {"label": "expected_outcome", "value": "validator blocks on non-public URL host"}
+  ],
+  "validation_idea": "(none -- this is a fixture)",
+  "related_terms": ["validator", "fixture", "regression"],
+  "related_public_surfaces": [
+    "https://shanecurry.com/lab/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_trail": [
+    {
+      "text": "Public reference: chewgum-dsp v0.1.0.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    },
+    {
+      "text": "Internal forge instance over Tailscale; should NEVER appear in a public source trail. See http://100.64.0.4:3000/ChewGumLabs/ChewGumDSP for the mirror.",
+      "url": "http://localhost:8765/preview"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [],
+    "internal_only_terms": ["100.64.0.4", "localhost"],
+    "claims_requiring_signoff": []
+  },
+  "gate_review": {
+    "claim_steward": "n/a (fixture)",
+    "terminology_steward": "n/a (fixture)",
+    "entity_steward": "n/a (fixture)",
+    "publication_gate": "n/a (fixture)"
+  },
+  "human_promotion_required": true
+}
