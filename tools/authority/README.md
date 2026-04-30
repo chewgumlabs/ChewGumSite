@@ -25,6 +25,7 @@ tools/authority/
   audit_public_surface.py         read-only audit of public site surfaces
   index_authority_registry.py     index private drafts into a review queue
   render_authority_review.py      render private human review memo
+  run_authority_proposer.py       private Qwen packet proposer
   run_authority_editor_pass.py    private llama.cpp/Qwen prose editor pass
   schemas/
     authority-draft-registry.v0.json
@@ -85,6 +86,8 @@ Runs the full fixture matrix:
 - the Dead Beat enrichment must emit `enrichment.frag.html` and
   `jsonld.enrichment.json`, not replacement `post.*` files, and must be
   `ready_for_review` in the include-test registry view
+- proposer self-tests must parse model JSON, strip model-supplied
+  authority fields, and preserve human-promotion gating
 - editor-pass self-tests must reject HTML structure changes such as
   edited section attributes or removed `<code>` markup
 - `_Internal/` must not be tracked by git
@@ -144,6 +147,46 @@ The memo groups the queue into ready entries, existing-page enrichments,
 new-page candidates, held Truth Stewardship packets, needs-revision
 items, risks/watchpoints, and promoted records. It is a planning surface
 only; it never publishes and never edits public files.
+
+```sh
+make authority-propose SOURCE=content/blog/phosphor/post.frag.html
+```
+
+Asks the local llama.cpp/Qwen server to propose private authority packet
+candidates from one explicit source file. It writes only:
+
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/prompt.json`
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/model-output.json`
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/candidate-packets/*.packet.json`
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/draft-checks/`
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/proposal-report.md`
+
+The proposer runs candidate packets through the existing private
+emit/validate flow under the proposal's `draft-checks/` directory. It
+does not add proposals to the operational registry unless a human later
+runs `make authority-emit PACKET=...` on one selected candidate.
+It also does a live reachability check for public URLs in candidate
+packets, so a model-invented GitHub or site URL blocks in the private
+proposal report instead of graduating to a review queue. Evidence URLs
+must also come from the deterministic `allowed_public_evidence_urls`
+set built from the source page, sibling metadata, sitemap, llms.txt, and
+registry. Target URLs are assigned by the wrapper: `enrich_existing`
+always targets the source page, while `new_page` candidates are placed
+under fixed lanes (`/blog/`, `/lab/`, or `/lab/toys/`) from the output
+kind and title. Qwen can propose the move, but it cannot freehand public
+URLs into the packet.
+
+Optional proposer flags can be passed through `PROPOSE_ARGS`:
+
+```sh
+make authority-propose SOURCE=content/blog/phosphor/post.frag.html \
+  PROPOSE_ARGS="--timeout 90 --url-timeout 6 --max-tokens 1024 --limit 2"
+```
+
+If the shared local llama.cpp server is busy in another thread, the
+proposer may time out. That is a failed-closed result: it still writes
+`prompt.json`, `model-output.json`, and `proposal-report.md`, but writes
+zero candidate packets.
 
 ```sh
 make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug

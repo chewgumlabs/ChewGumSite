@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry authority-review authority-editor-pass help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry authority-review authority-propose authority-editor-pass help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -28,6 +28,8 @@ help:
 	@echo "              revalidate and index private authority drafts into _Internal/authority-registry/"
 	@echo "make authority-review"
 	@echo "              render a private human review memo from the authority registry"
+	@echo "make authority-propose SOURCE=content/blog/phosphor/post.frag.html"
+	@echo "              ask local Qwen to propose private authority packets from a source file"
 	@echo "make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"
 	@echo "              run a private llama.cpp/Qwen editor pass over a draft fragment"
 
@@ -75,6 +77,10 @@ authority-registry:
 
 authority-review: authority-registry
 	@$(PYTHON) tools/authority/render_authority_review.py
+
+authority-propose:
+	@[ -n "$(SOURCE)" ] || { echo "usage: make authority-propose SOURCE=content/blog/phosphor/post.frag.html"; exit 2; }
+	@$(PYTHON) tools/authority/run_authority_proposer.py "$(SOURCE)" $(PROPOSE_ARGS)
 
 authority-editor-pass:
 	@[ -n "$(DRAFT)" ] || { echo "usage: make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"; exit 2; }

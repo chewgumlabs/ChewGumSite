@@ -22,6 +22,7 @@ REPO = Path(__file__).resolve().parents[2]
 EMIT = REPO / "tools" / "authority" / "emit_authority_draft.py"
 REGISTRY = REPO / "tools" / "authority" / "index_authority_registry.py"
 EDITOR_PASS = REPO / "tools" / "authority" / "run_authority_editor_pass.py"
+PROPOSER = REPO / "tools" / "authority" / "run_authority_proposer.py"
 FIXTURES = REPO / "tools" / "authority" / "fixtures"
 INTERNAL_ROOT = REPO / "_Internal"
 SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "authority-smoke-drafts"
@@ -122,6 +123,14 @@ def main() -> int:
         print("FAIL editor pass preserves HTML structure")
         print(detail.rstrip())
         failures.append("editor pass preserves HTML structure")
+
+    ok, detail = _check_proposer_regressions()
+    if ok:
+        print("PASS proposer keeps packets private and human-gated")
+    else:
+        print("FAIL proposer keeps packets private and human-gated")
+        print(detail.rstrip())
+        failures.append("proposer keeps packets private and human-gated")
 
     ok, detail = _check_internal_untracked()
     if ok:
@@ -353,6 +362,18 @@ def _check_editor_html_structure_regressions() -> tuple[bool, str]:
         return False, _format_result("editor HTML structure self-test failed", result)
     if "authority editor self-test passed" not in result.stdout:
         return False, "editor self-test did not print success marker"
+    return True, ""
+
+
+def _check_proposer_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(PROPOSER), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("proposer self-test failed", result)
     return True, ""
 
 
