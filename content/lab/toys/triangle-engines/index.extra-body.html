@@ -39,132 +39,135 @@
       return 440 * Math.pow(2, (midi - 69) / 12);
     }
 
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-    function scheduleVoice(audioContext, opts) {
-      const oscillator = new OscillatorNode(audioContext, { type: opts.type });
+    function playPureTriangleTone(audioContext, destination, periodicWave, midi) {
+      const time = audioContext.currentTime;
+      const oscillator = new OscillatorNode(audioContext, { type: 'triangle' });
       const gain = new GainNode(audioContext, { gain: 0.0001 });
-      if (opts.periodicWave) {
-        oscillator.setPeriodicWave(opts.periodicWave);
+
+      if (periodicWave) {
+        oscillator.setPeriodicWave(periodicWave);
       }
-      oscillator.frequency.setValueAtTime(opts.frequency, opts.time);
-      gain.gain.setValueAtTime(0.0001, opts.time);
-      gain.gain.linearRampToValueAtTime(opts.peak, opts.time + 0.02);
-      gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, opts.peak * 0.42), opts.time + opts.decay * 0.35);
-      gain.gain.exponentialRampToValueAtTime(0.0001, opts.time + opts.decay);
+
+      oscillator.frequency.setValueAtTime(midiToFrequency(midi), time);
+      gain.gain.setValueAtTime(0.0001, time);
+      gain.gain.linearRampToValueAtTime(0.2, time + 0.015);
+
       oscillator.connect(gain);
-      gain.connect(opts.destination);
-      oscillator.start(opts.time);
-      oscillator.stop(opts.time + opts.decay + 0.1);
-    }
+      gain.connect(destination);
+      oscillator.start(time);
 
-    function strikeBell(audioContext, destination, periodicWave, options) {
-      const opts = options || {};
-      const midi = opts.midi == null ? 69 : opts.midi;
-      const intensity = opts.intensity == null ? 1 : opts.intensity;
-      const pan = opts.pan == null ? 0 : opts.pan;
-
-      const time = audioContext.currentTime + 0.01;
-      const clampedIntensity = clamp(intensity, 0.18, 1.2);
-      const fundamental = midiToFrequency(midi);
-
-      const output = typeof StereoPannerNode === 'function'
-        ? new StereoPannerNode(audioContext, { pan: clamp(pan, -1, 1) })
-        : new GainNode(audioContext);
-      output.connect(destination);
-
-      const filter = new BiquadFilterNode(audioContext, {
-        type: 'bandpass',
-        frequency: Math.min(3200, fundamental * 2.2),
-        Q: 2.4,
-      });
-      filter.connect(output);
-
-      const bus = new GainNode(audioContext, { gain: 1 });
-      bus.connect(output);
-
-      const shimmer = new GainNode(audioContext, { gain: 1 });
-      shimmer.connect(filter);
-
-      scheduleVoice(audioContext, {
-        type: 'triangle',
-        frequency: fundamental,
-        peak: 0.08 * clampedIntensity,
-        decay: 1.45,
-        time,
-        destination: bus,
-        periodicWave,
-      });
-
-      scheduleVoice(audioContext, {
-        type: 'sine',
-        frequency: fundamental * 2.01,
-        peak: 0.07 * clampedIntensity,
-        decay: 1.08,
-        time,
-        destination: shimmer,
-      });
-
-      scheduleVoice(audioContext, {
-        type: 'sine',
-        frequency: fundamental * 3.17,
-        peak: 0.05 * clampedIntensity,
-        decay: 0.8,
-        time,
-        destination: shimmer,
-      });
-
-      window.setTimeout(() => {
-        output.disconnect();
-        bus.disconnect();
-        shimmer.disconnect();
-        filter.disconnect();
-      }, 2200);
+      return { oscillator, gain };
     }
 
     // Demo glue
     const buttonNative = document.getElementById('ring-native');
     const buttonNes = document.getElementById('ring-nes');
+    const buttonStop = document.getElementById('stop-triangle-tone');
     const readout = document.getElementById('triangle-readout');
-    const SCALE = [69, 72, 76, 79, 81, 84];
+    const SCALE = [
+      { name: 'C4', midi: 60 },
+      { name: 'D4', midi: 62 },
+      { name: 'E4', midi: 64 },
+      { name: 'F4', midi: 65 },
+      { name: 'G4', midi: 67 },
+      { name: 'A4', midi: 69 },
+      { name: 'B4', midi: 71 },
+      { name: 'C5', midi: 72 },
+    ];
 
     let audioContext = null;
     let masterGain = null;
     let triangleWave = null;
+    let activeVoice = null;
+    let activeSource = null;
+    let currentNote = SCALE[Math.floor(Math.random() * SCALE.length)];
+    let heardSourcesForNote = new Set();
+    let lastSourceForNote = null;
 
     async function ensureAudio() {
       if (!audioContext) {
         const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
         audioContext = new AudioContextCtor();
-        masterGain = new GainNode(audioContext, { gain: 0.16 });
+        masterGain = new GainNode(audioContext, { gain: 0.34 });
         masterGain.connect(audioContext.destination);
         triangleWave = createNesTriangleWave(audioContext);
       }
       await audioContext.resume();
     }
 
-    function pickMidi() {
-      return SCALE[Math.floor(Math.random() * SCALE.length)];
+    function stopActiveVoice() {
+      if (!activeVoice || !audioContext) return;
+      const voice = activeVoice;
+      activeVoice = null;
+      activeSource = null;
+      voice.gain.gain.cancelScheduledValues(audioContext.currentTime);
+      voice.gain.gain.setValueAtTime(0, audioContext.currentTime);
+      voice.oscillator.stop(audioContext.currentTime);
+      voice.oscillator.disconnect();
+      voice.gain.disconnect();
+    }
+
+    function sourceLabel(source) {
+      return source === 'nes' ? 'NES-style PeriodicWave' : 'Native triangle';
+    }
+
+    function updateReadout(message) {
+      if (readout) readout.textContent = message;
+    }
+
+    function startSource(source, note) {
+      stopActiveVoice();
+      activeSource = source;
+      const wave = source === 'nes' ? triangleWave : null;
+      activeVoice = playPureTriangleTone(audioContext, masterGain, wave, note.midi);
+    }
+
+    function nextRandomNote(previousNote) {
+      const options = SCALE.filter((note) => note.midi !== previousNote.midi);
+      return options[Math.floor(Math.random() * options.length)];
+    }
+
+    function playSource(source) {
+      const playedNote = currentNote;
+      const repeatedSameSource = lastSourceForNote === source;
+      startSource(source, playedNote);
+
+      heardSourcesForNote.add(source);
+      const heardBothSources = heardSourcesForNote.has('native') && heardSourcesForNote.has('nes');
+      const shouldAdvance = heardBothSources || repeatedSameSource;
+
+      if (shouldAdvance) {
+        currentNote = nextRandomNote(playedNote);
+        heardSourcesForNote = new Set();
+        lastSourceForNote = null;
+        updateReadout(`${sourceLabel(source)} sustaining · ${playedNote.name} · next synced note: ${currentNote.name}`);
+      } else {
+        lastSourceForNote = source;
+        updateReadout(`${sourceLabel(source)} sustaining · ${playedNote.name} · compare the other source at this pitch`);
+      }
     }
 
     if (buttonNative) {
       buttonNative.addEventListener('click', async () => {
         await ensureAudio();
-        const midi = pickMidi();
-        strikeBell(audioContext, masterGain, null, { midi, intensity: 0.9 });
-        if (readout) readout.textContent = `Native triangle · MIDI ${midi}`;
+        playSource('native');
       });
     }
 
     if (buttonNes) {
       buttonNes.addEventListener('click', async () => {
         await ensureAudio();
-        const midi = pickMidi();
-        strikeBell(audioContext, masterGain, triangleWave, { midi, intensity: 0.9 });
-        if (readout) readout.textContent = `NES-style PeriodicWave · MIDI ${midi}`;
+        playSource('nes');
       });
     }
+
+    if (buttonStop) {
+      buttonStop.addEventListener('click', () => {
+        stopActiveVoice();
+        updateReadout(`Stopped · synced note ready: ${currentNote.name}`);
+      });
+    }
+
+    updateReadout(`Audio dormant · synced note ready: ${currentNote.name}`);
   })();
 </script>

@@ -4,7 +4,7 @@
   "@type": ["Article", "LearningResource"],
   "learningResourceType": "interactive simulation",
   "headline": "Native Triangle vs. NES-Style Triangle",
-  "description": "An A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall.",
+  "description": "A synced sustain A/B comparison between the browser's native triangle oscillator and the NES-style PeriodicWave used in Dead Beat and Falling Hall.",
   "datePublished": "2026-04-29",
   "dateModified": "2026-04-29",
   "author": {
@@ -25,6 +25,7 @@
   ],
   "keywords": [
     "native triangle vs nes triangle",
+    "synced sustain audio comparison",
     "web audio periodic wave",
     "nes audio synthesis browser",
     "chewgum-dsp"
