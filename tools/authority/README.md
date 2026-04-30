@@ -24,6 +24,7 @@ tools/authority/
   run_authority_smoke.py          deterministic fixture matrix runner
   audit_public_surface.py         read-only audit of public site surfaces
   index_authority_registry.py     index private drafts into a review queue
+  render_authority_review.py      render private human review memo
   run_authority_editor_pass.py    private llama.cpp/Qwen prose editor pass
   schemas/
     authority-draft-registry.v0.json
@@ -129,6 +130,20 @@ needs-revision states. Fixture and edge-case drafts are skipped by
 default so smoke tests do not dominate the operational queue. It is a
 queue and review surface only; no registry entry implies automatic
 publication.
+
+```sh
+make authority-review
+```
+
+Revalidates/indexes private drafts via `make authority-registry`, then
+renders a stable private human review memo at:
+
+- `_Internal/authority-review/<YYYY-MM-DD>/review.md`
+
+The memo groups the queue into ready entries, existing-page enrichments,
+new-page candidates, held Truth Stewardship packets, needs-revision
+items, risks/watchpoints, and promoted records. It is a planning surface
+only; it never publishes and never edits public files.
 
 ```sh
 make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug
