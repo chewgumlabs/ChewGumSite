@@ -8,7 +8,9 @@
               mode, chimes fire on a fixed tenth-second grid. In drag mode,
               the math hangs back and strikes harder. The high chimes stay
               random and diatonic, while a lower held channel moves from F to
-              C to A to F in ten-chime blocks.
+              C to A to F in ten-chime blocks. After one full low-phrase loop,
+              a faint upper air layer enters as A5, moves to G5, drops to E5,
+              fades out, then repeats on the next low-phrase boundary.
             </p>
 
             <fieldset class="stroke-melody-modes" aria-label="Smoothing algorithm">
@@ -65,6 +67,8 @@
             <dd><a href="https://shanecurry.com/lab/toys/chewgum-time-chime/">https://shanecurry.com/lab/toys/chewgum-time-chime/</a></dd>
             <dt>Related project</dt>
             <dd>ChewGum Animation</dd>
+            <dt>Source library</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0">ChewGumTimeChime v0.1.0</a></dd>
           </dl>
         </div>
       </section>
@@ -121,8 +125,12 @@
             <dd>Random C major diatonic set: C4, D4, E4, F4, G4, A4, B4, C5; MIDI [60, 62, 64, 65, 67, 69, 71, 72]</dd>
             <dt>Low channel</dt>
             <dd>Ten chimes each: F2 (MIDI 41), C3 (48), A2 (45), F2 (41), then repeat</dd>
+            <dt>Air layer</dt>
+            <dd>After one full F/C/A/F low-phrase loop: A5 for one bar, G5 for three bars, E5 fading out over two bars, then rest until the next low-phrase boundary</dd>
             <dt>Wave</dt>
             <dd>Browser-native triangle oscillator</dd>
+            <dt>Path history cap</dt>
+            <dd>Rendered raw and smoothed paths are capped at 2400 points during a stroke</dd>
             <dt>Gesture data</dt>
             <dd>Pointer samples remain in the page runtime only; no stroke is stored or uploaded</dd>
           </dl>
@@ -132,7 +140,8 @@
       <section class="window" data-title="Source Trail" data-window-mode="rich">
         <div class="window-content">
           <ul>
-            <li>Implementation: this page's inline canvas and Web Audio code. The smoothing modes, note triggers, and drawing state all live in the public page.</li>
+            <li>Library: <a href="https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0">ChewGumTimeChime v0.1.0</a>, extracted from this toy as a small browser harness for stroke smoothing and timed chimes.</li>
+            <li>Implementation: this page uses inline canvas and Web Audio code matching the v0.1.0 browser drawing example. Pointer samples remain page-local.</li>
             <li><a href="/glossary/#interpretation-context">Interpretation Context</a>: glossary term for reading one stroke as different kinds of output.</li>
             <li><a href="/lab/toys/timing-vs-spacing/">Timing vs. Spacing</a>: sibling toy that isolates motion timing and spacing as readable quantities.</li>
             <li><a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>: sibling audio toy that isolates the sound source as the controlled variable.</li>

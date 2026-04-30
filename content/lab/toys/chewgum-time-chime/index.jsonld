@@ -9,7 +9,7 @@
     "https://shanecurry.com/glossary/#spacing"
   ],
   "headline": "ChewGum Time Chime",
-  "description": "A musical harness for smoothing algorithms: draw a stroke and hear random diatonic high chimes trail the hand over a lower F, C, A, F held-note channel.",
+  "description": "A musical harness for smoothing algorithms: draw a stroke and hear random diatonic high chimes, a lower F/C/A/F channel, and a faint looping air layer trail the hand.",
   "datePublished": "2026-04-30",
   "dateModified": "2026-04-30",
   "author": {
@@ -38,15 +38,20 @@
     },
     {
       "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
+    },
+    {
+      "@id": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0"
     }
   ],
   "keywords": [
     "stroke smoothing melody",
     "ChewGum Time Chime",
+    "ChewGumTimeChime",
     "time consistent smoothing",
     "smoothing algorithm comparison",
     "random diatonic chimes",
     "held low note channel",
+    "air layer",
     "held note drawing toy",
     "real time drawing sonification",
     "visual math through motion"

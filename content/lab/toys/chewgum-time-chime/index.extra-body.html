@@ -49,6 +49,7 @@
     };
 
     const MAX_NOTE_MARKERS = 42;
+    const MAX_PATH_POINTS = 2400;
     const PHRASE_BLOCK_SIZE = 10;
     const LOW_PHRASE = [
       { name: 'F2', midi: 41 },
@@ -56,6 +57,11 @@
       { name: 'A2', midi: 45 },
       { name: 'F2', midi: 41 },
     ];
+    const AIR_NOTES = {
+      entry: { name: 'A5', midi: 81 },
+      sustain: { name: 'G5', midi: 79 },
+      exit: { name: 'E5', midi: 76 },
+    };
     const HIGH_SCALE = [
       { name: 'C4', midi: 60 },
       { name: 'D4', midi: 62 },
@@ -80,6 +86,7 @@
     let lastNoteIndex = 0;
     let clockTimer = null;
     let drone = null;
+    let air = null;
     let dpr = 1;
 
     function currentModeKey() {
@@ -132,6 +139,26 @@
     function phraseNoteForIndex(index) {
       const block = Math.floor(Math.max(0, index - 1) / PHRASE_BLOCK_SIZE) % LOW_PHRASE.length;
       return { ...LOW_PHRASE[block], block };
+    }
+
+    function airNoteForIndex(index) {
+      const lowLoopLength = LOW_PHRASE.length * PHRASE_BLOCK_SIZE;
+      const entryIndex = lowLoopLength + 1;
+      const entryLength = PHRASE_BLOCK_SIZE;
+      const sustainLength = PHRASE_BLOCK_SIZE * 3;
+      const exitLength = PHRASE_BLOCK_SIZE * 2;
+      const phraseLength = entryLength + sustainLength + exitLength;
+      const cycleLength = Math.ceil(phraseLength / lowLoopLength) * lowLoopLength;
+
+      if (index < entryIndex) return null;
+      const cycleOffset = (index - entryIndex) % cycleLength;
+      if (cycleOffset < entryLength) return { ...AIR_NOTES.entry, gain: 1 };
+      if (cycleOffset < entryLength + sustainLength) return { ...AIR_NOTES.sustain, gain: 1 };
+      if (cycleOffset < phraseLength) {
+        const fadeProgress = (cycleOffset - entryLength - sustainLength) / (exitLength - 1);
+        return { ...AIR_NOTES.exit, gain: Math.max(0, 1 - fadeProgress) };
+      }
+      return null;
     }
 
     function pickHighNote() {
@@ -187,10 +214,65 @@
       }, 550);
     }
 
-    function playNote(point, speed, mode, highNote, lowNote) {
+    function updateAir(note, mode) {
+      if (!audioContext || audioContext.state !== 'running') return;
+      const now = audioContext.currentTime;
+      const frequency = midiToFrequency(note.midi);
+      const targetGain = 0.018 * Math.min(mode.gain, 1.2) * (note.gain == null ? 1 : note.gain);
+
+      if (!air) {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, now);
+        filter.type = 'highpass';
+        filter.frequency.setValueAtTime(900, now);
+        filter.Q.setValueAtTime(0.3, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(targetGain, now + 1.25);
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        oscillator.start(now);
+        air = { oscillator, gain, filter, note: note.name };
+        return;
+      }
+
+      if (air.note !== note.name) {
+        air.oscillator.frequency.cancelScheduledValues(now);
+        air.oscillator.frequency.setValueAtTime(air.oscillator.frequency.value, now);
+        air.oscillator.frequency.exponentialRampToValueAtTime(frequency, now + 0.25);
+        air.note = note.name;
+      }
+      air.gain.gain.cancelScheduledValues(now);
+      air.gain.gain.setTargetAtTime(targetGain, now, 0.3);
+    }
+
+    function stopAir() {
+      if (!air || !audioContext) return;
+      const now = audioContext.currentTime;
+      const current = air;
+      air = null;
+      current.gain.gain.cancelScheduledValues(now);
+      current.gain.gain.setTargetAtTime(0.0001, now, 0.1);
+      current.oscillator.stop(now + 0.6);
+      window.setTimeout(() => {
+        current.oscillator.disconnect();
+        current.gain.disconnect();
+        current.filter.disconnect();
+      }, 750);
+    }
+
+    function playNote(point, speed, mode, highNote, lowNote, airNote) {
       if (!audioContext || audioContext.state !== 'running') return null;
 
       if (lowNote) updateDrone(lowNote, mode);
+      if (airNote) {
+        updateAir(airNote, mode);
+      } else {
+        stopAir();
+      }
       const when = audioContext.currentTime + mode.delay;
       const panValue = clamp((point.x / CANVAS_WIDTH) * 2 - 1, -1, 1);
       const intensity = clamp(0.18 + speed / 24, 0.28, 1.2) * mode.gain;
@@ -257,6 +339,7 @@
     function resetStroke() {
       stopClock();
       stopDrone();
+      stopAir();
       rawPoints = [];
       smoothPoints = [];
       noteMarkers = [];
@@ -290,6 +373,9 @@
 
       lastSmooth = smoothPoint;
       smoothPoints.push(smoothPoint);
+      if (smoothPoints.length > MAX_PATH_POINTS) {
+        smoothPoints = smoothPoints.slice(-MAX_PATH_POINTS);
+      }
       smoothCounter += 1;
 
       const trigger = forceMarker || shouldTriggerNote(mode);
@@ -297,7 +383,8 @@
         const nextIndex = lastNoteIndex + 1;
         const highNote = pickHighNote();
         const lowNote = phraseNoteForIndex(nextIndex);
-        if (shouldSound) playNote(smoothPoint, speed, mode, highNote, lowNote);
+        const airNote = airNoteForIndex(nextIndex);
+        if (shouldSound) playNote(smoothPoint, speed, mode, highNote, lowNote, airNote);
         if (highNote) {
           lastNoteIndex += 1;
           noteMarkers.push({
@@ -306,6 +393,7 @@
             born: performance.now(),
             label: `${lastNoteIndex}:${highNote.name}`,
             bass: lowNote.name,
+            air: airNote ? airNote.name : null,
             mode: currentModeKey(),
             color: mode.marker,
           });
@@ -320,6 +408,9 @@
 
     function recordRawPoint(rawPoint, shouldSound) {
       rawPoints.push(rawPoint);
+      if (rawPoints.length > MAX_PATH_POINTS) {
+        rawPoints = rawPoints.slice(-MAX_PATH_POINTS);
+      }
       latestRawPoint = rawPoint;
       if (currentMode().trigger !== 'clock') {
         processSmoothPoint(rawPoint, shouldSound, false);
@@ -476,6 +567,7 @@
       drawing = false;
       stopClock();
       stopDrone();
+      stopAir();
       if (event && canvas.hasPointerCapture(event.pointerId)) {
         canvas.releasePointerCapture(event.pointerId);
       }
