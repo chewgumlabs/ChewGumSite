@@ -1,0 +1,55 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "LearningResource"],
+  "learningResourceType": "interactive simulation",
+  "teaches": [
+    "https://shanecurry.com/glossary/#interpretation-context",
+    "https://shanecurry.com/glossary/#timing",
+    "https://shanecurry.com/glossary/#spacing"
+  ],
+  "headline": "ChewGum Time Chime",
+  "description": "A musical harness for smoothing algorithms: draw a stroke and hear random diatonic high chimes trail the hand over a lower F, C, A, F held-note channel.",
+  "datePublished": "2026-04-30",
+  "dateModified": "2026-04-30",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+  "url": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/toys/"
+  },
+  "about": [
+    "stroke smoothing",
+    "smoothing algorithms",
+    "interpretation context",
+    "real-time audio",
+    "visual math",
+    "drawing interaction"
+  ],
+  "mentions": [
+    {
+      "@id": "https://shanecurry.com/glossary/#interpretation-context"
+    },
+    {
+      "@id": "https://shanecurry.com/lab/toys/timing-vs-spacing/"
+    },
+    {
+      "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
+    }
+  ],
+  "keywords": [
+    "stroke smoothing melody",
+    "ChewGum Time Chime",
+    "time consistent smoothing",
+    "smoothing algorithm comparison",
+    "random diatonic chimes",
+    "held low note channel",
+    "held note drawing toy",
+    "real time drawing sonification",
+    "visual math through motion"
+  ]
+}
+    </script>

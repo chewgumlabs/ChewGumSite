@@ -1,0 +1,514 @@
+<!-- ChewGum Time Chime -->
+<script>
+  (() => {
+    const root = document.getElementById('toy-chewgum-time-chime');
+    if (!root) return;
+
+    const canvas = document.getElementById('stroke-melody-canvas');
+    const ctx = canvas.getContext('2d');
+    const armButton = document.getElementById('stroke-melody-arm');
+    const seedButton = document.getElementById('stroke-melody-seed');
+    const clearButton = document.getElementById('stroke-melody-clear');
+    const readout = document.getElementById('stroke-melody-readout');
+    const noteStrip = document.getElementById('stroke-melody-note-strip');
+    const modeInputs = Array.from(document.querySelectorAll('input[name="stroke-melody-mode"]'));
+
+    const CANVAS_WIDTH = 960;
+    const CANVAS_HEIGHT = 360;
+    const MODES = {
+      point: {
+        label: '1/10 Point',
+        alpha: 0.10,
+        trigger: 'point-count',
+        every: 10,
+        delay: 0.075,
+        gain: 1.0,
+        decay: 0.42,
+        marker: '#ff55ff',
+      },
+      clocked: {
+        label: 'Clocked Bands',
+        alpha: 0.34,
+        trigger: 'clock',
+        tickMs: 100,
+        delay: 0.045,
+        gain: 0.95,
+        decay: 0.34,
+        marker: '#ffffff',
+      },
+      drag: {
+        label: 'Heavy Drag',
+        alpha: 0.045,
+        trigger: 'point-count',
+        every: 6,
+        delay: 0.12,
+        gain: 1.45,
+        decay: 0.72,
+        marker: '#ff5555',
+      },
+    };
+
+    const MAX_NOTE_MARKERS = 42;
+    const PHRASE_BLOCK_SIZE = 10;
+    const LOW_PHRASE = [
+      { name: 'F2', midi: 41 },
+      { name: 'C3', midi: 48 },
+      { name: 'A2', midi: 45 },
+      { name: 'F2', midi: 41 },
+    ];
+    const HIGH_SCALE = [
+      { name: 'C4', midi: 60 },
+      { name: 'D4', midi: 62 },
+      { name: 'E4', midi: 64 },
+      { name: 'F4', midi: 65 },
+      { name: 'G4', midi: 67 },
+      { name: 'A4', midi: 69 },
+      { name: 'B4', midi: 71 },
+      { name: 'C5', midi: 72 },
+    ];
+
+    let audioContext = null;
+    let masterGain = null;
+    let limiter = null;
+    let drawing = false;
+    let rawPoints = [];
+    let smoothPoints = [];
+    let noteMarkers = [];
+    let smoothCounter = 0;
+    let lastSmooth = null;
+    let latestRawPoint = null;
+    let lastNoteIndex = 0;
+    let clockTimer = null;
+    let drone = null;
+    let dpr = 1;
+
+    function currentModeKey() {
+      const active = modeInputs.find((input) => input.checked);
+      return active ? active.value : 'point';
+    }
+
+    function currentMode() {
+      return MODES[currentModeKey()] || MODES.point;
+    }
+
+    function setReadout(text) {
+      if (readout) readout.textContent = text;
+    }
+
+    function midiToFrequency(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    async function ensureAudio() {
+      if (!audioContext) {
+        const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextCtor) {
+          setReadout('Web Audio is unavailable in this browser.');
+          return false;
+        }
+        audioContext = new AudioContextCtor();
+        masterGain = audioContext.createGain();
+        limiter = audioContext.createDynamicsCompressor();
+        limiter.threshold.setValueAtTime(-12, audioContext.currentTime);
+        limiter.knee.setValueAtTime(4, audioContext.currentTime);
+        limiter.ratio.setValueAtTime(10, audioContext.currentTime);
+        limiter.attack.setValueAtTime(0.004, audioContext.currentTime);
+        limiter.release.setValueAtTime(0.16, audioContext.currentTime);
+        masterGain.gain.value = 0.52;
+        masterGain.connect(limiter);
+        limiter.connect(audioContext.destination);
+      }
+      if (audioContext.state !== 'running') {
+        await audioContext.resume();
+      }
+      setReadout(`${currentMode().label} armed. Draw to make the smoothing path sing.`);
+      return true;
+    }
+
+    function phraseNoteForIndex(index) {
+      const block = Math.floor(Math.max(0, index - 1) / PHRASE_BLOCK_SIZE) % LOW_PHRASE.length;
+      return { ...LOW_PHRASE[block], block };
+    }
+
+    function pickHighNote() {
+      return HIGH_SCALE[Math.floor(Math.random() * HIGH_SCALE.length)];
+    }
+
+    function updateDrone(note, mode) {
+      if (!audioContext || audioContext.state !== 'running') return;
+      const now = audioContext.currentTime;
+      const frequency = midiToFrequency(note.midi);
+
+      if (!drone) {
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(frequency, now);
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(620, now);
+        filter.Q.setValueAtTime(0.8, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(0.12 * mode.gain, now + 0.12);
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        oscillator.start(now);
+        drone = { oscillator, gain, filter, note: note.name };
+        return;
+      }
+
+      if (drone.note !== note.name) {
+        drone.oscillator.frequency.cancelScheduledValues(now);
+        drone.oscillator.frequency.setValueAtTime(drone.oscillator.frequency.value, now);
+        drone.oscillator.frequency.exponentialRampToValueAtTime(frequency, now + 0.18);
+        drone.note = note.name;
+      }
+      drone.gain.gain.cancelScheduledValues(now);
+      drone.gain.gain.setTargetAtTime(0.095 * mode.gain, now, 0.08);
+    }
+
+    function stopDrone() {
+      if (!drone || !audioContext) return;
+      const now = audioContext.currentTime;
+      const current = drone;
+      drone = null;
+      current.gain.gain.cancelScheduledValues(now);
+      current.gain.gain.setTargetAtTime(0.0001, now, 0.06);
+      current.oscillator.stop(now + 0.35);
+      window.setTimeout(() => {
+        current.oscillator.disconnect();
+        current.gain.disconnect();
+        current.filter.disconnect();
+      }, 550);
+    }
+
+    function playNote(point, speed, mode, highNote, lowNote) {
+      if (!audioContext || audioContext.state !== 'running') return null;
+
+      if (lowNote) updateDrone(lowNote, mode);
+      const when = audioContext.currentTime + mode.delay;
+      const panValue = clamp((point.x / CANVAS_WIDTH) * 2 - 1, -1, 1);
+      const intensity = clamp(0.18 + speed / 24, 0.28, 1.2) * mode.gain;
+      const frequency = midiToFrequency(highNote.midi);
+
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      const panner = audioContext.createStereoPanner
+        ? audioContext.createStereoPanner()
+        : null;
+
+      oscillator.type = 'triangle';
+      oscillator.frequency.setValueAtTime(frequency, when);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1050 + intensity * 1700, when);
+      filter.Q.setValueAtTime(mode.trigger === 'clock' ? 3.4 : 2.1, when);
+
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.linearRampToValueAtTime(0.15 * intensity, when + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + mode.decay);
+
+      oscillator.connect(filter);
+      filter.connect(gain);
+      if (panner) {
+        panner.pan.setValueAtTime(panValue, when);
+        gain.connect(panner);
+        panner.connect(masterGain);
+      } else {
+        gain.connect(masterGain);
+      }
+
+      oscillator.start(when);
+      oscillator.stop(when + mode.decay + 0.05);
+      window.setTimeout(() => {
+        oscillator.disconnect();
+        filter.disconnect();
+        gain.disconnect();
+        if (panner) panner.disconnect();
+      }, (mode.decay + mode.delay + 0.3) * 1000);
+
+      return highNote;
+    }
+
+    function resizeCanvas() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(CANVAS_WIDTH * dpr);
+      canvas.height = Math.floor(CANVAS_HEIGHT * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      render();
+    }
+
+    function localPoint(event) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = CANVAS_WIDTH / rect.width;
+      const scaleY = CANVAS_HEIGHT / rect.height;
+      return {
+        x: clamp((event.clientX - rect.left) * scaleX, 0, CANVAS_WIDTH),
+        y: clamp((event.clientY - rect.top) * scaleY, 0, CANVAS_HEIGHT),
+        t: performance.now(),
+      };
+    }
+
+    function resetStroke() {
+      stopClock();
+      stopDrone();
+      rawPoints = [];
+      smoothPoints = [];
+      noteMarkers = [];
+      smoothCounter = 0;
+      lastSmooth = null;
+      latestRawPoint = null;
+      lastNoteIndex = 0;
+      render();
+      updateNoteStrip();
+    }
+
+    function shouldTriggerNote(mode) {
+      if (mode.trigger === 'clock') return true;
+      return smoothCounter > 0 && smoothCounter % mode.every === 0;
+    }
+
+    function processSmoothPoint(rawPoint, shouldSound, forceMarker) {
+      const mode = currentMode();
+      let smoothPoint;
+      let speed = 0;
+      if (!lastSmooth) {
+        smoothPoint = { x: rawPoint.x, y: rawPoint.y, t: rawPoint.t };
+      } else {
+        smoothPoint = {
+          x: lastSmooth.x + (rawPoint.x - lastSmooth.x) * mode.alpha,
+          y: lastSmooth.y + (rawPoint.y - lastSmooth.y) * mode.alpha,
+          t: rawPoint.t,
+        };
+        speed = Math.hypot(smoothPoint.x - lastSmooth.x, smoothPoint.y - lastSmooth.y);
+      }
+
+      lastSmooth = smoothPoint;
+      smoothPoints.push(smoothPoint);
+      smoothCounter += 1;
+
+      const trigger = forceMarker || shouldTriggerNote(mode);
+      if (trigger) {
+        const nextIndex = lastNoteIndex + 1;
+        const highNote = pickHighNote();
+        const lowNote = phraseNoteForIndex(nextIndex);
+        if (shouldSound) playNote(smoothPoint, speed, mode, highNote, lowNote);
+        if (highNote) {
+          lastNoteIndex += 1;
+          noteMarkers.push({
+            x: smoothPoint.x,
+            y: smoothPoint.y,
+            born: performance.now(),
+            label: `${lastNoteIndex}:${highNote.name}`,
+            bass: lowNote.name,
+            mode: currentModeKey(),
+            color: mode.marker,
+          });
+          if (noteMarkers.length > MAX_NOTE_MARKERS) {
+            noteMarkers = noteMarkers.slice(-MAX_NOTE_MARKERS);
+          }
+          updateNoteStrip();
+        }
+      }
+      render();
+    }
+
+    function recordRawPoint(rawPoint, shouldSound) {
+      rawPoints.push(rawPoint);
+      latestRawPoint = rawPoint;
+      if (currentMode().trigger !== 'clock') {
+        processSmoothPoint(rawPoint, shouldSound, false);
+      }
+    }
+
+    function startClock() {
+      stopClock();
+      const mode = currentMode();
+      if (mode.trigger !== 'clock') return;
+      clockTimer = window.setInterval(() => {
+        if (!drawing || !latestRawPoint) return;
+        processSmoothPoint(latestRawPoint, true, true);
+      }, mode.tickMs);
+    }
+
+    function stopClock() {
+      if (clockTimer) {
+        window.clearInterval(clockTimer);
+        clockTimer = null;
+      }
+    }
+
+    function updateNoteStrip() {
+      if (!noteStrip) return;
+      noteStrip.replaceChildren();
+      const recent = noteMarkers.slice(-8);
+      if (!recent.length) {
+        const span = document.createElement('span');
+        span.textContent = audioContext ? `${currentMode().label} ready` : 'Audio dormant';
+        noteStrip.appendChild(span);
+        return;
+      }
+      recent.forEach((marker) => {
+        const span = document.createElement('span');
+        span.textContent = marker.label.split(':')[1];
+        noteStrip.appendChild(span);
+      });
+    }
+
+    function drawPath(points, color, width, alpha) {
+      if (points.length < 2) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i += 1) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function render() {
+      const width = CANVAS_WIDTH;
+      const height = CANVAS_HEIGHT;
+      ctx.clearRect(0, 0, width, height);
+
+      drawPath(rawPoints, '#55ffff', 2, 0.46);
+      drawPath(smoothPoints, '#ffff55', currentModeKey() === 'drag' ? 5 : 4, 0.95);
+
+      const now = performance.now();
+      noteMarkers = noteMarkers.filter((marker) => now - marker.born < 2400);
+      noteMarkers.forEach((marker) => {
+        const age = now - marker.born;
+        const fade = 1 - age / 2400;
+        ctx.save();
+        ctx.globalAlpha = clamp(fade, 0, 1);
+        if (marker.mode === 'clocked') {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(marker.x, 0);
+          ctx.lineTo(marker.x, height);
+          ctx.stroke();
+        }
+        ctx.fillStyle = marker.color;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(marker.x, marker.y, marker.mode === 'drag' ? 11 : 9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '12px monospace';
+        ctx.fillText(marker.label, marker.x + 12, marker.y - 10);
+        ctx.restore();
+      });
+
+      if (lastSmooth) {
+        ctx.save();
+        ctx.fillStyle = '#ffff55';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(lastSmooth.x, lastSmooth.y, currentModeKey() === 'drag' ? 8 : 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function seedCurve() {
+      resetStroke();
+      const width = CANVAS_WIDTH;
+      const height = CANVAS_HEIGHT;
+      const count = 96;
+      const mode = currentMode();
+      for (let i = 0; i < count; i += 1) {
+        const t = i / (count - 1);
+        const rawPoint = {
+          x: 28 + t * (width - 56),
+          y: height * 0.52 + Math.sin(t * Math.PI * 3.2) * height * 0.22,
+          t: performance.now() + i * 16,
+        };
+        rawPoints.push(rawPoint);
+        latestRawPoint = rawPoint;
+        if (mode.trigger === 'clock') {
+          if (i % 8 === 0) processSmoothPoint(rawPoint, false, true);
+        } else {
+          processSmoothPoint(rawPoint, false, false);
+        }
+      }
+      setReadout(`${mode.label} seed curve loaded. Draw to replace it with a live stroke.`);
+    }
+
+    canvas.addEventListener('pointerdown', async (event) => {
+      event.preventDefault();
+      drawing = true;
+      canvas.setPointerCapture(event.pointerId);
+      const startPoint = localPoint(event);
+      resetStroke();
+      const armed = await ensureAudio();
+      if (armed) updateDrone(LOW_PHRASE[0], currentMode());
+      recordRawPoint(startPoint, true);
+      startClock();
+    });
+
+    canvas.addEventListener('pointermove', (event) => {
+      if (!drawing) return;
+      event.preventDefault();
+      const events = typeof event.getCoalescedEvents === 'function'
+        ? event.getCoalescedEvents()
+        : [event];
+      events.forEach((sample) => recordRawPoint(localPoint(sample), true));
+    });
+
+    function endStroke(event) {
+      if (!drawing) return;
+      drawing = false;
+      stopClock();
+      stopDrone();
+      if (event && canvas.hasPointerCapture(event.pointerId)) {
+        canvas.releasePointerCapture(event.pointerId);
+      }
+      setReadout(`${currentMode().label}: ${smoothPoints.length} smoothed points, ${lastNoteIndex} note events.`);
+    }
+
+    canvas.addEventListener('pointerup', endStroke);
+    canvas.addEventListener('pointercancel', endStroke);
+    canvas.addEventListener('pointerleave', endStroke);
+
+    armButton.addEventListener('click', async () => {
+      await ensureAudio();
+    });
+
+    seedButton.addEventListener('click', () => {
+      seedCurve();
+    });
+
+    clearButton.addEventListener('click', () => {
+      resetStroke();
+      setReadout('Cleared. Draw a new stroke.');
+    });
+
+    modeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        seedCurve();
+        updateNoteStrip();
+      });
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    seedCurve();
+    window.setInterval(render, 80);
+  })();
+</script>

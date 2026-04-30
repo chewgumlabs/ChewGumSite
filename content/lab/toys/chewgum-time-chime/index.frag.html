@@ -1,0 +1,179 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface stroke-melody-toy" id="toy-chewgum-time-chime">
+            <p>
+              Draw inside the field. The raw stroke stays close to the hand;
+              the selected smoothing algorithm follows behind it. In point
+              mode, every tenth smoothed point triggers a chime. In clocked
+              mode, chimes fire on a fixed tenth-second grid. In drag mode,
+              the math hangs back and strikes harder. The high chimes stay
+              random and diatonic, while a lower held channel moves from F to
+              C to A to F in ten-chime blocks.
+            </p>
+
+            <fieldset class="stroke-melody-modes" aria-label="Smoothing algorithm">
+              <legend>Smoothing Algorithm</legend>
+              <label>
+                <input type="radio" name="stroke-melody-mode" value="point" checked>
+                <span>1/10 Point</span>
+              </label>
+              <label>
+                <input type="radio" name="stroke-melody-mode" value="clocked">
+                <span>Clocked Bands</span>
+              </label>
+              <label>
+                <input type="radio" name="stroke-melody-mode" value="drag">
+                <span>Heavy Drag</span>
+              </label>
+            </fieldset>
+
+            <div class="stroke-melody-stage">
+              <canvas
+                id="stroke-melody-canvas"
+                width="960"
+                height="360"
+                aria-label="Draw a stroke to hear smoothed path notes trail the cursor"
+              ></canvas>
+              <div class="stroke-melody-note-strip" id="stroke-melody-note-strip" aria-live="polite">
+                <span>Audio dormant</span>
+              </div>
+            </div>
+
+            <form class="stroke-melody-controls">
+              <button type="button" id="stroke-melody-arm">Arm Sound</button>
+              <button type="button" id="stroke-melody-seed">Seed Curve</button>
+              <button type="button" id="stroke-melody-clear">Clear</button>
+            </form>
+
+            <p id="stroke-melody-readout" class="stroke-melody-readout" aria-live="polite">
+              Press and draw. The first pointer gesture can arm audio.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Active toy note</dd>
+            <dt>Published</dt>
+            <dd>2026-04-30</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/chewgum-time-chime/">https://shanecurry.com/lab/toys/chewgum-time-chime/</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            A drawn stroke can be interpreted as both geometry and time. In
+            ChewGum Time Chime, three small smoothing rules turn hand motion
+            into random high chimes over a lower four-block held-note channel
+            without claiming a recorded stroke dataset.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The cyan trace shows the raw pointer path. The yellow trace is the
+            smoothed path that follows it. Each numbered marker is a note event
+            fired from the smoothed path as it trails the drawing hand. The
+            labels show the random high chime notes. The lower channel changes
+            every ten note events. The clocked mode creates separated bands on
+            fast strokes because the smoothing step is held to a fixed
+            tenth-second rhythm.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The same stroke can be read in more than one way. Here it is a
+            visible line, a delayed mathematical path, and a small musical
+            phrase at the same time. That is the useful public idea: motion
+            can become sound by changing the interpretation context, and the
+            sound changes when the smoothing contract changes.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>1/10 Point</dt>
+            <dd>Exponential blend <code>alpha = 0.10</code>; one note every tenth smoothed point</dd>
+            <dt>Clocked Bands</dt>
+            <dd>Fixed 100 ms smoothing tick with <code>alpha = 0.34</code>; fast strokes produce visible note bands</dd>
+            <dt>Heavy Drag</dt>
+            <dd>Slow blend <code>alpha = 0.045</code>; one note every sixth smoothed point with a louder, longer envelope</dd>
+            <dt>Trail delay</dt>
+            <dd>75-120 ms audio delay from the smoothed point trigger, depending on mode</dd>
+            <dt>High chimes</dt>
+            <dd>Random C major diatonic set: C4, D4, E4, F4, G4, A4, B4, C5; MIDI [60, 62, 64, 65, 67, 69, 71, 72]</dd>
+            <dt>Low channel</dt>
+            <dd>Ten chimes each: F2 (MIDI 41), C3 (48), A2 (45), F2 (41), then repeat</dd>
+            <dt>Wave</dt>
+            <dd>Browser-native triangle oscillator</dd>
+            <dt>Gesture data</dt>
+            <dd>Pointer samples remain in the page runtime only; no stroke is stored or uploaded</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Implementation: this page's inline canvas and Web Audio code. The smoothing modes, note triggers, and drawing state all live in the public page.</li>
+            <li><a href="/glossary/#interpretation-context">Interpretation Context</a>: glossary term for reading one stroke as different kinds of output.</li>
+            <li><a href="/lab/toys/timing-vs-spacing/">Timing vs. Spacing</a>: sibling toy that isolates motion timing and spacing as readable quantities.</li>
+            <li><a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>: sibling audio toy that isolates the sound source as the controlled variable.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#interpretation-context">interpretation context</a></li>
+            <li><a href="/glossary/#timing">timing</a></li>
+            <li><a href="/glossary/#spacing">spacing</a></li>
+            <li>stroke smoothing</li>
+            <li>real-time audio</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Project" data-window-mode="text">
+        <div class="window-content">
+          <p>ChewGum Animation</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "ChewGum Time Chime,"
+            https://shanecurry.com/lab/toys/chewgum-time-chime/,
+            published 2026-04-30.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            This is the small thing the toy tries to make obvious: the melody
+            is not pasted onto the drawing afterward. It follows the math that
+            follows the hand.
+          </p>
+        </div>
+      </section>
