@@ -1,0 +1,17 @@
+#+TITLE: I Truly Do Not Understand What I Am Doing. Yet.
+#+DESCRIPTION: As quantization gets more efficient, local AI coding agents are starting to feel reasonable. Watching one get lost on my own home network made me realize how little I know about computers and networking.
+#+CANONICAL: https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/
+#+PUBLISHED: 2026-04-19
+#+KIND: note
+#+BLURB: as local models get smaller and coding agents more autonomous, I watched one install another on a second machine --- then watched Claude get lost on my own home network.
+
+* Bonsai Made a Rainstorm
+As local models become easier to quantize, local AI coding agents start to feel reasonable. They're still poor coders, but I watched in real time as something called Bonsai, running on a Pi, built an HTML page for me of pixelated rain falling. It made the revisions I asked for accurately --- as accurately as a flagship model might, which is to say you get out what you actually put in, not what you think you put in.
+
+* A Quiet Install
+I allowed one agent on my Mac to SSH into another machine and install a much more powerful local agent there. It downloaded a 48 GB model, ran tests, asked it questions, and printed the answers back onto the first machine. Meanwhile, nothing on the desktop of the remote machine indicated anything was happening. It made me realize how little I knew about computers and networking before AI.
+
+* Lost on My Own Home Network
+Then Claude got lost in the network and couldn't find the computer. It said things like, /"wait there's multiple computers on this network, I can't find the old one.... that must be your phone...."/ --- and that was when I realized I truly do not understand what I am doing.
+
+Yet.

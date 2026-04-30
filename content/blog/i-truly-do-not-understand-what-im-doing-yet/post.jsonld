@@ -1,0 +1,34 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "I Truly Do Not Understand What I Am Doing. Yet.",
+        "description": "A working note about local AI coding agents, home-network confusion, and realizing how much ordinary computing still hides.",
+        "datePublished": "2026-04-19",
+        "dateModified": "2026-04-29",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/",
+        "url": "https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "local AI",
+          "coding agents",
+          "home network",
+          "SSH",
+          "quantization"
+        ],
+        "mentions": [
+          {
+            "@id": "https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/"
+          },
+          {
+            "@id": "https://shanecurry.com/blog/dead-beat/"
+          }
+        ]
+      }
+    </script>
