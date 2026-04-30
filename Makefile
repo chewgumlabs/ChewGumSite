@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry authority-editor-pass help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -26,6 +26,8 @@ help:
 	@echo "              audit public content, llms.txt, and sitemap.xml"
 	@echo "make authority-registry"
 	@echo "              revalidate and index private authority drafts into _Internal/authority-registry/"
+	@echo "make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"
+	@echo "              run a private llama.cpp/Qwen editor pass over a draft fragment"
 
 build:
 	@$(PYTHON) tools/build.py
@@ -68,3 +70,7 @@ authority-audit:
 
 authority-registry:
 	@$(PYTHON) tools/authority/index_authority_registry.py
+
+authority-editor-pass:
+	@[ -n "$(DRAFT)" ] || { echo "usage: make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"; exit 2; }
+	@$(PYTHON) tools/authority/run_authority_editor_pass.py "$(DRAFT)"

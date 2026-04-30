@@ -21,6 +21,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 EMIT = REPO / "tools" / "authority" / "emit_authority_draft.py"
 REGISTRY = REPO / "tools" / "authority" / "index_authority_registry.py"
+EDITOR_PASS = REPO / "tools" / "authority" / "run_authority_editor_pass.py"
 FIXTURES = REPO / "tools" / "authority" / "fixtures"
 INTERNAL_ROOT = REPO / "_Internal"
 SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "authority-smoke-drafts"
@@ -113,6 +114,14 @@ def main() -> int:
         print("FAIL Dead Beat enrichment emits merge artifacts")
         print(detail.rstrip())
         failures.append("Dead Beat enrichment emits merge artifacts")
+
+    ok, detail = _check_editor_html_structure_regressions()
+    if ok:
+        print("PASS editor pass preserves HTML structure")
+    else:
+        print("FAIL editor pass preserves HTML structure")
+        print(detail.rstrip())
+        failures.append("editor pass preserves HTML structure")
 
     ok, detail = _check_internal_untracked()
     if ok:
@@ -330,6 +339,20 @@ def _check_dead_beat_enrichment_artifacts() -> tuple[bool, str]:
         return False, f"Dead Beat enrichment was not ready_for_review: {entry}"
     if entry.get("promotion_mode") != "enrich_existing":
         return False, f"Dead Beat enrichment mode was not indexed: {entry}"
+    return True, ""
+
+
+def _check_editor_html_structure_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(EDITOR_PASS), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("editor HTML structure self-test failed", result)
+    if "authority editor self-test passed" not in result.stdout:
+        return False, "editor self-test did not print success marker"
     return True, ""
 
 

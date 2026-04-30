@@ -24,6 +24,7 @@ tools/authority/
   run_authority_smoke.py          deterministic fixture matrix runner
   audit_public_surface.py         read-only audit of public site surfaces
   index_authority_registry.py     index private drafts into a review queue
+  run_authority_editor_pass.py    private llama.cpp/Qwen prose editor pass
   schemas/
     authority-draft-registry.v0.json
   fixtures/
@@ -83,6 +84,8 @@ Runs the full fixture matrix:
 - the Dead Beat enrichment must emit `enrichment.frag.html` and
   `jsonld.enrichment.json`, not replacement `post.*` files, and must be
   `ready_for_review` in the include-test registry view
+- editor-pass self-tests must reject HTML structure changes such as
+  edited section attributes or removed `<code>` markup
 - `_Internal/` must not be tracked by git
 
 ```sh
@@ -126,6 +129,22 @@ needs-revision states. Fixture and edge-case drafts are skipped by
 default so smoke tests do not dominate the operational queue. It is a
 queue and review surface only; no registry entry implies automatic
 publication.
+
+```sh
+make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug
+```
+
+Runs a private llama.cpp/Qwen editor pass over `enrichment.frag.html` or
+`post.frag.html`. It writes only:
+
+- `_Internal/authority-editor-passes/<YYYY-MM-DD>/<draft-id>/editor-input.json`
+- `_Internal/authority-editor-passes/<YYYY-MM-DD>/<draft-id>/editor-output.json`
+- `_Internal/authority-editor-passes/<YYYY-MM-DD>/<draft-id>/editor-report.md`
+- `_Internal/authority-editor-passes/<YYYY-MM-DD>/<draft-id>/rewritten.frag.html`
+
+The default backend is the already-running local llama.cpp server at
+`http://127.0.0.1:8080/v1/chat/completions` with model alias
+`coder-comments`. The editor-pass tooling does not use Ollama.
 
 ### Emit a draft
 
@@ -311,6 +330,37 @@ For `promotion_mode = "enrich_existing"`:
 
 `shane-publish.el` is the Emacs blog-publish flow for Org-authored
 posts; it is **not** part of this adapter's lane.
+
+## Private Qwen editor pass
+
+`run_authority_editor_pass.py` lets local Qwen2.5 suggest grammar, flow,
+and tone improvements for a private authority draft. The rewritten
+fragment is a review artifact only. It is never moved into `content/`
+automatically.
+
+The model is instructed to preserve claims, uncertainty, URLs, tags,
+attributes, source claims, code names, numerical values, and
+public/private boundary language. After generation, deterministic checks:
+
+- block any HTML structure fingerprint change, including tag sequence,
+  start/end nesting, tag names, attributes, attribute values, `href` /
+  `src` values, section order, and protected code/link markup
+- block new URLs
+- block new numbers and constants
+- block private filesystem paths
+- block scaffold residue such as `Live demo placeholder` or
+  `replace during promotion`
+- flag new proper nouns or technical terms not present in the packet,
+  source trail, or original fragment
+- flag possible certainty upgrades such as hedged language becoming
+  absolute language
+- run the existing authority validator against a temporary copy of the
+  rewritten private artifact
+
+The editor report classifies the rewrite as `usable`,
+`partially_usable`, or `rejected`. A `partially_usable` result means the
+fragment may contain useful edits, but a human must inspect the flags
+before merging anything by hand.
 
 ## What the adapter refuses to do
 
