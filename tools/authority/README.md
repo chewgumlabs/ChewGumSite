@@ -26,9 +26,16 @@ tools/authority/
   index_authority_registry.py     index private drafts into a review queue
   render_authority_review.py      render private human review memo
   run_authority_proposer.py       private Qwen packet proposer
+  qwen_authority_bible.md         prompt doctrine for useful Qwen proposals
+  export_authority_trace.py       proposal run -> private Chew/Gum workflow trace
+  review_authority_trace.py       human label gate for trace training records
+  index_authority_memory.py       aggregate reviewed traces into memory corpus
   run_authority_editor_pass.py    private llama.cpp/Qwen prose editor pass
   schemas/
     authority-draft-registry.v0.json
+    authority-workflow-trace.v0.json
+    authority-trace-labels.v0.json
+    authority-memory-index.v0.json
   fixtures/
     triangle-engines.packet.json
                                           known-good existing-page enrichment fixture
@@ -88,6 +95,18 @@ Runs the full fixture matrix:
   `ready_for_review` in the include-test registry view
 - proposer self-tests must parse model JSON, strip model-supplied
   authority fields, and preserve human-promotion gating
+- proposer draft-checks must use per-packet slugs so multiple candidates
+  for the same existing page do not overwrite each other's private check
+  artifacts
+- proposer safety scans must block controls-only toy proposals that duplicate
+  an existing interactive source page
+- trace-exporter self-tests must capture Chew/Gum loop events and
+  training-memory JSONL without calling a model
+- trace-review self-tests must prevent unlabeled records from becoming
+  trainable, accept complete human labels, and reject incomplete trainable
+  labels
+- memory-index self-tests must aggregate only reviewed trainable records
+  while reporting traces that still need labels
 - editor-pass self-tests must reject HTML structure changes such as
   edited section attributes or removed `<code>` markup
 - `_Internal/` must not be tracked by git
@@ -159,12 +178,17 @@ candidates from one explicit source file. It writes only:
 - `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/model-output.json`
 - `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/candidate-packets/*.packet.json`
 - `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/draft-checks/`
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/repaired-packets/*.packet.json` when `--repair-blocked` is enabled
+- `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/repair-draft-checks/` when `--repair-blocked` is enabled
 - `_Internal/authority-proposals/<YYYY-MM-DD>-<slug>/proposal-report.md`
 
 The proposer runs candidate packets through the existing private
 emit/validate flow under the proposal's `draft-checks/` directory. It
 does not add proposals to the operational registry unless a human later
 runs `make authority-emit PACKET=...` on one selected candidate.
+Each private draft-check gets a deterministic packet-specific slug, so
+two enrichment candidates for the same public page can be inspected
+separately.
 It also does a live reachability check for public URLs in candidate
 packets, so a model-invented GitHub or site URL blocks in the private
 proposal report instead of graduating to a review queue. Evidence URLs
@@ -183,10 +207,104 @@ make authority-propose SOURCE=content/blog/phosphor/post.frag.html \
   PROPOSE_ARGS="--timeout 90 --url-timeout 6 --max-tokens 1024 --limit 2"
 ```
 
+For a two-link loop, enable one private repair pass over blocked
+candidates:
+
+```sh
+make authority-propose SOURCE=content/lab/toys/chewgum-time-chime/index.frag.html \
+  PROPOSE_ARGS="--repair-blocked --repair-limit 2"
+```
+
+The repair pass receives the blocked packet, safety blockers, emit/validate
+output, the same allowed evidence URLs, and the Qwen authority bible. It
+must repair inside the same sandbox. Repaired packets are still private
+suggestions and still require human selection plus `make authority-emit`.
+
 If the shared local llama.cpp server is busy in another thread, the
 proposer may time out. That is a failed-closed result: it still writes
 `prompt.json`, `model-output.json`, and `proposal-report.md`, but writes
 zero candidate packets.
+
+```sh
+make authority-trace PROPOSAL=_Internal/authority-proposals/YYYY-MM-DD-slug
+```
+
+Exports a private Chew/Gum workflow trace from one authority proposal
+run. It writes only:
+
+- `_Internal/authority-traces/<YYYY-MM-DD-slug>/trace.json`
+- `_Internal/authority-traces/<YYYY-MM-DD-slug>/trace.md`
+- `_Internal/authority-traces/<YYYY-MM-DD-slug>/training-records.jsonl`
+
+The trace is dogfood infrastructure, not publication. It records two
+separate but related metadata layers:
+
+- `training_memory` is the machine-readable wall-memory layer. It is
+  intended as future raw material for prompt tuning, preference data,
+  LoRA/fine-tuning research, and workflow recall. It is story-independent
+  and requires human labels before training use.
+- `narrative_metadata` is the optional human-facing explanation of the
+  same loop: Chew explores, Gum binds, human review decides. Public
+  process notes can be derived from reviewed traces, but the training
+  records must not depend on the story layer.
+
+`training-records.jsonl` includes automatic Gum labels such as safety
+blockers, validator warnings, and emit/validate pass state. Human labels
+for taste, usefulness, truthfulness, and trainability remain blank until
+reviewed.
+
+Recursion guard: trace outputs are operational memory. They may improve
+the proposer, validator, editor, or future training layer, but they are
+not automatic source material for public pages about the creation of
+public pages. Public process writing must be deliberate and attached to
+first-order artifacts or synthesis pages a human approves.
+
+```sh
+make authority-trace-review TRACE=_Internal/authority-traces/YYYY-MM-DD-slug
+```
+
+Creates a private label template and review report for one exported trace.
+It writes only:
+
+- `_Internal/authority-trace-reviews/<YYYY-MM-DD-slug>/label-template.json`
+- `_Internal/authority-trace-reviews/<YYYY-MM-DD-slug>/review-summary.json`
+- `_Internal/authority-trace-reviews/<YYYY-MM-DD-slug>/review.md`
+- `_Internal/authority-trace-reviews/<YYYY-MM-DD-slug>/reviewed-training-records.jsonl`
+
+Without supplied labels, the reviewed JSONL remains untrainable. To apply
+labels, pass a private labels file:
+
+```sh
+make authority-trace-review \
+  TRACE=_Internal/authority-traces/YYYY-MM-DD-slug \
+  LABELS=_Internal/path/to/labels.json
+```
+
+The labels file uses
+`tools/authority/schemas/authority-trace-labels.v0.json`. A record may only
+become trainable when the human label explicitly approves it, assigns a
+non-`exclude` training role, and marks truthfulness, usefulness, and boundary
+preservation as `pass`. Taste must be `pass` or `not_applicable`. Labels are
+stored outside the raw trace so review never mutates original run memory.
+
+```sh
+make authority-memory-index
+```
+
+Runs the house-level memory sweep. It scans all private exported traces and
+their private reviews, then writes:
+
+- `_Internal/authority-memory/memory-index.json`
+- `_Internal/authority-memory/memory-index.md`
+- `_Internal/authority-memory/reviewed-training-records.jsonl`
+
+Per-trace reviews are the room-level passes. The memory index is the
+house-level view: it reports which traces exist, which are reviewed, which
+still need labels, how many trainable records exist, and the distribution of
+training roles such as `workflow_case`, `negative_blocker`, `repair_failure`,
+and `repair_success`. The exported JSONL includes only records whose human
+label explicitly approves training use. Unreviewed traces and excluded records
+stay visible in the index but are not copied into the reviewed corpus.
 
 ```sh
 make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug

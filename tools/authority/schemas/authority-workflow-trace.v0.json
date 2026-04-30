@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/authority-workflow-trace.v0.json",
+  "title": "Authority Workflow Trace v0",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "trace_id",
+    "generated_at",
+    "proposal_dir",
+    "domain",
+    "training_memory",
+    "narrative_metadata",
+    "source",
+    "backend",
+    "summary",
+    "loop_events",
+    "human_review",
+    "training_readiness",
+    "privacy_boundary"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "authority-workflow-trace.v0"
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "proposal_dir": {
+      "type": "string"
+    },
+    "proposal_report": {
+      "type": "string"
+    },
+    "prompt_path": {
+      "type": "string"
+    },
+    "model_output_path": {
+      "type": "string"
+    },
+    "domain": {
+      "const": "online_presence_authority"
+    },
+    "training_memory": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "story_independent",
+        "unit",
+        "records_file",
+        "recursion_guard",
+        "label_policy"
+      ],
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "story_independent": {
+          "const": true
+        },
+        "unit": {
+          "type": "string"
+        },
+        "records_file": {
+          "const": "training-records.jsonl"
+        },
+        "recursion_guard": {
+          "type": "string"
+        },
+        "label_policy": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "narrative_metadata": {
+      "type": "object",
+      "required": [
+        "purpose",
+        "public_story_source",
+        "recursion_guard",
+        "claim",
+        "workflow_roles"
+      ],
+      "properties": {
+        "purpose": {
+          "type": "string"
+        },
+        "public_story_source": {
+          "type": "string"
+        },
+        "recursion_guard": {
+          "type": "string"
+        },
+        "claim": {
+          "type": "string"
+        },
+        "workflow_roles": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "path",
+        "public_path",
+        "canonical_url",
+        "title"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "public_path": {
+          "type": "string"
+        },
+        "canonical_url": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "backend": {
+      "type": "object",
+      "required": [
+        "name",
+        "endpoint",
+        "model"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "candidate_packets",
+        "blocked_candidates",
+        "repair_packets",
+        "blocked_repairs",
+        "validator_clean_packets",
+        "validator_clean_needs_taste_review",
+        "public_promotion_status",
+        "dogfood_status",
+        "next_step"
+      ],
+      "properties": {
+        "candidate_packets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked_candidates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repair_packets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked_repairs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "validator_clean_packets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "validator_clean_needs_taste_review": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "public_promotion_status": {
+          "type": "string"
+        },
+        "dogfood_status": {
+          "type": "string"
+        },
+        "next_step": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "loop_events": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/loop_event"
+      }
+    },
+    "human_review": {
+      "type": "object"
+    },
+    "training_readiness": {
+      "type": "object",
+      "required": [
+        "state",
+        "can_train_now",
+        "why"
+      ],
+      "properties": {
+        "state": {
+          "type": "string"
+        },
+        "can_train_now": {
+          "type": "boolean"
+        },
+        "why": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "privacy_boundary": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "loop_event": {
+      "type": "object",
+      "required": [
+        "event_id",
+        "phase",
+        "role"
+      ],
+      "properties": {
+        "event_id": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "Chew",
+            "Gum"
+          ]
+        },
+        "packet_path": {
+          "type": "string"
+        },
+        "source_packet_path": {
+          "type": "string"
+        },
+        "packet": {
+          "type": "object"
+        },
+        "outcome": {
+          "type": "string"
+        },
+        "safety_scan": {
+          "type": "object"
+        },
+        "emit_check": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/authority-memory-index.v0.json",
+  "title": "Authority Memory Index v0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "summary",
+    "traces",
+    "privacy_boundary"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "authority-memory-index.v0"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "trace_root": {
+      "type": "string"
+    },
+    "review_root": {
+      "type": "string"
+    },
+    "output_files": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "traces",
+        "reviewed_traces",
+        "traces_with_trainable_records",
+        "needs_labels",
+        "trainable_records",
+        "roles",
+        "tasks",
+        "sources"
+      ],
+      "properties": {
+        "traces": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewed_traces": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "traces_with_trainable_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "needs_labels": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trainable_records": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "roles": {
+          "type": "object"
+        },
+        "tasks": {
+          "type": "object"
+        },
+        "sources": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "traces": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "privacy_boundary": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

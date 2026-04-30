@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry authority-review authority-propose authority-editor-pass help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-registry authority-review authority-propose authority-trace authority-trace-review authority-memory-index authority-editor-pass help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -30,6 +30,13 @@ help:
 	@echo "              render a private human review memo from the authority registry"
 	@echo "make authority-propose SOURCE=content/blog/phosphor/post.frag.html"
 	@echo "              ask local Qwen to propose private authority packets from a source file"
+	@echo "              pass PROPOSE_ARGS='--repair-blocked' to run one blocked-candidate repair pass"
+	@echo "make authority-trace PROPOSAL=_Internal/authority-proposals/YYYY-MM-DD-slug"
+	@echo "              export a private Chew/Gum workflow trace and training-memory JSONL"
+	@echo "make authority-trace-review TRACE=_Internal/authority-traces/YYYY-MM-DD-slug"
+	@echo "              create or apply human labels for a private Chew/Gum workflow trace"
+	@echo "make authority-memory-index"
+	@echo "              sweep reviewed traces into a private authority memory index"
 	@echo "make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"
 	@echo "              run a private llama.cpp/Qwen editor pass over a draft fragment"
 
@@ -81,6 +88,17 @@ authority-review: authority-registry
 authority-propose:
 	@[ -n "$(SOURCE)" ] || { echo "usage: make authority-propose SOURCE=content/blog/phosphor/post.frag.html"; exit 2; }
 	@$(PYTHON) tools/authority/run_authority_proposer.py "$(SOURCE)" $(PROPOSE_ARGS)
+
+authority-trace:
+	@[ -n "$(PROPOSAL)" ] || { echo "usage: make authority-trace PROPOSAL=_Internal/authority-proposals/YYYY-MM-DD-slug"; exit 2; }
+	@$(PYTHON) tools/authority/export_authority_trace.py "$(PROPOSAL)"
+
+authority-trace-review:
+	@[ -n "$(TRACE)" ] || { echo "usage: make authority-trace-review TRACE=_Internal/authority-traces/YYYY-MM-DD-slug [LABELS=_Internal/path/to/labels.json]"; exit 2; }
+	@$(PYTHON) tools/authority/review_authority_trace.py "$(TRACE)" $(if $(LABELS),--labels "$(LABELS)")
+
+authority-memory-index:
+	@$(PYTHON) tools/authority/index_authority_memory.py
 
 authority-editor-pass:
 	@[ -n "$(DRAFT)" ] || { echo "usage: make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"; exit 2; }

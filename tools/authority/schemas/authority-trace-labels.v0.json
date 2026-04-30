@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/authority-trace-labels.v0.json",
+  "title": "Authority Trace Labels v0",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema_version",
+    "trace_id",
+    "trace_decision",
+    "public_story_decision",
+    "records"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "authority-trace-labels.v0"
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewed_at": {
+      "type": "string"
+    },
+    "reviewer": {
+      "type": "string"
+    },
+    "trace_decision": {
+      "enum": [
+        "needs_review",
+        "keep_for_memory",
+        "discard",
+        "needs_revision"
+      ]
+    },
+    "public_story_decision": {
+      "enum": [
+        "none",
+        "candidate",
+        "approved_summary"
+      ]
+    },
+    "records": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "status",
+          "use_for_training",
+          "training_role",
+          "truthfulness",
+          "usefulness",
+          "taste",
+          "boundary_preserved",
+          "notes"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "unreviewed",
+              "approved_for_training",
+              "rejected_for_training",
+              "needs_revision"
+            ]
+          },
+          "use_for_training": {
+            "type": "boolean"
+          },
+          "training_role": {
+            "enum": [
+              "workflow_case",
+              "positive_candidate",
+              "negative_blocker",
+              "repair_success",
+              "repair_failure",
+              "exclude"
+            ]
+          },
+          "truthfulness": {
+            "enum": [
+              "pass",
+              "fail",
+              "uncertain"
+            ]
+          },
+          "usefulness": {
+            "enum": [
+              "pass",
+              "fail",
+              "uncertain"
+            ]
+          },
+          "taste": {
+            "enum": [
+              "pass",
+              "fail",
+              "uncertain",
+              "not_applicable"
+            ]
+          },
+          "boundary_preserved": {
+            "enum": [
+              "pass",
+              "fail",
+              "uncertain"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

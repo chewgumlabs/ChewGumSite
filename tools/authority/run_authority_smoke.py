@@ -23,6 +23,9 @@ EMIT = REPO / "tools" / "authority" / "emit_authority_draft.py"
 REGISTRY = REPO / "tools" / "authority" / "index_authority_registry.py"
 EDITOR_PASS = REPO / "tools" / "authority" / "run_authority_editor_pass.py"
 PROPOSER = REPO / "tools" / "authority" / "run_authority_proposer.py"
+TRACE_EXPORTER = REPO / "tools" / "authority" / "export_authority_trace.py"
+TRACE_REVIEWER = REPO / "tools" / "authority" / "review_authority_trace.py"
+MEMORY_INDEXER = REPO / "tools" / "authority" / "index_authority_memory.py"
 FIXTURES = REPO / "tools" / "authority" / "fixtures"
 INTERNAL_ROOT = REPO / "_Internal"
 SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "authority-smoke-drafts"
@@ -131,6 +134,30 @@ def main() -> int:
         print("FAIL proposer keeps packets private and human-gated")
         print(detail.rstrip())
         failures.append("proposer keeps packets private and human-gated")
+
+    ok, detail = _check_trace_exporter_regressions()
+    if ok:
+        print("PASS trace exporter captures Chew/Gum training memory")
+    else:
+        print("FAIL trace exporter captures Chew/Gum training memory")
+        print(detail.rstrip())
+        failures.append("trace exporter captures Chew/Gum training memory")
+
+    ok, detail = _check_trace_review_regressions()
+    if ok:
+        print("PASS trace review gates training memory behind human labels")
+    else:
+        print("FAIL trace review gates training memory behind human labels")
+        print(detail.rstrip())
+        failures.append("trace review gates training memory behind human labels")
+
+    ok, detail = _check_memory_index_regressions()
+    if ok:
+        print("PASS memory index aggregates reviewed trace records")
+    else:
+        print("FAIL memory index aggregates reviewed trace records")
+        print(detail.rstrip())
+        failures.append("memory index aggregates reviewed trace records")
 
     ok, detail = _check_internal_untracked()
     if ok:
@@ -374,6 +401,48 @@ def _check_proposer_regressions() -> tuple[bool, str]:
     )
     if result.returncode != 0:
         return False, _format_result("proposer self-test failed", result)
+    return True, ""
+
+
+def _check_trace_exporter_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(TRACE_EXPORTER), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("trace exporter self-test failed", result)
+    if "authority trace self-test passed" not in result.stdout:
+        return False, "trace exporter self-test did not print success marker"
+    return True, ""
+
+
+def _check_trace_review_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(TRACE_REVIEWER), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("trace review self-test failed", result)
+    if "authority trace review self-test passed" not in result.stdout:
+        return False, "trace review self-test did not print success marker"
+    return True, ""
+
+
+def _check_memory_index_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(MEMORY_INDEXER), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("memory index self-test failed", result)
+    if "authority memory index self-test passed" not in result.stdout:
+        return False, "memory index self-test did not print success marker"
     return True, ""
 
 

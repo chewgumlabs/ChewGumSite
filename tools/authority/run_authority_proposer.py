@@ -58,6 +58,7 @@ EMIT = Path(__file__).with_name("emit_authority_draft.py")
 
 DEFAULT_ENDPOINT = "http://127.0.0.1:8080/v1/chat/completions"
 DEFAULT_MODEL = "coder-comments"
+QWEN_BIBLE = Path(__file__).with_name("qwen_authority_bible.md")
 ALLOWED_OUTPUTS = {"toy", "index", "note", "hold", "reject"}
 ALLOWED_PROMOTION_MODES = {"new_page", "enrich_existing"}
 TARGET_ROOTS_BY_OUTPUT = {
@@ -67,6 +68,27 @@ TARGET_ROOTS_BY_OUTPUT = {
 }
 SOURCE_TEXT_LIMIT = 8000
 PROMPT_TEXT_LIMIT = 3600
+BIBLE_TEXT_LIMIT = 5200
+GENERIC_PHRASES = (
+    "potential applications",
+    "deeper understanding",
+    "versatility",
+    "artistic expression",
+    "different contexts",
+    "audio variations",
+)
+ARTIFACT_MISMATCH_BLOCKERS = (
+    {
+        "url_contains": ("ChewGumTimeChime", "/chewgum-time-chime/"),
+        "text_contains": ("nes-style", "periodicwave", "bell synthesis"),
+        "message": "ChewGumTimeChime evidence text appears to describe chewgum-dsp audio lineage",
+    },
+    {
+        "url_contains": ("ChewGumDSP", "/chewgum-dsp/"),
+        "text_contains": ("stroke smoothing", "time chime", "pointer stroke", "smoothing algorithms"),
+        "message": "chewgum-dsp evidence text appears to describe ChewGumTimeChime stroke smoothing",
+    },
+)
 
 PRIVATE_OUTPUT_FILES = (
     "prompt.json",
@@ -140,7 +162,11 @@ def main() -> int:
         )
         emit_result = None
         if args.emit_check:
-            emit_result = _emit_check(packet_path, proposal_dir / "draft-checks")
+            emit_result = _emit_check(
+                packet_path,
+                proposal_dir / "draft-checks",
+                slug=_draft_check_slug(packet, index, "candidate"),
+            )
         packet_results.append(
             {
                 "packet_path": _rel(packet_path),
@@ -148,6 +174,17 @@ def main() -> int:
                 "safety_scan": scan,
                 "emit_check": emit_result,
             }
+        )
+
+    repair_results = []
+    if args.repair_blocked:
+        repair_results = _repair_blocked_candidates(
+            args=args,
+            proposal_dir=proposal_dir,
+            source_context=source_context,
+            registry_context=registry_context,
+            allowed_evidence_urls=allowed_evidence_urls,
+            packet_results=packet_results,
         )
 
     model_output = {
@@ -163,6 +200,9 @@ def main() -> int:
         "parse_error": parse_error,
         "candidate_count": len(packet_results),
         "candidate_packets": packet_results,
+        "repair_enabled": bool(args.repair_blocked),
+        "repair_candidate_count": len(repair_results),
+        "repair_candidate_packets": repair_results,
     }
     (proposal_dir / "model-output.json").write_text(_json(model_output))
     (proposal_dir / "proposal-report.md").write_text(
@@ -170,14 +210,18 @@ def main() -> int:
     )
 
     blocked = _blocked_count(packet_results)
+    repair_blocked = _blocked_count(repair_results)
     print(f"proposal: {proposal_dir}")
     print(f"source: {_rel(source)}")
     print(f"candidate_packets: {len(packet_results)}")
     print(f"blocked_candidates: {blocked}")
+    if args.repair_blocked:
+        print(f"repair_candidate_packets: {len(repair_results)}")
+        print(f"blocked_repair_candidates: {repair_blocked}")
     print(f"see: {proposal_dir / 'proposal-report.md'}")
     if model_error or not packet_results:
         return 1
-    if args.strict and blocked:
+    if args.strict and (blocked or repair_blocked):
         return 1
     return 0
 
@@ -233,6 +277,17 @@ def _parse_args() -> argparse.Namespace:
         help="exit nonzero if any candidate fails packet safety or emit validation",
     )
     parser.add_argument(
+        "--repair-blocked",
+        action="store_true",
+        help="ask Qwen for one private repair pass over blocked candidates",
+    )
+    parser.add_argument(
+        "--repair-limit",
+        type=int,
+        default=2,
+        help="maximum blocked candidates to repair when --repair-blocked is used",
+    )
+    parser.add_argument(
         "--self-test",
         action="store_true",
         help="run deterministic proposer regressions without calling Qwen",
@@ -278,7 +333,7 @@ def _prepare_proposal_dir(proposal_dir: Path) -> None:
         path = proposal_dir / name
         if path.exists():
             path.unlink()
-    for name in ("candidate-packets", "draft-checks"):
+    for name in ("candidate-packets", "draft-checks", "repaired-packets", "repair-draft-checks"):
         path = proposal_dir / name
         if path.exists():
             shutil.rmtree(path)
@@ -391,11 +446,13 @@ def _registry_context(registry_arg: str | None) -> list[str]:
         return []
     surfaces = []
     for entry in registry.get("entries") or []:
+        status = entry.get("status") or "unknown"
+        if status != "promoted":
+            continue
         url = entry.get("canonical_url")
         if not url:
             continue
         target = entry.get("target_public_path") or url
-        status = entry.get("status") or "unknown"
         claim = entry.get("claim_summary") or ""
         surfaces.append(f"{target} | {status} | {claim}")
     return surfaces[:10]
@@ -467,7 +524,12 @@ def _prompt_document(
         "related_public_surfaces": ["https://shanecurry.com/..."],
         "source_trail": [
             {"text": "Public source description.", "url": "https://shanecurry.com/..."}
-        ]
+        ],
+        "what_changes_on_screen": "Required for toy candidates; concrete visible change.",
+        "user_interaction": "Required for toy candidates; concrete interaction.",
+        "demo_parameters": [
+            {"label": "Parameter name", "value": "Specific value copied from the source."}
+        ],
     }
     prompt_source = {
         "path": source_context["path"],
@@ -495,6 +557,7 @@ def _prompt_document(
         "source": prompt_source,
         "known_public_surfaces_from_registry": registry_context[:8],
         "allowed_public_evidence_urls": allowed_evidence_urls[:40],
+        "qwen_authority_bible": _qwen_bible(),
         "target_url_policy": {
             "enrich_existing": "target_public_path is forced to source.public_path",
             "new_page": "target_public_path is deterministically assigned from recommended_output and title; do not invent a URL",
@@ -503,14 +566,22 @@ def _prompt_document(
             "toy": "/lab/toys/<slug>/",
         },
         "rules": [
+            "Quality bar: a packet must add a concrete source-trail, parameter, lineage, glossary, or collection move. Do not propose a packet that merely restates the source page.",
+            "Avoid generic phrases like 'potential applications', 'deeper understanding', 'versatility', 'artistic expression', 'different contexts', or 'audio variations' unless the source gives concrete parameters for them.",
+            "Use concrete values copied from the source when available, such as alpha values, MIDI notes, timing values, mode names, repository names, or exact sibling pages.",
             "Default move: enrich the supplied source page with a source trail, render/audio parameters, or lineage notes.",
             "If the candidate targets the source page itself, use promotion_mode='enrich_existing'.",
             "Prefer promotion_mode='enrich_existing' for this supplied source page unless the source clearly supports a separate new URL.",
             "For enrich_existing, target_public_path must exactly equal source.public_path.",
             "If proposing a new page, set promotion_mode='new_page' and let the wrapper assign target_public_path.",
             "Do not propose a separate demo page for a demo that already exists on the supplied source page.",
+            "Do not propose a controls-only toy for an existing interactive page. If controls need documentation, use enrich_existing.",
             "Do not claim source code is on GitHub unless the exact GitHub URL appears in the supplied source or registry context.",
+            "Registry context includes promoted public records only. Do not cite held, validated, or ready-for-review packet targets as public evidence.",
+            "A source_trail entry must describe the exact URL it cites; do not attach facts from one artifact to a different URL.",
             "Every active packet needs at least two related_public_surfaces when possible.",
+            "Every active packet should have at least two public source_trail URLs when the allowed URL list contains enough evidence.",
+            "Toy candidates must include what_changes_on_screen, user_interaction, and demo_parameters.",
             "Every source_trail URL and related_public_surfaces URL must be copied from allowed_public_evidence_urls.",
             "Use 'hold' when the source suggests an idea that lacks a public source trail.",
             "Return strict JSON only, no Markdown fence.",
@@ -557,6 +628,12 @@ def _call_llama_server(
         raise RuntimeError(f"llama server HTTP {exc.code}: {detail}") from exc
     except url_error.URLError as exc:
         raise RuntimeError(f"llama server unavailable: {exc.reason}") from exc
+
+
+def _qwen_bible() -> str:
+    if not QWEN_BIBLE.exists():
+        return ""
+    return QWEN_BIBLE.read_text(errors="replace")[:BIBLE_TEXT_LIMIT]
 
 
 def _message_content(raw_response: dict) -> str:
@@ -767,6 +844,197 @@ def _packet_filename(packet: dict, index: int) -> str:
     return f"{index:02d}-{_slugify(str(base))}.packet.json"
 
 
+def _repair_blocked_candidates(
+    args: argparse.Namespace,
+    proposal_dir: Path,
+    source_context: dict,
+    registry_context: list[str],
+    allowed_evidence_urls: list[str],
+    packet_results: list[dict],
+) -> list[dict]:
+    blocked_results = [result for result in packet_results if _packet_result_blocked(result)]
+    if not blocked_results:
+        return []
+
+    repaired_dir = proposal_dir / "repaired-packets"
+    repaired_dir.mkdir(parents=True, exist_ok=True)
+    repair_results = []
+    for index, result in enumerate(blocked_results[: args.repair_limit], start=1):
+        repair_prompt = _repair_prompt_document(
+            source_context=source_context,
+            registry_context=registry_context,
+            allowed_evidence_urls=allowed_evidence_urls,
+            failed_result=result,
+            model=args.model,
+            endpoint=args.endpoint,
+        )
+        raw_response = {}
+        parsed_output = None
+        parse_error = ""
+        model_error = ""
+        try:
+            raw_response = _call_llama_server(
+                endpoint=args.endpoint,
+                model=args.model,
+                prompt_doc=repair_prompt,
+                timeout=args.timeout,
+                max_tokens=args.max_tokens,
+                temperature=args.temperature,
+            )
+            parsed_output, parse_error = _parse_model_json(_message_content(raw_response))
+        except Exception as exc:  # noqa: BLE001 - private report captures failures.
+            model_error = str(exc)
+            parse_error = "repair model call failed"
+
+        repaired_candidates = _extract_candidates(parsed_output)
+        repaired_packet = None
+        if repaired_candidates:
+            repaired_packet = _normalize_candidate(repaired_candidates[0], source_context, 100 + index)
+            original_id = str(result["packet"].get("draft_id") or f"candidate-{index}")
+            repaired_packet["draft_id"] = f"{_slugify(original_id)}-repair"
+            repaired_packet.setdefault("proposal_repair_notes", []).append(
+                f"Repair generated from blocked packet {index}."
+            )
+
+        repair_record = {
+            "source_packet_path": result["packet_path"],
+            "repair_prompt": repair_prompt,
+            "model_error": model_error,
+            "raw_model_response": raw_response,
+            "parsed_model_output": parsed_output,
+            "parse_error": parse_error,
+            "packet_path": "",
+            "packet": repaired_packet,
+            "safety_scan": {
+                "blocking": ["repair produced no packet"] if repaired_packet is None else [],
+                "warnings": [],
+            },
+            "emit_check": None,
+        }
+        if repaired_packet is not None:
+            packet_name = _packet_filename(repaired_packet, index)
+            packet_path = repaired_dir / packet_name
+            packet_path.write_text(_json(repaired_packet))
+            scan = _scan_packet_safety(
+                repaired_packet,
+                check_reachability=args.url_check,
+                timeout=args.url_timeout,
+                allowed_evidence_urls=allowed_evidence_urls,
+            )
+            emit_result = None
+            if args.emit_check:
+                emit_result = _emit_check(
+                    packet_path,
+                    proposal_dir / "repair-draft-checks",
+                    slug=_draft_check_slug(repaired_packet, index, "repair"),
+                )
+            repair_record.update(
+                {
+                    "packet_path": _rel(packet_path),
+                    "safety_scan": scan,
+                    "emit_check": emit_result,
+                }
+            )
+        repair_results.append(repair_record)
+    return repair_results
+
+
+def _repair_prompt_document(
+    source_context: dict,
+    registry_context: list[str],
+    allowed_evidence_urls: list[str],
+    failed_result: dict,
+    model: str,
+    endpoint: str,
+) -> dict:
+    failed_packet = failed_result.get("packet") or {}
+    failure_summary = {
+        "safety_blocking": (failed_result.get("safety_scan") or {}).get("blocking") or [],
+        "safety_warnings": (failed_result.get("safety_scan") or {}).get("warnings") or [],
+        "emit_passed": (failed_result.get("emit_check") or {}).get("passed"),
+        "emit_stdout": (failed_result.get("emit_check") or {}).get("stdout", "")[-2400:],
+        "emit_stderr": (failed_result.get("emit_check") or {}).get("stderr", "")[-1200:],
+    }
+    system = (
+        "You repair private authority packet candidates for shanecurry.com. "
+        "Output only JSON. Repair the supplied packet; do not create unrelated ideas. "
+        "Use only facts and URLs from the supplied source and allowed evidence list. "
+        "Never include local filesystem paths, internal run directories, _Internal, _Company, or _swarmlab references. "
+        "If the blocker cannot be repaired truthfully, return recommended_output='hold' with a hold_reason."
+    )
+    user = {
+        "task": "Repair this blocked private authority packet candidate.",
+        "response_shape": {
+            "packet": {
+                "canonical_title": failed_packet.get("canonical_title") or "Title",
+                "recommended_output": "note | index | toy | hold | reject",
+                "promotion_mode": "new_page | enrich_existing",
+                "one_sentence_claim": "Concrete claim supported by source_trail.",
+                "why_this_matters": "Concrete reason this packet adds value.",
+                "related_terms": ["term"],
+                "related_public_surfaces": ["URL copied from allowed_public_evidence_urls"],
+                "source_trail": [
+                    {
+                        "text": "Exact public evidence description for this URL.",
+                        "url": "URL copied from allowed_public_evidence_urls",
+                    }
+                ],
+                "what_changes_on_screen": "Required for toy candidates.",
+                "user_interaction": "Required for toy candidates.",
+                "demo_parameters": [
+                    {"label": "Specific parameter", "value": "Specific value from source."}
+                ],
+            },
+            "notes": ["short private repair rationale"],
+        },
+        "failed_packet": failed_packet,
+        "failure_summary": failure_summary,
+        "source": {
+            "path": source_context["path"],
+            "public_path": source_context["public_path"],
+            "canonical_url": source_context["canonical_url"],
+            "title": source_context["title"],
+            "description": source_context["description"],
+            "kind": source_context["kind"],
+            "visible_text_excerpt": _visible_text(source_context["text"])[:PROMPT_TEXT_LIMIT],
+        },
+        "known_promoted_public_surfaces": registry_context[:8],
+        "allowed_public_evidence_urls": allowed_evidence_urls[:40],
+        "qwen_authority_bible": _qwen_bible(),
+        "repair_rules": [
+            "Fix every listed blocker directly.",
+            "Do not remove truth just to pass validation; use hold if a truthful repair is not possible.",
+            "Active packets need at least two public source_trail URLs when the allowed evidence list contains enough evidence.",
+            "Each source_trail text must describe the exact URL it cites.",
+            "Do not cite unpublished candidate URLs.",
+            "If the old packet cited the wrong artifact, replace the URL with the correct allowed URL.",
+            "If the old packet was generic, add concrete source values or hold.",
+            "Do not repair a blocked controls-only toy by preserving the controls-only toy. Use enrich_existing or hold.",
+            "For enrich_existing, keep the target on the supplied source page.",
+            "Return strict JSON only, no Markdown fence.",
+        ],
+    }
+    return {
+        "schema_version": "authority-proposal-repair-prompt.v0",
+        "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
+        "backend": "llama.cpp llama-server",
+        "endpoint": endpoint,
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": json.dumps(user, indent=2)},
+        ],
+    }
+
+
+def _packet_result_blocked(result: dict) -> bool:
+    scan = result.get("safety_scan") or {}
+    if scan.get("blocking"):
+        return True
+    emit = result.get("emit_check")
+    return bool(emit and not emit.get("passed"))
+
+
 def _scan_packet_safety(
     packet: dict,
     check_reachability: bool = True,
@@ -801,9 +1069,88 @@ def _scan_packet_safety(
                 blocking.append(failure)
     if not packet.get("source_trail"):
         blocking.append("missing source_trail")
+    if (
+        _active_packet(packet)
+        and allowed_evidence_urls is not None
+        and len(allowed_evidence_urls) >= 2
+        and _source_trail_public_url_count(packet) < 2
+    ):
+        blocking.append("source_trail has fewer than two public URLs")
     if len(packet.get("related_public_surfaces") or []) < 2 and packet.get("recommended_output") != "hold":
         warnings.append("fewer than two related_public_surfaces")
+    if _active_packet(packet):
+        for phrase in GENERIC_PHRASES:
+            if phrase in text.lower():
+                warnings.append(f"generic proposal phrase: {phrase!r}")
+                break
+    if packet.get("recommended_output") == "toy":
+        for field in ("what_changes_on_screen", "user_interaction", "demo_parameters"):
+            if not packet.get(field):
+                warnings.append(f"toy candidate missing {field}")
+        duplicate_controls = _duplicate_controls_toy_blocker(packet)
+        if duplicate_controls:
+            blocking.append(duplicate_controls)
+    blocking.extend(_artifact_mismatch_blockers(packet))
     return {"blocking": blocking, "warnings": warnings}
+
+
+def _active_packet(packet: dict) -> bool:
+    return packet.get("recommended_output") not in {"hold", "reject"}
+
+
+def _source_trail_public_url_count(packet: dict) -> int:
+    trail = packet.get("source_trail")
+    if not isinstance(trail, list):
+        return 0
+    count = 0
+    for item in trail:
+        if isinstance(item, dict) and isinstance(item.get("url"), str) and _is_public_url(item["url"]):
+            count += 1
+    return count
+
+
+def _artifact_mismatch_blockers(packet: dict) -> list[str]:
+    blockers = []
+    trail = packet.get("source_trail")
+    if not isinstance(trail, list):
+        return blockers
+    for item in trail:
+        if not isinstance(item, dict):
+            continue
+        url = str(item.get("url") or "")
+        text = str(item.get("text") or "")
+        lowered_url = url.lower()
+        lowered_text = text.lower()
+        for rule in ARTIFACT_MISMATCH_BLOCKERS:
+            if not any(fragment.lower() in lowered_url for fragment in rule["url_contains"]):
+                continue
+            if any(fragment.lower() in lowered_text for fragment in rule["text_contains"]):
+                blockers.append(f"{rule['message']}: {url!r}")
+    return blockers
+
+
+def _duplicate_controls_toy_blocker(packet: dict) -> str:
+    if packet.get("promotion_mode") != "new_page":
+        return ""
+    joined = " ".join(
+        str(packet.get(key) or "")
+        for key in (
+            "draft_id",
+            "canonical_title",
+            "title",
+            "description",
+            "one_sentence_claim",
+            "why_this_matters",
+            "what_changes_on_screen",
+            "user_interaction",
+        )
+    ).lower()
+    if "control" not in joined:
+        return ""
+    input_tokens = ("wasd", "arrow", "shift", "keys", "keyboard")
+    if not any(token in joined for token in input_tokens):
+        return ""
+    return "new toy appears to duplicate controls for an existing interactive source page; use enrich_existing or hold"
 
 
 def _evidence_urls(packet: dict) -> list[str]:
@@ -907,16 +1254,24 @@ def _url_get_reachability_failure(url: str, timeout: int) -> str:
         return f"public URL reachability check failed: {url!r} ({reason})"
 
 
-def _emit_check(packet_path: Path, draft_root: Path) -> dict:
+def _draft_check_slug(packet: dict, index: int, kind: str) -> str:
+    base = packet.get("draft_id") or packet.get("canonical_title") or packet.get("title") or "packet"
+    return f"{kind}-{index:02d}-{_slugify(str(base))}"
+
+
+def _emit_check(packet_path: Path, draft_root: Path, slug: str | None = None) -> dict:
     draft_root.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        sys.executable,
+        str(EMIT),
+        str(packet_path),
+        "--draft-root",
+        str(draft_root),
+    ]
+    if slug:
+        cmd.extend(["--slug", slug])
     result = subprocess.run(
-        [
-            sys.executable,
-            str(EMIT),
-            str(packet_path),
-            "--draft-root",
-            str(draft_root),
-        ],
+        cmd,
         cwd=REPO,
         capture_output=True,
         text=True,
@@ -924,6 +1279,7 @@ def _emit_check(packet_path: Path, draft_root: Path) -> dict:
     return {
         "exit_code": result.returncode,
         "passed": result.returncode == 0,
+        "draft_slug": slug or "",
         "stdout": result.stdout,
         "stderr": result.stderr,
     }
@@ -932,6 +1288,7 @@ def _emit_check(packet_path: Path, draft_root: Path) -> dict:
 def _render_report(prompt_doc: dict, model_output: dict) -> str:
     source = model_output["source"]
     candidates = model_output["candidate_packets"]
+    repairs = model_output.get("repair_candidate_packets") or []
     lines = [
         "# Authority Proposal Report",
         "",
@@ -953,6 +1310,8 @@ def _render_report(prompt_doc: dict, model_output: dict) -> str:
             "",
             f"- Candidate packets: {len(candidates)}",
             f"- Blocked candidates: {_blocked_count(candidates)}",
+            f"- Repair candidate packets: {len(repairs)}",
+            f"- Blocked repair candidates: {_blocked_count(repairs)}",
             f"- Prompt messages: {len(prompt_doc.get('messages') or [])}",
             "",
         ]
@@ -990,14 +1349,51 @@ def _render_report(prompt_doc: dict, model_output: dict) -> str:
             lines.append("- Normalization notes:")
             lines.extend(f"  - {item}" for item in packet["proposal_normalization_notes"])
         lines.append("")
+    if repairs:
+        lines.append("## Repair Candidate Packets")
+        lines.append("")
+        for result in repairs:
+            packet = result.get("packet") or {}
+            scan = result.get("safety_scan") or {"blocking": [], "warnings": []}
+            emit = result.get("emit_check") or {}
+            title = packet.get("canonical_title") or packet.get("draft_id") or "Repair produced no packet"
+            lines.extend(
+                [
+                    f"### {title}",
+                    "",
+                    f"- Source packet: `{result.get('source_packet_path', '')}`",
+                    f"- Packet: `{result.get('packet_path') or '(none)'}`",
+                    f"- Output: `{packet.get('recommended_output', '(none)')}` / `{packet.get('promotion_mode', '(none)')}`",
+                    f"- Target: `{packet.get('target_public_path', '(none)')}`",
+                    f"- Claim: {packet.get('one_sentence_claim', '(none)')}",
+                    f"- Safety scan: {len(scan.get('blocking') or [])} blocking, {len(scan.get('warnings') or [])} warning(s)",
+                ]
+            )
+            if emit:
+                state = "passed" if emit.get("passed") else "blocked"
+                lines.append(f"- Emit/validate check: {state} (exit {emit.get('exit_code')})")
+            if result.get("model_error"):
+                lines.append(f"- Repair model error: {result['model_error']}")
+            if result.get("parse_error"):
+                lines.append(f"- Repair parse error: {result['parse_error']}")
+            if scan.get("blocking"):
+                lines.append("- Safety blockers:")
+                lines.extend(f"  - {item}" for item in scan["blocking"])
+            if scan.get("warnings"):
+                lines.append("- Safety warnings:")
+                lines.extend(f"  - {item}" for item in scan["warnings"])
+            if packet.get("proposal_normalization_notes"):
+                lines.append("- Normalization notes:")
+                lines.extend(f"  - {item}" for item in packet["proposal_normalization_notes"])
+            lines.append("")
     lines.extend(
         [
             "## Manual Next Step",
             "",
-            "Choose one candidate packet, inspect it, then run:",
+            "Choose one candidate or repaired packet, inspect it, then run:",
             "",
             "```sh",
-            "make authority-emit PACKET=_Internal/authority-proposals/YYYY-MM-DD-slug/candidate-packets/NN-name.packet.json",
+            "make authority-emit PACKET=_Internal/authority-proposals/YYYY-MM-DD-slug/{candidate-packets|repaired-packets}/NN-name.packet.json",
             "make authority-registry",
             "make authority-review",
             "```",
@@ -1039,6 +1435,34 @@ def _run_self_test() -> int:
         "text": "",
         "truncated": False,
     }
+    registry_fixture = {
+        "entries": [
+            {
+                "status": "validated",
+                "canonical_url": "https://shanecurry.com/lab/future-candidate/",
+                "target_public_path": "/lab/future-candidate/",
+                "claim_summary": "Unpublished future candidate.",
+            },
+            {
+                "status": "promoted",
+                "canonical_url": "https://shanecurry.com/blog/phosphor/",
+                "target_public_path": "/blog/phosphor/",
+                "claim_summary": "Published Phosphor page.",
+            },
+        ]
+    }
+    tmp_registry = INTERNAL_ROOT / "authority-smoke-drafts" / "proposer-registry-fixture.json"
+    tmp_registry.parent.mkdir(parents=True, exist_ok=True)
+    tmp_registry.write_text(_json(registry_fixture))
+    registry_items = _registry_context(str(tmp_registry))
+    if any("future-candidate" in item for item in registry_items):
+        print("FAIL registry context exposed non-promoted candidate")
+        print(registry_items)
+        return 1
+    if not any("/blog/phosphor/" in item for item in registry_items):
+        print("FAIL registry context omitted promoted entry")
+        print(registry_items)
+        return 1
     packet = _normalize_candidate(
         {
             "canonical_title": "Phosphor Source Trail",
@@ -1110,12 +1534,105 @@ def _run_self_test() -> int:
         print("FAIL new_page target assignment note missing")
         print(new_page_packet)
         return 1
+    prompt_doc = _prompt_document(
+        source_context=source,
+        registry_context=[],
+        allowed_evidence_urls=["https://shanecurry.com/blog/phosphor/"],
+        model=DEFAULT_MODEL,
+        endpoint=DEFAULT_ENDPOINT,
+        limit=2,
+    )
+    prompt_payload = json.loads(prompt_doc["messages"][1]["content"])
+    if "qwen_authority_bible" not in prompt_payload:
+        print("FAIL prompt missing qwen authority bible field")
+        return 1
+    repair_prompt = _repair_prompt_document(
+        source_context=source,
+        registry_context=[],
+        allowed_evidence_urls=[
+            "https://shanecurry.com/blog/phosphor/",
+            "https://shanecurry.com/blog/dead-beat/",
+        ],
+        failed_result={
+            "packet_path": "_Internal/example/candidate.packet.json",
+            "packet": packet,
+            "safety_scan": {"blocking": ["source_trail has fewer than two public URLs"], "warnings": []},
+            "emit_check": {"passed": False, "stdout": "validation: BLOCKED", "stderr": ""},
+        },
+        model=DEFAULT_MODEL,
+        endpoint=DEFAULT_ENDPOINT,
+    )
+    repair_payload = json.loads(repair_prompt["messages"][1]["content"])
+    if "failure_summary" not in repair_payload or "repair_rules" not in repair_payload:
+        print("FAIL repair prompt missing failure summary/rules")
+        return 1
+    if "allowed_public_evidence_urls" not in repair_payload:
+        print("FAIL repair prompt missing allowed evidence URLs")
+        return 1
     bad_url_packet = dict(packet)
     bad_url_packet["related_public_surfaces"] = ["https://github.com/shanecurry/definitely-not-a-real-chewgum-repo"]
     scan = _scan_packet_safety(bad_url_packet, check_reachability=False)
     if scan["blocking"]:
         print("FAIL public URL scan should be skippable")
         print(scan["blocking"])
+        return 1
+    thin_scan = _scan_packet_safety(
+        {
+            "recommended_output": "note",
+            "source_ref": "https://shanecurry.com/blog/phosphor/",
+            "related_public_surfaces": [
+                "https://shanecurry.com/blog/phosphor/",
+                "https://shanecurry.com/blog/dead-beat/",
+            ],
+            "source_trail": [
+                {
+                    "text": "This gives deeper understanding of potential applications.",
+                    "url": "https://shanecurry.com/blog/phosphor/",
+                }
+            ],
+        },
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/blog/phosphor/",
+            "https://shanecurry.com/blog/dead-beat/",
+        ],
+    )
+    if not any("source_trail has fewer" in item for item in thin_scan["blocking"]):
+        print("FAIL thin source-trail blocker missing")
+        print(thin_scan)
+        return 1
+    if not any("generic proposal phrase" in item for item in thin_scan["warnings"]):
+        print("FAIL generic phrase warning missing")
+        print(thin_scan)
+        return 1
+    mismatch_scan = _scan_packet_safety(
+        {
+            "recommended_output": "note",
+            "source_ref": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+            "related_public_surfaces": [
+                "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+                "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0",
+            ],
+            "source_trail": [
+                {
+                    "text": "ChewGumTimeChime v0.1.0 is a narrow public extraction for NES-style triangle waves and bell synthesis.",
+                    "url": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0",
+                },
+                {
+                    "text": "Live toy page.",
+                    "url": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+                },
+            ],
+        },
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+            "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0",
+        ],
+    )
+    if not any("audio lineage" in item for item in mismatch_scan["blocking"]):
+        print("FAIL artifact mismatch blocker missing")
+        print(mismatch_scan)
         return 1
     if "https://shanecurry.com/blog/phosphor/demos/" not in _evidence_urls(
         {
@@ -1144,6 +1661,50 @@ def _run_self_test() -> int:
     if not any("allowed_public_evidence_urls" in item for item in scan["blocking"]):
         print("FAIL future evidence URL was not blocked by allow-list")
         print(scan)
+        return 1
+    controls_toy_scan = _scan_packet_safety(
+        {
+            "recommended_output": "toy",
+            "promotion_mode": "new_page",
+            "canonical_title": "Falling Hall Controls",
+            "one_sentence_claim": "Falling Hall Controls is a toy that allows users to explore the controls of the Falling Hall animation.",
+            "why_this_matters": "This toy will provide a hands-on way for users to understand and interact with the controls.",
+            "what_changes_on_screen": "The user can control the direction and speed of descent.",
+            "user_interaction": "The user can use the WASD keys, arrow keys, and Shift key.",
+            "demo_parameters": [{"label": "Initial Speed", "value": "4.1 u/s"}],
+            "source_ref": "https://shanecurry.com/animation/falling-hall/",
+            "related_public_surfaces": [
+                "https://shanecurry.com/animation/falling-hall/",
+                "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
+            ],
+            "source_trail": [
+                {"text": "Falling Hall page.", "url": "https://shanecurry.com/animation/falling-hall/"},
+                {
+                    "text": "Falling Hall source asset.",
+                    "url": "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
+                },
+            ],
+        },
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/animation/falling-hall/",
+            "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
+        ],
+    )
+    if not any("duplicate controls" in item for item in controls_toy_scan["blocking"]):
+        print("FAIL controls-only toy blocker missing")
+        print(controls_toy_scan)
+        return 1
+    first_check_slug = _draft_check_slug({"draft_id": "same-target"}, 1, "candidate")
+    second_check_slug = _draft_check_slug({"draft_id": "same-target"}, 2, "candidate")
+    repair_check_slug = _draft_check_slug({"draft_id": "same-target"}, 1, "repair")
+    if first_check_slug == second_check_slug:
+        print("FAIL candidate draft-check slugs collide")
+        print(first_check_slug, second_check_slug)
+        return 1
+    if first_check_slug == repair_check_slug:
+        print("FAIL candidate and repair draft-check slugs collide")
+        print(first_check_slug, repair_check_slug)
         return 1
     print("authority proposer self-test passed")
     return 0
