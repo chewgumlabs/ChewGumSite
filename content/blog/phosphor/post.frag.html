@@ -117,3 +117,59 @@
                   </p>
         </div>
       </section>
+
+      <section class="window" data-title="Technical Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Canvas</dt>
+            <dd>320 &times; 200 px, rendered as crisp low-resolution canvas.</dd>
+            <dt>Map</dt>
+            <dd>14 &times; 14 grid; 0 = open cell, 1 = wall cell.</dd>
+            <dt>Field of view</dt>
+            <dd>60 degrees (<code>Math.PI / 3</code>), cast across one ray per canvas column.</dd>
+            <dt>Raycaster</dt>
+            <dd>DDA grid stepping, up to 64 steps per ray, with side-hit tracking for wall brightness.</dd>
+            <dt>Phosphor persistence</dt>
+            <dd>Each frame covers the previous frame with <code>rgba(0,0,0,0.22)</code> instead of fully clearing it.</dd>
+            <dt>Beam color</dt>
+            <dd>RGB 51, 255, 102, with canvas <code>shadowBlur</code> for the green glow.</dd>
+            <dt>Motion</dt>
+            <dd>Move speed 3.5 u/s; turn speed 2.2 rad/s; collision margin 0.28 map units.</dd>
+            <dt>Audio path</dt>
+            <dd>Browser-native <code>oscillator.type = 'triangle'</code>; 55 Hz drone, close-wall chimes, and no NES-style <code>PeriodicWave</code>.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Live JavaScript asset: <a href="/assets/phosphor/main.js?v=20260404a"><code>/assets/phosphor/main.js?v=20260404a</code></a>.</li>
+            <li><a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>: Phosphor is the native-triangle contrast point in the audio comparison.</li>
+            <li><a href="/blog/dead-beat/">Dead Beat</a>: related software-rendered room and Web Audio experiment.</li>
+            <li><a href="/animation/falling-hall/">Falling Hall</a>: later software-rendered descent with explicit bell-synthesis parameters.</li>
+            <li><a href="/lab/tools/chewgum-dsp/">chewgum-dsp v0.1.0</a>: extracts the NES-style triangle and bell path used elsewhere; Phosphor does not use that library.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>software rendering</li>
+            <li>DDA raycaster</li>
+            <li>oscilloscope effect</li>
+            <li>Web Audio</li>
+            <li>native triangle oscillator</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Phosphor," https://shanecurry.com/blog/phosphor/,
+            published 2026-04-04, updated 2026-04-30.
+          </p>
+        </div>
+      </section>

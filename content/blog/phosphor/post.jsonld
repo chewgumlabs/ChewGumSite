@@ -5,7 +5,7 @@
         "headline": "Phosphor",
         "description": "A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay.",
         "datePublished": "2026-04-04",
-        "dateModified": "2026-04-04",
+        "dateModified": "2026-04-30",
         "author": {
           "@id": "https://shanecurry.com/#person"
         },
@@ -21,7 +21,27 @@
           "oscilloscope",
           "interactive art",
           "DOOM",
-          "JavaScript"
+          "JavaScript",
+          "Web Audio",
+          "native triangle oscillator",
+          "DDA raycaster"
+        ],
+        "mentions": [
+          {
+            "@id": "https://shanecurry.com/assets/phosphor/main.js?v=20260404a"
+          },
+          {
+            "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
+          },
+          {
+            "@id": "https://shanecurry.com/blog/dead-beat/"
+          },
+          {
+            "@id": "https://shanecurry.com/animation/falling-hall/"
+          },
+          {
+            "@id": "https://shanecurry.com/lab/tools/chewgum-dsp/"
+          }
         ]
       }
     </script>
