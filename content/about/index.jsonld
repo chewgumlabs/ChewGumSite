@@ -8,10 +8,13 @@
             "url": "https://shanecurry.com/about/",
             "name": "About Shane Curry",
             "description": "Stable profile page for Shane Curry, animator and systems builder working across television, independent animation, tools, and AI-assisted software practice.",
+            "dateModified": "2026-04-30",
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
             "mainEntity": { "@id": "https://shanecurry.com/#person" },
             "hasPart": [
-              { "@id": "https://shanecurry.com/about/credits/#webpage" }
+              { "@id": "https://shanecurry.com/about/credits/#webpage" },
+              { "@id": "https://shanecurry.com/about/entity-map/#webpage" },
+              { "@id": "https://shanecurry.com/lab/tools/#webpage" }
             ],
             "about": [
               { "@id": "https://shanecurry.com/#person" },
@@ -27,10 +30,13 @@
             "jobTitle": "Animator and systems builder",
             "description": "Shane Curry is an animator and systems builder with 10 years of experience in primetime television and streaming. His work spans animation, rigging, animation systems, and AI-assisted software prototyping.",
             "sameAs": [
-              "https://github.com/chewgumlabs",
               "https://www.linkedin.com/in/shanecurrycartoons/",
               "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
               "https://www.youtube.com/@infinitehush"
+            ],
+            "subjectOf": [
+              { "@id": "https://shanecurry.com/about/credits/#webpage" },
+              { "@type": "VideoGame", "name": "My Valiant Purpose", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/" }
             ]
           },
           {
@@ -39,6 +45,10 @@
             "name": "ChewGum Labs",
             "url": "https://shanecurry.com/about/entity-map/",
             "description": "Umbrella identity for Shane Curry's independent animation and software work on shanecurry.com.",
+            "disambiguatingDescription": "ChewGum Labs is Shane Curry's independent animation and software umbrella identity, not an unrelated food, academic, or studio entity.",
+            "sameAs": [
+              "https://github.com/chewgumlabs"
+            ],
             "founder": { "@id": "https://shanecurry.com/#person" }
           },
           {
@@ -47,6 +57,7 @@
             "name": "ChewGum Animation",
             "url": "https://shanecurry.com/animation/",
             "description": "Flagship animation-software and animation-systems direction documented by Shane Curry on shanecurry.com.",
+            "disambiguatingDescription": "ChewGum Animation is the animation-software and animation-systems lane documented on shanecurry.com, not an unrelated animation studio or chewing-gum brand.",
             "creator": { "@id": "https://shanecurry.com/#person" },
             "publisher": { "@id": "https://shanecurry.com/#chewgum-labs" }
           }

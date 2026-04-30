@@ -7,7 +7,8 @@
             "@id": "https://shanecurry.com/about/entity-map/#webpage",
             "url": "https://shanecurry.com/about/entity-map/",
             "name": "Entity Map",
-            "description": "Disambiguation page connecting Shane Curry, ChewGum Labs, ChewGum Animation, and Shane Curry's public profiles.",
+            "description": "Disambiguation page connecting Shane Curry, ChewGum Labs, ChewGum Animation, public proof trails, and Shane Curry's public profiles.",
+            "dateModified": "2026-04-30",
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
             "about": [
               { "@id": "https://shanecurry.com/#person" },
@@ -21,10 +22,13 @@
             "name": "Shane Curry",
             "url": "https://shanecurry.com/",
             "sameAs": [
-              "https://github.com/chewgumlabs",
               "https://www.linkedin.com/in/shanecurrycartoons/",
               "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
               "https://www.youtube.com/@infinitehush"
+            ],
+            "subjectOf": [
+              { "@id": "https://shanecurry.com/about/credits/#webpage" },
+              { "@type": "VideoGame", "name": "My Valiant Purpose", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/" }
             ]
           },
           {
@@ -32,6 +36,10 @@
             "@id": "https://shanecurry.com/#chewgum-labs",
             "name": "ChewGum Labs",
             "url": "https://shanecurry.com/about/entity-map/",
+            "disambiguatingDescription": "ChewGum Labs is Shane Curry's independent animation and software umbrella identity, not an unrelated food, academic, or studio entity.",
+            "sameAs": [
+              "https://github.com/chewgumlabs"
+            ],
             "founder": { "@id": "https://shanecurry.com/#person" }
           },
           {
@@ -39,6 +47,7 @@
             "@id": "https://shanecurry.com/#chewgum-animation",
             "name": "ChewGum Animation",
             "url": "https://shanecurry.com/animation/",
+            "disambiguatingDescription": "ChewGum Animation is the animation-software and animation-systems lane documented on shanecurry.com, not an unrelated animation studio or chewing-gum brand.",
             "creator": { "@id": "https://shanecurry.com/#person" },
             "publisher": { "@id": "https://shanecurry.com/#chewgum-labs" }
           }
