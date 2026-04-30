@@ -1,7 +1,12 @@
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": ["Article", "LearningResource"],
+  "learningResourceType": "interactive simulation",
+  "teaches": [
+    "https://shanecurry.com/glossary/#anticipation",
+    "https://shanecurry.com/glossary/#staging"
+  ],
   "headline": "Anticipation Before Action",
   "description": "An interactive comparison of direct action versus anticipation: same payoff, with and without a setup beat.",
   "datePublished": "2026-04-22",
