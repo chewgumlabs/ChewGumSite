@@ -1,7 +1,7 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
+        "@type": "WebPage",
         "headline": "Phosphor",
         "description": "A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay.",
         "datePublished": "2026-04-04",
@@ -9,11 +9,11 @@
         "author": {
           "@id": "https://shanecurry.com/#person"
         },
-        "mainEntityOfPage": "https://shanecurry.com/blog/phosphor/",
-        "url": "https://shanecurry.com/blog/phosphor/",
+        "mainEntityOfPage": "https://shanecurry.com/lab/toys/phosphor/",
+        "url": "https://shanecurry.com/lab/toys/phosphor/",
         "isPartOf": {
-          "@type": "Blog",
-          "url": "https://shanecurry.com/blog/"
+          "@type": "CollectionPage",
+          "url": "https://shanecurry.com/lab/toys/"
         },
         "keywords": [
           "raycaster",
@@ -34,10 +34,10 @@
             "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
           },
           {
-            "@id": "https://shanecurry.com/blog/dead-beat/"
+            "@id": "https://shanecurry.com/lab/toys/dead-beat/"
           },
           {
-            "@id": "https://shanecurry.com/animation/falling-hall/"
+            "@id": "https://shanecurry.com/lab/toys/falling-hall/"
           },
           {
             "@id": "https://shanecurry.com/lab/tools/chewgum-dsp/"

@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-window-audit authority-registry authority-review authority-propose authority-trace authority-trace-review authority-memory-index authority-editor-pass help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-window-audit authority-taxonomy authority-registry authority-review authority-propose authority-trace authority-trace-review authority-memory-index authority-editor-pass authority-skills help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -26,6 +26,8 @@ help:
 	@echo "              audit public content, llms.txt, and sitemap.xml"
 	@echo "make authority-window-audit"
 	@echo "              audit public page window titles against tracked taxonomy policy"
+	@echo "make authority-taxonomy"
+	@echo "              audit site pages against tracked category doctrine"
 	@echo "make authority-registry"
 	@echo "              revalidate and index private authority drafts into _Internal/authority-registry/"
 	@echo "make authority-review"
@@ -41,6 +43,8 @@ help:
 	@echo "              sweep reviewed traces into a private authority memory index"
 	@echo "make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"
 	@echo "              run a private llama.cpp/Qwen editor pass over a draft fragment"
+	@echo "make authority-skills"
+	@echo "              print tracked Chew/Gum site-building capability notes"
 
 build:
 	@$(PYTHON) tools/build.py
@@ -84,6 +88,9 @@ authority-audit:
 authority-window-audit:
 	@$(PYTHON) tools/authority/audit_window_taxonomy.py
 
+authority-taxonomy:
+	@$(PYTHON) tools/authority/audit_site_taxonomy.py
+
 authority-registry:
 	@$(PYTHON) tools/authority/index_authority_registry.py
 
@@ -108,3 +115,6 @@ authority-memory-index:
 authority-editor-pass:
 	@[ -n "$(DRAFT)" ] || { echo "usage: make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug"; exit 2; }
 	@$(PYTHON) tools/authority/run_authority_editor_pass.py "$(DRAFT)"
+
+authority-skills:
+	@sed -n '1,260p' tools/authority/site_builder_skills.md

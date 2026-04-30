@@ -1,7 +1,7 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
+        "@type": "WebPage",
         "headline": "Dead Beat",
         "description": "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
         "datePublished": "2026-04-02",
@@ -9,11 +9,11 @@
         "author": {
           "@id": "https://shanecurry.com/#person"
         },
-        "mainEntityOfPage": "https://shanecurry.com/blog/dead-beat/",
-        "url": "https://shanecurry.com/blog/dead-beat/",
+        "mainEntityOfPage": "https://shanecurry.com/lab/toys/dead-beat/",
+        "url": "https://shanecurry.com/lab/toys/dead-beat/",
         "isPartOf": {
-          "@type": "Blog",
-          "url": "https://shanecurry.com/blog/"
+          "@type": "CollectionPage",
+          "url": "https://shanecurry.com/lab/toys/"
         },
         "keywords": [
           "Rust",
@@ -27,13 +27,13 @@
         ],
         "mentions": [
           {
-            "@id": "https://shanecurry.com/animation/falling-hall/"
+            "@id": "https://shanecurry.com/lab/toys/falling-hall/"
           },
           {
             "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
           },
           {
-            "@id": "https://shanecurry.com/blog/phosphor/"
+            "@id": "https://shanecurry.com/lab/toys/phosphor/"
           },
           {
             "@id": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"

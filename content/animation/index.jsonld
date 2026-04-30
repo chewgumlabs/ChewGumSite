@@ -7,7 +7,7 @@
             "@id": "https://shanecurry.com/animation/#webpage",
             "url": "https://shanecurry.com/animation/",
             "name": "Animation",
-            "description": "Flagship page for Shane Curry's animation work, ChewGum Animation, animation systems, and AI-assisted prototyping.",
+            "description": "Animation showcase page for Shane Curry's older animation work, credits-adjacent material, and Chew/Gum series links.",
             "author": { "@id": "https://shanecurry.com/#person" },
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
             "mainEntity": { "@id": "https://shanecurry.com/#chewgum-animation" },
@@ -21,7 +21,7 @@
             "@id": "https://shanecurry.com/#chewgum-animation",
             "name": "ChewGum Animation",
             "url": "https://shanecurry.com/animation/",
-            "description": "Flagship animation-software and animation-systems direction documented by Shane Curry on shanecurry.com.",
+            "description": "Animation and Chew/Gum series direction documented by Shane Curry on shanecurry.com.",
             "creator": { "@id": "https://shanecurry.com/#person" },
             "publisher": { "@id": "https://shanecurry.com/#chewgum-labs" }
           }

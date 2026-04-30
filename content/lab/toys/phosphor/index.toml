@@ -1,6 +1,6 @@
 title = "Phosphor"
 description = "A DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners are bright. Old frames decay."
-canonical = "https://shanecurry.com/blog/phosphor/"
+canonical = "https://shanecurry.com/lab/toys/phosphor/"
 published = 2026-04-04
 kind = "experiment"
 blurb = "a DOOM-style raycaster rendered as oscilloscope line art. Walls are beams. Corners glow. Old frames decay behind the new ones."

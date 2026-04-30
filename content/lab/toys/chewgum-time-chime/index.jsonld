@@ -8,7 +8,7 @@
     "https://shanecurry.com/glossary/#timing",
     "https://shanecurry.com/glossary/#spacing"
   ],
-  "headline": "ChewGum Time Chime",
+  "headline": "Stroke Chime",
   "description": "A musical harness for smoothing algorithms: draw a stroke and hear random diatonic high chimes, a lower F/C/A/F channel, and a faint looping air layer trail the hand.",
   "datePublished": "2026-04-30",
   "dateModified": "2026-04-30",
@@ -48,7 +48,7 @@
   ],
   "keywords": [
     "stroke smoothing melody",
-    "ChewGum Time Chime",
+    "Stroke Chime",
     "ChewGumTimeChime",
     "time consistent smoothing",
     "smoothing algorithm comparison",

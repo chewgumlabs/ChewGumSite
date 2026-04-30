@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://shanecurry.com/</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/about/</loc>
@@ -18,23 +18,23 @@
   </url>
   <url>
     <loc>https://shanecurry.com/animation/</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/glossary/</loc>
     <lastmod>2026-04-29</lastmod>
   </url>
   <url>
-    <loc>https://shanecurry.com/animation/falling-hall/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <loc>https://shanecurry.com/lab/toys/falling-hall/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/lab/</loc>
-    <lastmod>2026-04-22</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/lab/toys/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/lab/tools/</loc>
@@ -54,18 +54,22 @@
   </url>
   <url>
     <loc>https://shanecurry.com/blog/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-04-30</lastmod>
+  </url>
+  <url>
+    <loc>https://shanecurry.com/blog/gum-in-the-machine/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
-    <loc>https://shanecurry.com/blog/dead-beat/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <loc>https://shanecurry.com/lab/toys/dead-beat/</loc>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
-    <loc>https://shanecurry.com/blog/phosphor/</loc>
+    <loc>https://shanecurry.com/lab/toys/phosphor/</loc>
     <lastmod>2026-04-30</lastmod>
   </url>
   <url>
@@ -94,7 +98,7 @@
   </url>
   <url>
     <loc>https://shanecurry.com/lab/toys/triangle-engines/</loc>
-    <lastmod>2026-04-29</lastmod>
+    <lastmod>2026-04-30</lastmod>
   </url>
   <url>
     <loc>https://shanecurry.com/lab/toys/chewgum-time-chime/</loc>

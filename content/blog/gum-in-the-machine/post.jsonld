@@ -1,0 +1,27 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Gum in the Machine",
+        "description": "A note on introducing Gum as a truth-protection role inside the Chew/Gum workflow.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/gum-in-the-machine/",
+        "url": "https://shanecurry.com/blog/gum-in-the-machine/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "Gum",
+          "ChewGum workflow",
+          "Qwen 2.5",
+          "memory index",
+          "truth protection",
+          "local AI"
+        ]
+      }
+    </script>

@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/site-taxonomy.v0.json",
+  "title": "Site Taxonomy Policy v0",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "updated",
+    "categories",
+    "known_corrections",
+    "rename_candidates",
+    "migration_checks",
+    "training_memory_policy"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema_version": { "const": "site-taxonomy.v0" },
+    "updated": { "type": "string" },
+    "description": { "type": "string" },
+    "categories": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["definition", "public_prefix", "content_prefix"],
+        "properties": {
+          "definition": { "type": "string" },
+          "public_prefix": { "type": "string" },
+          "content_prefix": { "type": "string" },
+          "must_contain_one_of": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "must_not_contain": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "known_corrections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_path",
+          "target_category",
+          "target_public_path",
+          "old_url_strategy",
+          "human_rule"
+        ],
+        "properties": {
+          "source_path": { "type": "string" },
+          "target_category": { "type": "string" },
+          "target_public_path": { "type": "string" },
+          "old_url_strategy": { "type": "string" },
+          "human_rule": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rename_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_path",
+          "reason",
+          "candidate_titles",
+          "preferred_scope",
+          "keep_url"
+        ],
+        "properties": {
+          "source_path": { "type": "string" },
+          "reason": { "type": "string" },
+          "candidate_titles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "preferred_scope": { "type": "string" },
+          "keep_url": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "migration_checks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "training_memory_policy": {
+      "type": "object",
+      "required": [
+        "records_are_private",
+        "records_require_human_review_before_training",
+        "useful_record_fields"
+      ],
+      "properties": {
+        "records_are_private": { "type": "boolean" },
+        "records_require_human_review_before_training": { "type": "boolean" },
+        "useful_record_fields": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

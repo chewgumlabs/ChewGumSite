@@ -512,6 +512,8 @@ def _audit_glossary_links(pages: list[Page], findings: list[Finding]) -> None:
     for page in pages:
         if _url_path(page.url) == "/glossary/" or not page.frag_path.exists():
             continue
+        if _url_path(page.url).startswith("/blog/"):
+            continue
         raw = page.frag_path.read_text(errors="replace")
         prose = _html_text(_strip_anchor_text(raw))
         for term, fragment in terms.items():
@@ -675,15 +677,28 @@ def _looks_pedagogical(page: Page) -> bool:
         str(page.frontmatter.get(field) or "")
         for field in ("title", "description", "blurb", "kind")
     ).lower()
-    path = _url_path(page.url)
-    return path.startswith("/lab/toys/") or any(
+    return any(
         token in text
-        for token in ("interactive", "toy", "showing", "comparison", "demonstrates")
+        for token in (
+            "comparison",
+            "demonstrates",
+            "definition",
+            "teaches",
+            "teaching",
+            "lesson",
+            "pedagogical",
+            "simulation",
+            "timing vs",
+            "spacing",
+            "anticipation",
+        )
     )
 
 
 def _is_active_artifact(page: Page) -> bool:
     path = _url_path(page.url)
+    if page.frontmatter.get("kind") == "redirect-stub":
+        return False
     if page.toml_path.name == "post.toml":
         return True
     if path.startswith("/lab/toys/") and path != "/lab/toys/":

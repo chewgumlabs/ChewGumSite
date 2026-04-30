@@ -13,7 +13,7 @@
                         <p class="eyebrow">Software Rendered Descent</p>
                         <p class="lede">
                           A 2.5D falling scene rendered on the CPU, with a bell tone lifted from the same
-                          synth logic that powered <a href="/blog/dead-beat/">Dead Beat</a>.
+                          synth logic that powered <a href="/lab/toys/dead-beat/">Dead Beat</a>.
                         </p>
                       </section>
 
@@ -96,7 +96,7 @@
                             <p class="panel-label">Bell Logic</p>
                             <p>
                               Each wall strike triggers a small bell built from the same triangle-wave
-                              generator pattern introduced on <a href="/blog/dead-beat/">Dead Beat</a>.
+                              generator pattern introduced on <a href="/lab/toys/dead-beat/">Dead Beat</a>.
                             </p>
                           </section>
                         </aside>
@@ -139,7 +139,7 @@
             <dt>Audio: bell synth</dt>
             <dd>Master gain 0.16; bandpass at fundamental &times; 2.2 (Q 2.4, capped at 3200 Hz); 3-voice triangle + sine harmonics at &times;2.01 and &times;3.17; envelope 0.02 s attack, 1.45 s primary decay.</dd>
             <dt>Audio: triangle wave</dt>
-            <dd>NES-style 32-step staircase reconstructed as a Web Audio <code>PeriodicWave</code> from 24 cosine/sine harmonics. Same generator family used in <a href="/blog/dead-beat/">Dead Beat</a>.</dd>
+            <dd>NES-style 32-step staircase reconstructed as a Web Audio <code>PeriodicWave</code> from 24 cosine/sine harmonics. Same generator family used in <a href="/lab/toys/dead-beat/">Dead Beat</a>.</dd>
             <dt>Bell scale</dt>
             <dd>MIDI [69, 72, 76, 79, 81, 84] &mdash; A4, C5, E5, G5, A5, C6. Impact intensity currently raises the selected scale note by up to 6 semitones through the collision path.</dd>
           </dl>
@@ -150,7 +150,7 @@
         <div class="window-content">
           <ul>
             <li>Live demo source: <a href="/assets/falling-hall/main.js"><code>/assets/falling-hall/main.js</code></a> on this site. No separate public repo yet.</li>
-            <li>Bell synthesis lineage: the triangle-wave generator pattern is shared with <a href="/blog/dead-beat/">Dead Beat</a>; the audio approach is a planned extraction target for the upcoming <code>chewgum-dsp</code> public repo.</li>
+            <li>Bell synthesis lineage: the triangle-wave generator pattern is shared with <a href="/lab/toys/dead-beat/">Dead Beat</a> and later extracted into the public <a href="/lab/tools/chewgum-dsp/">chewgum-dsp v0.1.0</a> repo.</li>
             <li>Rendering approach: signed-distance raymarching against a procedural facet tunnel, with adaptive per-pixel step size, exponential fog, and a single directional light with rim and seam terms.</li>
             <li>Implementation note: pure CPU rendering into a 160 &times; 120 <code>ImageData</code> buffer, scaled up by the browser. No WebGL, no shaders. Physics and audio triggering run from the same main loop; synthesis is scheduled through Web Audio.</li>
           </ul>
@@ -165,5 +165,15 @@
             <li>raymarching</li>
             <li>real-time audio</li>
           </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Falling Hall,"
+            https://shanecurry.com/lab/toys/falling-hall/, published
+            2026-04-04, updated 2026-04-30.
+          </p>
         </div>
       </section>

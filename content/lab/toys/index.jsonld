@@ -4,7 +4,7 @@
         "@type": "CollectionPage",
         "url": "https://shanecurry.com/lab/toys/",
         "name": "Toys",
-        "description": "Index for small research-driven interactive toy notes by Shane Curry.",
+        "description": "Index for interactive browser artifacts, toy notes, playable demos, and public source trails by Shane Curry.",
         "author": { "@id": "https://shanecurry.com/#person" },
         "isPartOf": "https://shanecurry.com/lab/"
       }

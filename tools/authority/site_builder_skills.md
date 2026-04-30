@@ -1,0 +1,215 @@
+# Chew/Gum Site Builder Skills
+
+Tracked capability notes for the online-presence lane. This document is for
+humans and agents who need to remember what the site-building workflow can do.
+It is not public copy and it is not a promise that any step publishes
+automatically.
+
+## Operating Split
+
+Chew is the proposing/building side:
+
+- names possible moves
+- drafts packets
+- sketches page changes
+- proposes taxonomy corrections
+- writes candidate prose or enrichment fragments
+
+Gum is the verifying/protecting side:
+
+- blocks unsupported claims
+- rejects invented URLs
+- checks category doctrine
+- catches stale validation
+- refuses thin pages
+- records human corrections as memory
+
+Codex and the human remain the promotion authority. A model proposal is never a
+published artifact by itself.
+
+## Reusable Skills
+
+### Authority Proposal
+
+Use when a real public artifact may support a new page, enrichment, held packet,
+or rejection.
+
+Inputs:
+
+- one explicit source file
+- allowed public evidence URLs
+- pass intent
+
+Outputs:
+
+- private candidate packets
+- validation reports
+- proposal report
+- optional repair pass
+
+Current command:
+
+```sh
+make authority-propose SOURCE=content/path/to/page.frag.html
+```
+
+### Source-Trail Enrichment
+
+Use when an existing public page is real but under-explained. This is usually
+better than creating a new page.
+
+Good targets:
+
+- demo parameters
+- exact source links
+- sibling artifact links
+- repo/tag links
+- JSON-LD mentions/about fields
+
+Guardrail: enrichment must strengthen the existing page without turning it into
+a page about the pipeline that enriched it.
+
+### Identity Resolution Sweep
+
+Use when a page needs clearer connection to Shane Curry, ChewGum Labs, ChewGum
+Animation, Infinite Hush, external profiles, or name-collision handling.
+
+This pass can run on any source page. The source page role does not matter;
+identity-resolution intent overrides it.
+
+Guardrail: do not propose toy/tool/artifact work during an identity pass unless
+it directly resolves identity.
+
+### Window Taxonomy Audit
+
+Use when the visible page windows are drifting into inconsistent labels.
+
+Current command:
+
+```sh
+make authority-window-audit
+```
+
+Good outcomes:
+
+- rename vague windows
+- preserve expressive titles where intentional
+- keep page role labels stable enough for humans and agents
+
+### Public Surface Audit
+
+Use before commit/push or after broad edits.
+
+Current command:
+
+```sh
+make authority-audit
+```
+
+Checks include:
+
+- private path leaks
+- non-public URL leaks
+- sitemap/llms visibility risks
+- public candidate warnings
+
+### Editor Pass
+
+Use when a draft has truthful content but awkward prose.
+
+Current command:
+
+```sh
+make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug
+```
+
+Guardrails:
+
+- preserve HTML structure
+- preserve links and code text
+- do not add claims
+- do not change the artifact's factual scope
+
+### Taxonomy Migration Pass
+
+Use when the site's current category or URL no longer matches the human meaning
+of the work.
+
+This is not part of normal publishing. It is a corrective room-sweep for when
+the site architecture has learned something new.
+
+Inputs:
+
+- category doctrine
+- current page inventory
+- candidate reclassification proposal
+- old URL handling plan
+
+Current doctrine:
+
+- `blog`: prose, reflection, essays, human notes
+- `toy`: interactive browser artifact or playable demo
+- `tool`: repo-backed reusable software or public extraction
+- `animation`: literal animation showcase, credits-adjacent animation work,
+  YouTube/portfolio material
+- `about`: identity, proof trail, external profile resolution
+- `glossary`: definitions used by public work
+- `lab`: umbrella/methodology lane, not a junk drawer
+
+Applied taxonomy corrections:
+
+- Phosphor is a toy, not a blog post.
+- Dead Beat is a toy, not a blog post.
+- Falling Hall is a toy, not an animation showcase page.
+- ChewGumTimeChime is a tool/repo; the originating live toy now uses the
+  distinct public display name Stroke Chime.
+
+Required checks:
+
+- no invented URLs
+- no silent canonical drift
+- old URL has a redirect, pointer, or noindex/stub plan
+- index pages update with the move
+- sitemap and llms.txt impact is named
+- blog index contains prose only
+- toy index contains interactive artifacts only
+- tool index contains repo-backed artifacts only
+
+Current command:
+
+```sh
+make authority-taxonomy
+```
+
+Private outputs:
+
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.md`
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.json`
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl`
+
+### Trace And Memory Capture
+
+Use after a meaningful proposal/review loop so future passes inherit the
+correction.
+
+Current commands:
+
+```sh
+make authority-trace PROPOSAL=_Internal/authority-proposals/YYYY-MM-DD-slug
+make authority-trace-review TRACE=_Internal/authority-traces/YYYY-MM-DD-slug
+make authority-memory-index
+```
+
+Good memory records include:
+
+- human correction
+- rejected model assumption
+- accepted final rule
+- exact evidence used
+- final validation outcome
+
+## When In Doubt
+
+Prefer a private proposal, a held packet, or a taxonomy note over public churn.
+The useful move is the one that leaves the public site clearer and leaves the
+private memory layer smarter.

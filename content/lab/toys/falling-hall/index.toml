@@ -1,6 +1,6 @@
 title = "Falling Hall"
 description = "A software-rendered faceted tunnel that feels like falling down a bell-lined hole."
-canonical = "https://shanecurry.com/animation/falling-hall/"
+canonical = "https://shanecurry.com/lab/toys/falling-hall/"
 published = 2026-04-04
 kind = "experiment"
 blurb = "a 2.5D software-rendered tunnel that drops you through a faceted bell-lined shaft. Drift with WASD and ring the walls."

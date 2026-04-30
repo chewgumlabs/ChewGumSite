@@ -5,16 +5,15 @@
     <link>https://shanecurry.com/</link>
     <description>Updates, blog posts, and durable technical pages by Shane Curry.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 02 Apr 2026 20:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 30 Apr 2026 19:00:00 GMT</lastBuildDate>
 
     <item>
-      <title>Dead Beat</title>
-      <link>https://shanecurry.com/blog/dead-beat/</link>
-      <guid>https://shanecurry.com/blog/dead-beat/</guid>
-      <pubDate>Thu, 02 Apr 2026 20:00:00 GMT</pubDate>
+      <title>Gum in the Machine</title>
+      <link>https://shanecurry.com/blog/gum-in-the-machine/</link>
+      <guid>https://shanecurry.com/blog/gum-in-the-machine/</guid>
+      <pubDate>Thu, 30 Apr 2026 19:00:00 GMT</pubDate>
       <description>
-        A browser-playable software-rendered room written in Rust and WebAssembly, with
-        live-editable wall text on each outer wall.
+        A note on introducing Gum as a truth-protection role inside the Chew/Gum workflow.
       </description>
     </item>
 

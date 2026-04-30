@@ -31,9 +31,9 @@
     "chewgum-dsp"
   ],
   "mentions": [
-    { "@id": "https://shanecurry.com/blog/dead-beat/" },
-    { "@id": "https://shanecurry.com/animation/falling-hall/" },
-    { "@id": "https://shanecurry.com/blog/phosphor/" }
+    { "@id": "https://shanecurry.com/lab/toys/dead-beat/" },
+    { "@id": "https://shanecurry.com/lab/toys/falling-hall/" },
+    { "@id": "https://shanecurry.com/lab/toys/phosphor/" }
   ]
 }
     </script>

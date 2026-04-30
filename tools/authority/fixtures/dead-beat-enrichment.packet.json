@@ -3,11 +3,11 @@
   "draft_id": "dead-beat-enrichment-fixture",
   "test_fixture": true,
   "source_kind": "public_page",
-  "source_ref": "https://shanecurry.com/blog/dead-beat/",
+  "source_ref": "https://shanecurry.com/lab/toys/dead-beat/",
   "recommended_output": "note",
   "promotion_mode": "enrich_existing",
-  "target_public_path": "/blog/dead-beat/",
-  "canonical_url": "https://shanecurry.com/blog/dead-beat/",
+  "target_public_path": "/lab/toys/dead-beat/",
+  "canonical_url": "https://shanecurry.com/lab/toys/dead-beat/",
   "canonical_title": "Dead Beat Source Trail",
   "title": "Dead Beat Source Trail",
   "description": "A source-trail enrichment for Dead Beat around software rendering, live wall text, and bell-synthesis lineage.",
@@ -25,9 +25,9 @@
     "chewgum-dsp"
   ],
   "related_public_surfaces": [
-    "https://shanecurry.com/blog/dead-beat/",
-    "https://shanecurry.com/blog/phosphor/",
-    "https://shanecurry.com/animation/falling-hall/",
+    "https://shanecurry.com/lab/toys/dead-beat/",
+    "https://shanecurry.com/lab/toys/phosphor/",
+    "https://shanecurry.com/lab/toys/falling-hall/",
     "https://shanecurry.com/lab/toys/triangle-engines/"
   ],
   "related_project": "ChewGum Animation",
@@ -38,15 +38,15 @@
   "source_trail": [
     {
       "text": "Dead Beat public page: browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
-      "url": "https://shanecurry.com/blog/dead-beat/"
+      "url": "https://shanecurry.com/lab/toys/dead-beat/"
     },
     {
       "text": "Phosphor public page: later raycaster experiment that keeps the software-rendering lane visible as a public trail.",
-      "url": "https://shanecurry.com/blog/phosphor/"
+      "url": "https://shanecurry.com/lab/toys/phosphor/"
     },
     {
       "text": "Falling Hall public page: later software-rendered descent that explicitly cites Dead Beat's bell-synthesis lineage.",
-      "url": "https://shanecurry.com/animation/falling-hall/"
+      "url": "https://shanecurry.com/lab/toys/falling-hall/"
     },
     {
       "text": "Triangle Engines public toy: isolates native triangle versus NES-style PeriodicWave behavior used in the chewgum-dsp lineage.",
@@ -79,6 +79,6 @@
     "publication_gate": "approved"
   },
   "review_owner": "Shane Curry",
-  "preferred_citation": "Shane Curry, \"Dead Beat,\" https://shanecurry.com/blog/dead-beat/, published 2026-04-02.",
+  "preferred_citation": "Shane Curry, \"Dead Beat,\" https://shanecurry.com/lab/toys/dead-beat/, published 2026-04-02.",
   "human_promotion_required": true
 }

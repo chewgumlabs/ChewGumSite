@@ -1817,9 +1817,9 @@ def _run_self_test() -> int:
         print("FAIL parse fenced JSON")
         return 1
     source = {
-        "path": "content/blog/phosphor/post.frag.html",
-        "public_path": "/blog/phosphor/",
-        "canonical_url": "https://shanecurry.com/blog/phosphor/",
+        "path": "content/lab/toys/phosphor/post.frag.html",
+        "public_path": "/lab/toys/phosphor/",
+        "canonical_url": "https://shanecurry.com/lab/toys/phosphor/",
         "title": "Phosphor",
         "description": "",
         "kind": "experiment",
@@ -1837,8 +1837,8 @@ def _run_self_test() -> int:
             },
             {
                 "status": "promoted",
-                "canonical_url": "https://shanecurry.com/blog/phosphor/",
-                "target_public_path": "/blog/phosphor/",
+                "canonical_url": "https://shanecurry.com/lab/toys/phosphor/",
+                "target_public_path": "/lab/toys/phosphor/",
                 "claim_summary": "Published Phosphor page.",
             },
         ]
@@ -1851,14 +1851,14 @@ def _run_self_test() -> int:
         print("FAIL registry context exposed non-promoted candidate")
         print(registry_items)
         return 1
-    if not any("/blog/phosphor/" in item for item in registry_items):
+    if not any("/lab/toys/phosphor/" in item for item in registry_items):
         print("FAIL registry context omitted promoted entry")
         print(registry_items)
         return 1
     packet = _normalize_candidate(
         {
             "canonical_title": "Phosphor Source Trail",
-            "target_public_path": "/blog/phosphor/",
+            "target_public_path": "/lab/toys/phosphor/",
             "status": "promoted",
             "promotion_commit": "bad",
             "recommended_output": "note",
@@ -1883,19 +1883,19 @@ def _run_self_test() -> int:
     child_packet = _normalize_candidate(
         {
             "canonical_title": "Phosphor Oscilloscope Effect",
-            "target_public_path": "/blog/phosphor/oscilloscope-effect/",
-            "canonical_url": "https://shanecurry.com/blog/phosphor/oscilloscope-effect/",
+            "target_public_path": "/lab/toys/phosphor/oscilloscope-effect/",
+            "canonical_url": "https://shanecurry.com/lab/toys/phosphor/oscilloscope-effect/",
             "promotion_mode": "enrich_existing",
             "recommended_output": "note",
         },
         source,
         2,
     )
-    if child_packet["target_public_path"] != "/blog/phosphor/":
+    if child_packet["target_public_path"] != "/lab/toys/phosphor/":
         print("FAIL enrich_existing child target normalization")
         print(child_packet)
         return 1
-    if child_packet["canonical_url"] != "https://shanecurry.com/blog/phosphor/":
+    if child_packet["canonical_url"] != "https://shanecurry.com/lab/toys/phosphor/":
         print("FAIL enrich_existing child canonical normalization")
         print(child_packet)
         return 1
@@ -1906,8 +1906,8 @@ def _run_self_test() -> int:
     new_page_packet = _normalize_candidate(
         {
             "canonical_title": "Phosphor Demos",
-            "target_public_path": "/blog/phosphor/demos/",
-            "canonical_url": "https://shanecurry.com/blog/phosphor/demos/",
+            "target_public_path": "/lab/toys/phosphor/demos/",
+            "canonical_url": "https://shanecurry.com/lab/toys/phosphor/demos/",
             "promotion_mode": "new_page",
             "recommended_output": "index",
         },
@@ -1929,7 +1929,7 @@ def _run_self_test() -> int:
     prompt_doc = _prompt_document(
         source_context=source,
         registry_context=[],
-        allowed_evidence_urls=["https://shanecurry.com/blog/phosphor/"],
+        allowed_evidence_urls=["https://shanecurry.com/lab/toys/phosphor/"],
         model=DEFAULT_MODEL,
         endpoint=DEFAULT_ENDPOINT,
         limit=2,
@@ -1942,8 +1942,8 @@ def _run_self_test() -> int:
         source_context=source,
         registry_context=[],
         allowed_evidence_urls=[
-            "https://shanecurry.com/blog/phosphor/",
-            "https://shanecurry.com/blog/dead-beat/",
+            "https://shanecurry.com/lab/toys/phosphor/",
+            "https://shanecurry.com/lab/toys/dead-beat/",
         ],
         failed_result={
             "packet_path": "_Internal/example/candidate.packet.json",
@@ -1971,22 +1971,22 @@ def _run_self_test() -> int:
     thin_scan = _scan_packet_safety(
         {
             "recommended_output": "note",
-            "source_ref": "https://shanecurry.com/blog/phosphor/",
+            "source_ref": "https://shanecurry.com/lab/toys/phosphor/",
             "related_public_surfaces": [
-                "https://shanecurry.com/blog/phosphor/",
-                "https://shanecurry.com/blog/dead-beat/",
+                "https://shanecurry.com/lab/toys/phosphor/",
+                "https://shanecurry.com/lab/toys/dead-beat/",
             ],
             "source_trail": [
                 {
                     "text": "This gives deeper understanding of potential applications.",
-                    "url": "https://shanecurry.com/blog/phosphor/",
+                    "url": "https://shanecurry.com/lab/toys/phosphor/",
                 }
             ],
         },
         check_reachability=False,
         allowed_evidence_urls=[
-            "https://shanecurry.com/blog/phosphor/",
-            "https://shanecurry.com/blog/dead-beat/",
+            "https://shanecurry.com/lab/toys/phosphor/",
+            "https://shanecurry.com/lab/toys/dead-beat/",
         ],
     )
     if not any("source_trail has fewer" in item for item in thin_scan["blocking"]):
@@ -2026,13 +2026,13 @@ def _run_self_test() -> int:
         print("FAIL artifact mismatch blocker missing")
         print(mismatch_scan)
         return 1
-    if "https://shanecurry.com/blog/phosphor/demos/" not in _evidence_urls(
+    if "https://shanecurry.com/lab/toys/phosphor/demos/" not in _evidence_urls(
         {
-            "canonical_url": "https://shanecurry.com/blog/phosphor/demos/",
-            "source_ref": "https://shanecurry.com/blog/phosphor/",
-            "related_public_surfaces": ["https://shanecurry.com/blog/phosphor/demos/"],
+            "canonical_url": "https://shanecurry.com/lab/toys/phosphor/demos/",
+            "source_ref": "https://shanecurry.com/lab/toys/phosphor/",
+            "related_public_surfaces": ["https://shanecurry.com/lab/toys/phosphor/demos/"],
             "source_trail": [
-                {"text": "Future child page used as evidence.", "url": "https://shanecurry.com/blog/phosphor/demos/"}
+                {"text": "Future child page used as evidence.", "url": "https://shanecurry.com/lab/toys/phosphor/demos/"}
             ],
         }
     ):
@@ -2040,15 +2040,15 @@ def _run_self_test() -> int:
         return 1
     scan = _scan_packet_safety(
         {
-            "source_ref": "https://shanecurry.com/blog/phosphor/",
+            "source_ref": "https://shanecurry.com/lab/toys/phosphor/",
             "recommended_output": "note",
-            "related_public_surfaces": ["https://shanecurry.com/blog/phosphor/demos/"],
+            "related_public_surfaces": ["https://shanecurry.com/lab/toys/phosphor/demos/"],
             "source_trail": [
-                {"text": "Future child page used as evidence.", "url": "https://shanecurry.com/blog/phosphor/demos/"}
+                {"text": "Future child page used as evidence.", "url": "https://shanecurry.com/lab/toys/phosphor/demos/"}
             ],
         },
         check_reachability=False,
-        allowed_evidence_urls=["https://shanecurry.com/blog/phosphor/"],
+        allowed_evidence_urls=["https://shanecurry.com/lab/toys/phosphor/"],
     )
     if not any("allowed_public_evidence_urls" in item for item in scan["blocking"]):
         print("FAIL future evidence URL was not blocked by allow-list")
@@ -2064,13 +2064,13 @@ def _run_self_test() -> int:
             "what_changes_on_screen": "The user can control the direction and speed of descent.",
             "user_interaction": "The user can use the WASD keys, arrow keys, and Shift key.",
             "demo_parameters": [{"label": "Initial Speed", "value": "4.1 u/s"}],
-            "source_ref": "https://shanecurry.com/animation/falling-hall/",
+            "source_ref": "https://shanecurry.com/lab/toys/falling-hall/",
             "related_public_surfaces": [
-                "https://shanecurry.com/animation/falling-hall/",
+                "https://shanecurry.com/lab/toys/falling-hall/",
                 "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
             ],
             "source_trail": [
-                {"text": "Falling Hall page.", "url": "https://shanecurry.com/animation/falling-hall/"},
+                {"text": "Falling Hall page.", "url": "https://shanecurry.com/lab/toys/falling-hall/"},
                 {
                     "text": "Falling Hall source asset.",
                     "url": "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
@@ -2079,7 +2079,7 @@ def _run_self_test() -> int:
         },
         check_reachability=False,
         allowed_evidence_urls=[
-            "https://shanecurry.com/animation/falling-hall/",
+            "https://shanecurry.com/lab/toys/falling-hall/",
             "https://shanecurry.com/assets/falling-hall/main.js?v=20260404a",
         ],
     )
@@ -2225,19 +2225,19 @@ def _run_self_test() -> int:
             "path": "content/lab/toys/chewgum-time-chime/index.frag.html",
             "public_path": "/lab/toys/chewgum-time-chime/",
             "canonical_url": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
-            "title": "ChewGum Time Chime",
-            "source_page_role": _source_page_role("/lab/toys/chewgum-time-chime/", "", "ChewGum Time Chime"),
+            "title": "Stroke Chime",
+            "source_page_role": _source_page_role("/lab/toys/chewgum-time-chime/", "", "Stroke Chime"),
             "pass_intent": _resolved_pass_intent("identity_resolution", "toy_artifact"),
         }
     )
     toy_identity_packet = _normalize_candidate(
         {
-            "canonical_title": "ChewGum Time Chime Identity Anchor",
+            "canonical_title": "Stroke Chime Identity Anchor",
             "recommended_output": "note",
             "promotion_mode": "enrich_existing",
-            "one_sentence_claim": "ChewGum Time Chime is a ChewGum Labs toy by Shane Curry connected to the ChewGum Animation public lab lane.",
+            "one_sentence_claim": "Stroke Chime is a ChewGum Labs toy by Shane Curry connected to the ChewGum Animation public lab lane.",
             "source_trail": [
-                {"text": "ChewGum Time Chime toy page.", "url": "https://shanecurry.com/lab/toys/chewgum-time-chime/"},
+                {"text": "Stroke Chime toy page.", "url": "https://shanecurry.com/lab/toys/chewgum-time-chime/"},
                 {"text": "About page resolving Shane Curry and ChewGum Labs.", "url": "https://shanecurry.com/about/"},
             ],
             "related_public_surfaces": [

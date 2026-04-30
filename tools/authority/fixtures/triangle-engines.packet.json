@@ -54,9 +54,9 @@
     "audio synthesis"
   ],
   "related_public_surfaces": [
-    "https://shanecurry.com/blog/dead-beat/",
-    "https://shanecurry.com/animation/falling-hall/",
-    "https://shanecurry.com/blog/phosphor/"
+    "https://shanecurry.com/lab/toys/dead-beat/",
+    "https://shanecurry.com/lab/toys/falling-hall/",
+    "https://shanecurry.com/lab/toys/phosphor/"
   ],
   "related_project": "ChewGum Animation",
   "source_library": {
@@ -70,15 +70,15 @@
     },
     {
       "text": "NES-style PeriodicWave deployed in Dead Beat (bell tones).",
-      "url": "https://shanecurry.com/blog/dead-beat/"
+      "url": "https://shanecurry.com/lab/toys/dead-beat/"
     },
     {
       "text": "NES-style PeriodicWave deployed in Falling Hall (wall-strike chimes).",
-      "url": "https://shanecurry.com/animation/falling-hall/"
+      "url": "https://shanecurry.com/lab/toys/falling-hall/"
     },
     {
       "text": "Native triangle oscillator deployed in Phosphor (contrast point, not a deployment of this library).",
-      "url": "https://shanecurry.com/blog/phosphor/"
+      "url": "https://shanecurry.com/lab/toys/phosphor/"
     }
   ],
   "public_internal_boundary": {

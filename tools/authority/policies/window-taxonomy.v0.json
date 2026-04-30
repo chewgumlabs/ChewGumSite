@@ -61,6 +61,13 @@
       "allow_page_title_window": false,
       "allow_expressive_titles": false
     },
+    "redirect_stub": {
+      "description": "Old public URL pointer kept for humans and crawlers after a page moves.",
+      "required_titles": ["Moved"],
+      "allowed_titles": [],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
     "toy_artifact": {
       "description": "Interactive lab toy with a working demo and public source trail.",
       "required_titles": [
@@ -139,6 +146,7 @@
         "Live Artifact",
         "Main Claim",
         "Metadata",
+        "Render Parameters",
         "Related Terms",
         "Technical Parameters",
         "Why It Matters"

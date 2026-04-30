@@ -603,4 +603,18 @@ blockquote {
 }
 .footer-links li::before { content: "[ "; color: var(--ega-lt-cyan); }
 .footer-links li::after  { content: " ]"; color: var(--ega-lt-cyan); }
-.attribution { color: var(--ega-lt-grey); }
+.footer-rule {
+  color: var(--ega-lt-grey);
+  margin: 16px 0 8px;
+  white-space: nowrap;
+}
+.attribution {
+  color: var(--ega-lt-grey);
+  margin-top: 16px;
+}
+.attribution-chip {
+  background: var(--ega-white);
+  color: var(--ega-black);
+  padding: 0 4px;
+}
+.attribution-label { color: var(--ega-white); }

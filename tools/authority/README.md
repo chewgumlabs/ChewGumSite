@@ -24,6 +24,7 @@ tools/authority/
   run_authority_smoke.py          deterministic fixture matrix runner
   audit_public_surface.py         read-only audit of public site surfaces
   audit_window_taxonomy.py        read-only audit of window-title taxonomy drift
+  audit_site_taxonomy.py          read-only audit of page categories and migration candidates
   index_authority_registry.py     index private drafts into a review queue
   render_authority_review.py      render private human review memo
   run_authority_proposer.py       private Qwen packet proposer
@@ -32,6 +33,7 @@ tools/authority/
   review_authority_trace.py       human label gate for trace training records
   index_authority_memory.py       aggregate reviewed traces into memory corpus
   run_authority_editor_pass.py    private llama.cpp/Qwen prose editor pass
+  site_builder_skills.md          tracked Chew/Gum site-building capability notes
   schemas/
     authority-draft-registry.v0.json
     authority-workflow-trace.v0.json
@@ -39,9 +41,11 @@ tools/authority/
     authority-memory-index.v0.json
     pass-evidence-policy.v0.json
     window-taxonomy.v0.json
+    site-taxonomy.v0.json
   policies/
     pass-evidence-policy.v0.json       tracked Truth-state for pass evidence boundaries
     window-taxonomy.v0.json            tracked public-site window title taxonomy
+    site-taxonomy.v0.json              tracked public-site category doctrine
   fixtures/
     triangle-engines.packet.json
                                           known-good existing-page enrichment fixture
@@ -158,6 +162,23 @@ missing expected windows for page roles. It does not edit public files and
 does not block builds.
 
 ```sh
+make authority-taxonomy
+```
+
+Runs a read-only audit of current site pages against tracked category
+doctrine in `tools/authority/policies/site-taxonomy.v0.json`, then writes
+private reports to:
+
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.md`
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.json`
+- `_Internal/authority-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl`
+
+This is the reusable taxonomy migration pass. It inventories pages, applies
+known human corrections, names migration candidates, records old-URL handling
+requirements, and emits private memory candidates. It does not move files or
+edit public content.
+
+```sh
 make authority-registry
 ```
 
@@ -191,7 +212,7 @@ items, risks/watchpoints, and promoted records. It is a planning surface
 only; it never publishes and never edits public files.
 
 ```sh
-make authority-propose SOURCE=content/blog/phosphor/post.frag.html
+make authority-propose SOURCE=content/lab/toys/phosphor/post.frag.html
 ```
 
 Asks the local llama.cpp/Qwen server to propose private authority packet
@@ -253,7 +274,7 @@ make authority-propose SOURCE=content/lab/toys/chewgum-time-chime/index.frag.htm
 Optional proposer flags can be passed through `PROPOSE_ARGS`:
 
 ```sh
-make authority-propose SOURCE=content/blog/phosphor/post.frag.html \
+make authority-propose SOURCE=content/lab/toys/phosphor/post.frag.html \
   PROPOSE_ARGS="--timeout 90 --url-timeout 6 --max-tokens 1024 --limit 2"
 ```
 

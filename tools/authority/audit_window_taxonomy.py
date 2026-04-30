@@ -197,6 +197,8 @@ def _fallback_title(path: Path) -> str:
 def _classify_page(frag_path: Path, frontmatter: dict) -> str:
     rel = _rel(frag_path)
     kind = str(frontmatter.get("kind") or "")
+    if kind == "redirect-stub":
+        return "redirect_stub"
     if rel == "content/index.frag.html":
         return "home"
     if rel == "content/blog/index.frag.html":
@@ -215,6 +217,8 @@ def _classify_page(frag_path: Path, frontmatter: dict) -> str:
         return "stable_profile"
     if rel == "content/glossary/index.frag.html":
         return "glossary"
+    if rel.startswith("content/lab/toys/") and kind == "experiment":
+        return "experiment_artifact"
     if rel.startswith("content/lab/toys/"):
         return "toy_artifact"
     if rel.startswith("content/lab/tools/"):

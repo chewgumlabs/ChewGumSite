@@ -96,13 +96,13 @@ def read_post(toml_path: Path) -> Post:
 # ----------------------------------------------------------------------
 
 def collect_posts() -> list[dict]:
-    """Return every post.toml under content/ as a sorted list of dicts.
+    """Return every blog post.toml as a sorted list of dicts.
 
     Each entry: title, url, kind, published (datetime.date | None), blurb.
     Sorted newest first; entries without `published` sink to the bottom.
     """
     entries = []
-    for tp in sorted(CONTENT.rglob("post.toml")):
+    for tp in sorted((CONTENT / "blog").rglob("post.toml")):
         fm = tomllib.loads(tp.read_text())
         rel = tp.relative_to(CONTENT).parent  # e.g. blog/phosphor
         entries.append({

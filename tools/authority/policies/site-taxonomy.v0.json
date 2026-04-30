@@ -1,0 +1,93 @@
+{
+  "$schema": "../schemas/site-taxonomy.v0.json",
+  "schema_version": "site-taxonomy.v0",
+  "updated": "2026-04-30",
+  "description": "Tracked category doctrine for public site taxonomy migration passes.",
+  "categories": {
+    "blog": {
+      "definition": "Prose, reflection, essays, and human notes.",
+      "public_prefix": "/blog/",
+      "content_prefix": "content/blog/",
+      "must_not_contain": [
+        "interactive browser artifacts as primary content",
+        "repo-backed reusable software as primary content"
+      ]
+    },
+    "toy": {
+      "definition": "Interactive browser artifact, playable demo, or small live experiment.",
+      "public_prefix": "/lab/toys/",
+      "content_prefix": "content/lab/toys/",
+      "must_contain_one_of": [
+        "Live Toy window",
+        "Live Prototype window",
+        "interactive controls",
+        "experiment asset bundle"
+      ]
+    },
+    "tool": {
+      "definition": "Repo-backed reusable software, public extraction, versioned library, or harness.",
+      "public_prefix": "/lab/tools/",
+      "content_prefix": "content/lab/tools/",
+      "must_contain_one_of": [
+        "public repository",
+        "version tag",
+        "bounded API",
+        "repo-backed tool note"
+      ]
+    },
+    "animation": {
+      "definition": "Literal animation showcase, old animation links, credits-adjacent animation portfolio material, and Chew/Gum series work.",
+      "public_prefix": "/animation/",
+      "content_prefix": "content/animation/",
+      "must_not_contain": [
+        "software doodad filed as finished animation",
+        "toy whose primary value is interaction rather than animation showcase"
+      ]
+    },
+    "about": {
+      "definition": "Identity, credits, proof trail, external profile resolution, and name-collision handling.",
+      "public_prefix": "/about/",
+      "content_prefix": "content/about/"
+    },
+    "glossary": {
+      "definition": "Definitions used by public work.",
+      "public_prefix": "/glossary/",
+      "content_prefix": "content/glossary/"
+    },
+    "lab": {
+      "definition": "Umbrella and methodology lane. Not a junk drawer for unclassified artifacts.",
+      "public_prefix": "/lab/",
+      "content_prefix": "content/lab/"
+    },
+    "home": {
+      "definition": "Site entry point.",
+      "public_prefix": "/",
+      "content_prefix": "content/"
+    }
+  },
+  "known_corrections": [],
+  "rename_candidates": [],
+  "migration_checks": [
+    "No invented URLs.",
+    "No silent canonical drift.",
+    "Old URL has a redirect, pointer, or noindex/stub plan.",
+    "Index pages update with the move.",
+    "Sitemap and llms.txt impact is named.",
+    "Blog index contains prose only.",
+    "Toy index contains interactive artifacts only.",
+    "Tool index contains repo-backed artifacts only."
+  ],
+  "training_memory_policy": {
+    "records_are_private": true,
+    "records_require_human_review_before_training": true,
+    "useful_record_fields": [
+      "human_rule",
+      "current_category",
+      "target_category",
+      "rejected_assumption",
+      "accepted_rule",
+      "old_url_strategy",
+      "validator_result"
+    ]
+  }
+}

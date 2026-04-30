@@ -1,6 +1,6 @@
 title = "Dead Beat"
 description = "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text."
-canonical = "https://shanecurry.com/blog/dead-beat/"
+canonical = "https://shanecurry.com/lab/toys/dead-beat/"
 published = 2026-04-02
 kind = "experiment"
 blurb = "a browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text on each outer wall."

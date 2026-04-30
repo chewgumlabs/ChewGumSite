@@ -1,5 +1,5 @@
 title = "ChewGumTimeChime v0.1.0"
-description = "A small public browser harness for comparing stroke smoothing algorithms through timed chimes, extracted from the ChewGum Time Chime live toy."
+description = "A small public browser harness for comparing stroke smoothing algorithms through timed chimes, extracted from the Stroke Chime live toy."
 canonical = "https://shanecurry.com/lab/tools/chewgum-time-chime/"
 published = 2026-04-30
 kind = "tool-note"
