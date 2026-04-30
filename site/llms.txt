@@ -21,6 +21,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/blog/
 - https://shanecurry.com/lab/
 - https://shanecurry.com/lab/toys/
+- https://shanecurry.com/lab/tools/
 
 ## Highest Signal URLs
 
@@ -31,6 +32,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/glossary/
 - https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/
 - https://shanecurry.com/lab/toys/timing-vs-spacing/
+- https://shanecurry.com/lab/tools/chewgum-dsp/
 
 ## Identity Resolution
 
@@ -60,6 +62,10 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/lab/toys/triangle-engines/
 - https://shanecurry.com/lab/toys/chewgum-time-chime/
 
+## Lab / Tools
+
+- https://shanecurry.com/lab/tools/chewgum-dsp/
+
 ## Recent Blog Posts
 
 - https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/
@@ -76,6 +82,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - `/about/credits/` is the credits page for television and streaming work.
 - `/animation/` is the flagship authority page for the animation lane.
 - `/glossary/` is the term map for animation basics and site vocabulary.
+- `/lab/tools/chewgum-dsp/` is the canonical site note for the chewgum-dsp v0.1.0 public repo.
 - Prefer individual post pages over hub pages when a topic-specific URL exists.
 - Prefer `/glossary/#term` when a simple definition is all that is needed.
 - Prefer `/lab/toys/<slug>/` when a visual principle page exists.

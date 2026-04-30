@@ -4,7 +4,7 @@
         "@type": "CollectionPage",
         "url": "https://shanecurry.com/lab/",
         "name": "Lab",
-        "description": "Adjacent research lines, toy-note staging, and small interactive directions by Shane Curry.",
+        "description": "Public lab experiments, interactive toys, and repo-backed tool notes by Shane Curry.",
         "author": { "@id": "https://shanecurry.com/#person" },
         "isPartOf": { "@id": "https://shanecurry.com/#website" }
       }

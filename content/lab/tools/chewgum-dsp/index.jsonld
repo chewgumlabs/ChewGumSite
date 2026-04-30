@@ -1,0 +1,49 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "SoftwareSourceCode"],
+  "headline": "chewgum-dsp v0.1.0",
+  "name": "chewgum-dsp",
+  "description": "A narrow public Web Audio extraction for NES-style triangle waves, MIDI frequency conversion, and bell synthesis used by shipped Shane Curry lab pieces.",
+  "datePublished": "2026-04-30",
+  "dateModified": "2026-04-30",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/tools/chewgum-dsp/",
+  "url": "https://shanecurry.com/lab/tools/chewgum-dsp/",
+  "codeRepository": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0",
+  "programmingLanguage": "JavaScript",
+  "runtimePlatform": "Web Audio API",
+  "softwareVersion": "0.1.0",
+  "license": "https://github.com/chewgumlabs/ChewGumDSP/blob/v0.1.0/LICENSE",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/tools/"
+  },
+  "about": [
+    "web audio",
+    "triangle wave",
+    "PeriodicWave",
+    "bell synthesis",
+    "public repo"
+  ],
+  "mentions": [
+    { "@id": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0" },
+    { "@id": "https://shanecurry.com/lab/toys/triangle-engines/" },
+    { "@id": "https://shanecurry.com/blog/dead-beat/" },
+    { "@id": "https://shanecurry.com/animation/falling-hall/" },
+    { "@id": "https://shanecurry.com/blog/phosphor/" }
+  ],
+  "keywords": [
+    "chewgum-dsp",
+    "Web Audio API",
+    "NES-style triangle wave",
+    "PeriodicWave",
+    "bell synthesis",
+    "MIDI frequency conversion",
+    "JavaScript audio library"
+  ]
+}
+    </script>
+

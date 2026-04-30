@@ -1,0 +1,119 @@
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Tool note</dd>
+            <dt>Status</dt>
+            <dd>Active public repo note</dd>
+            <dt>Published</dt>
+            <dd>2026-04-30</dd>
+            <dt>Version</dt>
+            <dd>v0.1.0</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/tools/chewgum-dsp/">https://shanecurry.com/lab/tools/chewgum-dsp/</a></dd>
+            <dt>Repository</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            chewgum-dsp v0.1.0 is a narrow public extraction of shipped Web
+            Audio helpers: an NES-style triangle <code>PeriodicWave</code>
+            generator, MIDI-to-frequency conversion, and a small bell trigger.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Included" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt><code>createNesTriangleWave(audioContext)</code></dt>
+            <dd>Builds a Web Audio <code>PeriodicWave</code> from a 32-step NES-style triangle source table, projected onto 24 cosine/sine harmonics with the DC offset removed.</dd>
+            <dt><code>midiToFrequency(midi)</code></dt>
+            <dd>Converts a MIDI note number to frequency in hertz using A4 = 440 Hz.</dd>
+            <dt><code>strikeBell(audioContext, destination, periodicWave, options)</code></dt>
+            <dd>Triggers a three-voice bell: triangle fundamental plus two sine harmonics through a bandpass filter. Options are <code>midi</code>, <code>intensity</code>, and <code>pan</code>.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Not Included" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>No OPL2 emulation.</li>
+            <li>No AudioWorklet wrapper.</li>
+            <li>No stroke interpretation layer.</li>
+            <li>No private ChewGum DSP research code.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Exists" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The library exists because the NES-style triangle source has a
+            different audible character from the browser's native triangle
+            oscillator, and that difference already appears in shipped public
+            work. The first release keeps only the slice needed to name and
+            reuse that sound honestly.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Deployed Lineage" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/blog/dead-beat/">Dead Beat</a>: uses the same NES-style triangle-wave generator family for bell tones.</li>
+            <li><a href="/animation/falling-hall/">Falling Hall</a>: uses the same bell-synthesis lineage for wall-strike chimes.</li>
+            <li><a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>: uses chewgum-dsp v0.1.0 as the A/B source for comparing native and NES-style triangle tones.</li>
+            <li><a href="/blog/phosphor/">Phosphor</a>: uses the browser's native triangle oscillator, so it is a contrast point rather than a deployment of this library.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Install And Use" data-window-mode="rich">
+        <div class="window-content">
+          <p>This is a dependency-free ESM library. The public repository contains the source, MIT license, README, and v0.1.0 tag.</p>
+          <pre><code>import { createNesTriangleWave, midiToFrequency, strikeBell } from '@chewgum/dsp';</code></pre>
+          <p>The README includes a browser example. The npm package name is reserved in the source metadata, but this page only claims the GitHub repository and tag.</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Repository: <a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">chewgum-dsp v0.1.0</a>.</li>
+            <li>Source files: <a href="https://github.com/chewgumlabs/ChewGumDSP/blob/v0.1.0/src/nes-triangle.js"><code>src/nes-triangle.js</code></a>, <a href="https://github.com/chewgumlabs/ChewGumDSP/blob/v0.1.0/src/midi.js"><code>src/midi.js</code></a>, and <a href="https://github.com/chewgumlabs/ChewGumDSP/blob/v0.1.0/src/bell.js"><code>src/bell.js</code></a>.</li>
+            <li>A/B page: <a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>.</li>
+            <li>Deployed pages: <a href="/blog/dead-beat/">Dead Beat</a> and <a href="/animation/falling-hall/">Falling Hall</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Web Audio API</li>
+            <li>triangle wave</li>
+            <li><code>PeriodicWave</code></li>
+            <li>bell synthesis</li>
+            <li>MIDI frequency conversion</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry / ChewGum Labs, "chewgum-dsp v0.1.0,"
+            https://shanecurry.com/lab/tools/chewgum-dsp/, published
+            2026-04-30.
+          </p>
+        </div>
+      </section>
+

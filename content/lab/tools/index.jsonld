@@ -1,0 +1,12 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "url": "https://shanecurry.com/lab/tools/",
+        "name": "Tools",
+        "description": "Small public software tools and repo-backed lab artifacts by Shane Curry and ChewGum Labs.",
+        "author": { "@id": "https://shanecurry.com/#person" },
+        "isPartOf": "https://shanecurry.com/lab/"
+      }
+    </script>
+

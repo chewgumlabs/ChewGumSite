@@ -1,0 +1,7 @@
+title = "chewgum-dsp v0.1.0"
+description = "A narrow public Web Audio extraction for NES-style triangle waves, MIDI frequency conversion, and bell synthesis used by shipped Shane Curry lab pieces."
+canonical = "https://shanecurry.com/lab/tools/chewgum-dsp/"
+published = 2026-04-30
+kind = "tool-note"
+blurb = "a narrow public Web Audio extraction for NES-style triangle waves, MIDI frequency conversion, and bell synthesis used by shipped lab pieces."
+
