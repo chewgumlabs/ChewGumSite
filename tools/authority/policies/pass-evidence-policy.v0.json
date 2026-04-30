@@ -1,0 +1,46 @@
+{
+  "$schema": "../schemas/pass-evidence-policy.v0.json",
+  "schema_version": "pass-evidence-policy.v0",
+  "updated": "2026-04-30",
+  "description": "Tracked authority evidence policy. These branches are Truth-state for proposer passes; the Python enforces this file instead of owning the identity graph.",
+  "policies": {
+    "identity_resolution": {
+      "description": "Evidence boundaries for identity-resolution sweeps across any source page.",
+      "source_url_always_allowed": true,
+      "own_site_exact_paths": [
+        "/",
+        "/about/",
+        "/about/entity-map/",
+        "/about/credits/",
+        "/animation/"
+      ],
+      "own_site_path_prefixes": [],
+      "external_url_prefixes": [
+        "https://github.com/chewgumlabs",
+        "https://www.linkedin.com/in/shanecurrycartoons/",
+        "https://www.imdb.com/name/nm10274522/",
+        "https://www.youtube.com/@infinitehush",
+        "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/",
+        "https://infinitehush.itch.io/chew-gum",
+        "https://chewgumseries.tumblr.com/",
+        "https://chewgumseries.gumroad.com/",
+        "https://www.patreon.com/INFINITEHUSH"
+      ],
+      "seed_files": [
+        "content/index.frag.html",
+        "content/index.jsonld",
+        "content/about/index.frag.html",
+        "content/about/index.jsonld",
+        "content/about/entity-map/index.frag.html",
+        "content/about/entity-map/index.jsonld",
+        "content/about/credits/index.frag.html",
+        "content/about/credits/index.jsonld",
+        "site/llms.txt"
+      ],
+      "notes": [
+        "Keep old release surfaces here only when they help resolve Shane Curry / ChewGum Labs / ChewGum Animation / Infinite Hush.",
+        "Do not add general lab artifact URLs here unless they are being used as identity anchors, not artifact proof."
+      ]
+    }
+  }
+}

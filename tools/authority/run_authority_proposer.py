@@ -59,12 +59,169 @@ EMIT = Path(__file__).with_name("emit_authority_draft.py")
 DEFAULT_ENDPOINT = "http://127.0.0.1:8080/v1/chat/completions"
 DEFAULT_MODEL = "coder-comments"
 QWEN_BIBLE = Path(__file__).with_name("qwen_authority_bible.md")
+EVIDENCE_POLICY = Path(__file__).parent / "policies" / "pass-evidence-policy.v0.json"
+SITE_HOST = "shanecurry.com"
 ALLOWED_OUTPUTS = {"toy", "index", "note", "hold", "reject"}
 ALLOWED_PROMOTION_MODES = {"new_page", "enrich_existing"}
 TARGET_ROOTS_BY_OUTPUT = {
     "toy": "/lab/toys/",
     "index": "/lab/",
     "note": "/blog/",
+}
+IDENTITY_PURPOSE_TERMS = (
+    "shane curry",
+    "chewgum labs",
+    "chewgum animation",
+    "infinite hush",
+    "my valiant purpose",
+    "chew gum",
+    "chew gum series",
+    "imdb",
+    "linkedin",
+    "youtube",
+    "github",
+    "steam",
+    "itch.io",
+    "tumblr",
+    "gumroad",
+    "patreon",
+    "identity",
+    "entity",
+    "disambiguation",
+    "name collision",
+    "sameas",
+    "public profile",
+    "external profile",
+    "proof trail",
+    "release identity",
+)
+IDENTITY_ANCHOR_TERMS = (
+    "shane curry",
+    "chewgum labs",
+    "chewgum animation",
+    "infinite hush",
+    "my valiant purpose",
+    "chew gum",
+    "chew gum series",
+    "imdb",
+    "linkedin",
+    "youtube",
+    "github",
+    "steam",
+    "itch.io",
+    "tumblr",
+    "gumroad",
+    "patreon",
+    "identity",
+    "entity",
+    "disambiguation",
+    "name collision",
+    "sameas",
+    "public profile",
+    "external profile",
+    "release identity",
+)
+IDENTITY_LAB_ARTIFACT_DRIFT_TERMS = (
+    "chewgumtimechime",
+    "chewgum time chime",
+    "triangle engines",
+    "timing vs. spacing",
+    "timing vs spacing",
+    "falling hall",
+    "dead beat",
+    "phosphor",
+    "chewgum-dsp",
+)
+SOURCE_PAGE_ROLES = {
+    "identity_resolution": {
+        "label": "Identity resolution",
+        "allowed_moves": [
+            "clarify Shane Curry / ChewGum Labs / ChewGum Animation naming",
+            "add or correct external identity anchors",
+            "add or correct name-collision notes",
+            "update sameAs / subjectOf style metadata",
+            "enrich the public proof trail for identity resolution",
+        ],
+        "blocked_moves": [
+            "new toy pages",
+            "new repo/tool suggestions",
+            "artifact writeups that do not clarify identity",
+        ],
+    },
+    "professional_credits": {
+        "label": "Professional credits",
+        "allowed_moves": [
+            "clarify credited roles",
+            "add public corroborating credit anchors",
+            "tighten date/role/source wording",
+        ],
+        "blocked_moves": ["new toy pages", "repo suggestions"],
+    },
+    "stable_profile": {
+        "label": "Stable profile",
+        "allowed_moves": [
+            "clarify the person record",
+            "add public proof-trail anchors",
+            "connect top-level work lanes",
+        ],
+        "blocked_moves": ["thin new pages detached from profile facts"],
+    },
+    "glossary": {
+        "label": "Glossary",
+        "allowed_moves": ["add or refine terms backed by public pages"],
+        "blocked_moves": ["new pages for terms without source trails"],
+    },
+    "toy_artifact": {
+        "label": "Interactive toy artifact",
+        "allowed_moves": [
+            "enrich the toy page",
+            "connect source trail and parameters",
+            "suggest repo-backed extraction only when public evidence exists",
+        ],
+        "blocked_moves": ["duplicate controls-only toys"],
+    },
+    "tool_artifact": {
+        "label": "Repo-backed tool artifact",
+        "allowed_moves": [
+            "enrich source trail",
+            "connect repo tag and deployed demos",
+            "propose narrow examples backed by public code",
+        ],
+        "blocked_moves": ["claims about packages or tags not in evidence"],
+    },
+    "animation_artifact": {
+        "label": "Animation artifact",
+        "allowed_moves": ["render/source parameter enrichment", "artifact lineage notes"],
+        "blocked_moves": ["audio-only drift unless the source supports it"],
+    },
+    "essay_or_note": {
+        "label": "Essay or note",
+        "allowed_moves": ["source-trail enrichment", "related-term links", "human-writing-safe metadata"],
+        "blocked_moves": ["rewriting human voice without an editor pass"],
+    },
+    "general": {
+        "label": "General public page",
+        "allowed_moves": ["small source-trail enrichment"],
+        "blocked_moves": ["unsupported new pages"],
+    },
+}
+PASS_INTENTS = {
+    "source_native": {
+        "label": "Source-native pass",
+        "description": "Default: work inside the source page's own role.",
+    },
+    "identity_resolution": {
+        "label": "Identity resolution sweep",
+        "description": "Clarify people, project names, release identities, external profiles, sameAs/subjectOf metadata, and name collisions.",
+    },
+    "artifact_enrichment": {
+        "label": "Artifact enrichment sweep",
+        "description": "Add source trails, parameters, lineage, and cross-links for public artifacts.",
+    },
+    "glossary_linking": {
+        "label": "Glossary linking sweep",
+        "description": "Find term-definition opportunities without rewriting human voice.",
+    },
 }
 SOURCE_TEXT_LIMIT = 8000
 PROMPT_TEXT_LIMIT = 3600
@@ -106,7 +263,7 @@ def main() -> int:
         return 2
 
     source = _resolve_source(args.source)
-    source_context = _source_context(source)
+    source_context = _source_context(source, args.pass_intent)
     today = dt.date.today().isoformat()
     slug = args.slug or _slug_for_source(source_context)
     proposal_dir = _resolve_private_dir(args.output_root, DEFAULT_OUTPUT_ROOT) / f"{today}-{slug}"
@@ -248,6 +405,12 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--max-tokens", type=int, default=1536)
     parser.add_argument("--temperature", type=float, default=0.1)
     parser.add_argument("--limit", type=int, default=2)
+    parser.add_argument(
+        "--pass-intent",
+        choices=sorted(PASS_INTENTS),
+        default="source_native",
+        help="active sweep intent; source_native defaults to the source page role",
+    )
     parser.add_argument("--slug", help="override proposal directory slug")
     parser.add_argument(
         "--output-root",
@@ -339,12 +502,14 @@ def _prepare_proposal_dir(proposal_dir: Path) -> None:
             shutil.rmtree(path)
 
 
-def _source_context(source: Path) -> dict:
+def _source_context(source: Path, pass_intent: str = "source_native") -> dict:
     source_text = source.read_text(errors="replace")
     content_dir = source.parent
     metadata = _content_metadata(content_dir)
     canonical_url = metadata.get("canonical") or ""
     public_path = _public_path_from_canonical(canonical_url) or _public_path_from_content_dir(content_dir)
+    role = _source_page_role(public_path, metadata.get("kind") or "", metadata.get("title") or "")
+    resolved_intent = _resolved_pass_intent(pass_intent, role["id"])
     return {
         "path": _rel(source),
         "public_path": public_path,
@@ -353,9 +518,46 @@ def _source_context(source: Path) -> dict:
         "description": metadata.get("description") or "",
         "kind": metadata.get("kind") or "",
         "blurb": metadata.get("blurb") or "",
+        "source_page_role": role,
+        "pass_intent": resolved_intent,
         "text": source_text[:SOURCE_TEXT_LIMIT],
         "truncated": len(source_text) > SOURCE_TEXT_LIMIT,
     }
+
+
+def _source_page_role(public_path: str, kind: str, title: str) -> dict:
+    path = _normalize_public_path(public_path)
+    title_l = (title or "").lower()
+    kind_l = (kind or "").lower()
+    if path == "/about/entity-map/":
+        role_id = "identity_resolution"
+    elif path == "/about/credits/":
+        role_id = "professional_credits"
+    elif path == "/about/":
+        role_id = "stable_profile"
+    elif path == "/glossary/":
+        role_id = "glossary"
+    elif path.startswith("/lab/toys/"):
+        role_id = "toy_artifact"
+    elif path.startswith("/lab/tools/"):
+        role_id = "tool_artifact"
+    elif path.startswith("/animation/") and path != "/animation/":
+        role_id = "animation_artifact"
+    elif path.startswith("/blog/") or kind_l in {"post", "essay", "experiment"} or "blog" in title_l:
+        role_id = "essay_or_note"
+    else:
+        role_id = "general"
+    role = dict(SOURCE_PAGE_ROLES[role_id])
+    role["id"] = role_id
+    return role
+
+
+def _resolved_pass_intent(pass_intent: str, source_role_id: str) -> dict:
+    intent_id = pass_intent if pass_intent != "source_native" else source_role_id
+    intent = dict(PASS_INTENTS.get(intent_id) or {"label": intent_id, "description": ""})
+    intent["id"] = intent_id
+    intent["requested"] = pass_intent
+    return intent
 
 
 class _VisibleTextParser(html.parser.HTMLParser):
@@ -470,11 +672,89 @@ def _allowed_evidence_urls(source_context: dict, registry_context: list[str]) ->
             urls.extend(_public_urls_in_text(value))
             urls.extend(_relative_public_urls_in_text(value))
     urls.extend(_adjacent_source_urls(source_context))
+    pass_id = (source_context.get("pass_intent") or {}).get("id")
+    pass_policy = _pass_evidence_policy(pass_id)
+    if pass_policy:
+        urls.extend(_policy_seed_urls(pass_policy))
+        return _policy_evidence_urls(_dedupe_url_variants(urls), source_context, pass_policy)
     urls.extend(_site_index_urls())
     for item in registry_context:
         urls.extend(_public_urls_in_text(item))
         urls.extend(_relative_public_urls_in_text(item))
     return _dedupe_url_variants(urls)
+
+
+def _pass_evidence_policy(pass_id: str | None) -> dict | None:
+    if not pass_id:
+        return None
+    policy = _evidence_policy()
+    policies = policy.get("policies") if isinstance(policy, dict) else None
+    if not isinstance(policies, dict):
+        return None
+    value = policies.get(pass_id)
+    return value if isinstance(value, dict) else None
+
+
+def _evidence_policy() -> dict:
+    if not EVIDENCE_POLICY.exists():
+        return {}
+    try:
+        data = json.loads(EVIDENCE_POLICY.read_text())
+    except Exception:
+        return {}
+    if data.get("schema_version") != "pass-evidence-policy.v0":
+        return {}
+    return data
+
+
+def _policy_seed_urls(policy: dict) -> list[str]:
+    urls = []
+    for rel in policy.get("seed_files") or []:
+        if not isinstance(rel, str) or rel.startswith("/") or ".." in Path(rel).parts:
+            continue
+        path = REPO / rel
+        if not path.exists():
+            continue
+        text = path.read_text(errors="replace")
+        urls.extend(_public_urls_in_text(text))
+        urls.extend(_relative_public_urls_in_text(text))
+    return urls
+
+
+def _policy_evidence_urls(urls: list[str], source_context: dict, policy: dict) -> list[str]:
+    source_url = _url_key(str(source_context.get("canonical_url") or ""))
+    kept = []
+    for url in urls:
+        key = _url_key(url)
+        if (
+            policy.get("source_url_always_allowed") is True
+            and key == source_url
+        ) or _is_policy_evidence_url(url, policy):
+            kept.append(url)
+    return _dedupe_url_variants(kept)
+
+
+def _is_policy_evidence_url(url: str, policy: dict) -> bool:
+    parsed = urlparse(url.rstrip(URL_TRAILING_PUNCTUATION))
+    if (parsed.hostname or "").lower() == SITE_HOST:
+        path = _normalize_public_path(parsed.path or "/")
+        exact_paths = {
+            _normalize_public_path(item)
+            for item in policy.get("own_site_exact_paths") or []
+            if isinstance(item, str)
+        }
+        prefixes = [
+            _normalize_public_path(item)
+            for item in policy.get("own_site_path_prefixes") or []
+            if isinstance(item, str)
+        ]
+        return path in exact_paths or any(path.startswith(prefix) for prefix in prefixes)
+    normalized = url.rstrip(URL_TRAILING_PUNCTUATION)
+    return any(
+        normalized.startswith(prefix)
+        for prefix in policy.get("external_url_prefixes") or []
+        if isinstance(prefix, str)
+    )
 
 
 def _adjacent_source_urls(source_context: dict) -> list[str]:
@@ -538,6 +818,8 @@ def _prompt_document(
         "title": source_context["title"],
         "description": source_context["description"],
         "kind": source_context["kind"],
+        "source_page_role": source_context.get("source_page_role") or SOURCE_PAGE_ROLES["general"],
+        "pass_intent": source_context.get("pass_intent") or _resolved_pass_intent("source_native", "general"),
         "visible_text_excerpt": _visible_text(source_context["text"])[:PROMPT_TEXT_LIMIT],
     }
     system = (
@@ -549,12 +831,14 @@ def _prompt_document(
         "Prefer small, truthful packets."
     )
     user = {
-        "task": f"Propose up to {limit} private authority packet candidates.",
+        "task": f"Propose up to {limit} private authority packet candidates for the {prompt_source['pass_intent']['id']} pass.",
         "response_shape": {
             "packets": [schema_hint],
             "notes": ["short private rationale; no public copy"]
         },
         "source": prompt_source,
+        "pass_intent_instruction": _pass_intent_instruction(source_context),
+        "evidence_policy": _evidence_policy_prompt_summary(source_context),
         "known_public_surfaces_from_registry": registry_context[:8],
         "allowed_public_evidence_urls": allowed_evidence_urls[:40],
         "qwen_authority_bible": _qwen_bible(),
@@ -566,6 +850,12 @@ def _prompt_document(
             "toy": "/lab/toys/<slug>/",
         },
         "rules": [
+            "Respect source.source_page_role and source.pass_intent before proposing a move.",
+            "source_page_role says what kind of page you are reading. pass_intent says what work this run is doing.",
+            "When pass_intent is not source_native, pass_intent overrides the page's normal role. The page role is context, not permission to run the default lane.",
+            "A good packet must fit the pair: source_page_role x pass_intent.",
+            "For pass_intent='identity_resolution', only propose identity, profile, proof-trail, sameAs/subjectOf metadata, or name-collision work. Do not propose toy/tool/artifact pages just because the source mentions artifacts.",
+            "For pass_intent='identity_resolution' on a toy/tool/artifact page, a valid move connects the artifact to Shane Curry, ChewGum Labs, ChewGum Animation, Infinite Hush, or external profile/release identity anchors. It does not propose parameter/source-trail enrichment unless that enrichment directly resolves identity.",
             "Quality bar: a packet must add a concrete source-trail, parameter, lineage, glossary, or collection move. Do not propose a packet that merely restates the source page.",
             "Avoid generic phrases like 'potential applications', 'deeper understanding', 'versatility', 'artistic expression', 'different contexts', or 'audio variations' unless the source gives concrete parameters for them.",
             "Use concrete values copied from the source when available, such as alpha values, MIDI notes, timing values, mode names, repository names, or exact sibling pages.",
@@ -597,6 +887,54 @@ def _prompt_document(
             {"role": "system", "content": system},
             {"role": "user", "content": json.dumps(user, indent=2)},
         ],
+    }
+
+
+def _pass_intent_instruction(source_context: dict) -> dict:
+    intent = source_context.get("pass_intent") or {}
+    source_role = source_context.get("source_page_role") or {}
+    if intent.get("id") == "identity_resolution":
+        return {
+            "active_pass": "identity_resolution",
+            "source_page_role": source_role.get("id") or "general",
+            "job": "Resolve identity, naming, external profile anchors, release identities, and disambiguation. Do not do source-native artifact enrichment unless it directly resolves identity.",
+            "good_claim_patterns": [
+                "This artifact should resolve to Shane Curry / ChewGum Labs / ChewGum Animation.",
+                "This external profile or release identity should resolve back to Shane Curry.",
+                "This older name or project should not be confused with the current umbrella.",
+            ],
+            "bad_claim_patterns": [
+                "The toy uses specific parameters.",
+                "The source trail points to a repository.",
+                "The animation has rendering/audio parameters.",
+                "The demo could get a new toy page.",
+            ],
+            "fallback": "If the source lacks enough identity material, return hold rather than source-native enrichment.",
+        }
+    return {
+        "active_pass": intent.get("id") or "source_native",
+        "source_page_role": source_role.get("id") or "general",
+        "job": "Follow the active pass intent and stay within source evidence.",
+    }
+
+
+def _evidence_policy_prompt_summary(source_context: dict) -> dict:
+    intent = source_context.get("pass_intent") or {}
+    policy = _pass_evidence_policy(intent.get("id"))
+    if not policy:
+        return {
+            "policy_source": "default",
+            "rule": "No pass-specific evidence policy; allowed URLs are built from the source, adjacent metadata, sitemap, llms.txt, and promoted registry entries.",
+        }
+    return {
+        "policy_source": _rel(EVIDENCE_POLICY),
+        "pass_intent": intent.get("id"),
+        "description": policy.get("description") or "",
+        "source_url_always_allowed": policy.get("source_url_always_allowed") is True,
+        "own_site_exact_paths": policy.get("own_site_exact_paths") or [],
+        "own_site_path_prefixes": policy.get("own_site_path_prefixes") or [],
+        "external_url_prefixes": policy.get("external_url_prefixes") or [],
+        "notes": policy.get("notes") or [],
     }
 
 
@@ -714,6 +1052,8 @@ def _normalize_candidate(candidate: dict, source_context: dict, index: int) -> d
         "schema_version": "0.1",
         "draft_id": draft_id,
         "source_kind": packet.get("source_kind") or "public_page",
+        "source_page_role": (source_context.get("source_page_role") or {}).get("id", "general"),
+        "pass_intent": (source_context.get("pass_intent") or {}).get("id", "source_native"),
         "source_ref": source_ref,
         "recommended_output": output,
         "promotion_mode": mode,
@@ -996,8 +1336,12 @@ def _repair_prompt_document(
             "title": source_context["title"],
             "description": source_context["description"],
             "kind": source_context["kind"],
+            "source_page_role": source_context.get("source_page_role") or SOURCE_PAGE_ROLES["general"],
+            "pass_intent": source_context.get("pass_intent") or _resolved_pass_intent("source_native", "general"),
             "visible_text_excerpt": _visible_text(source_context["text"])[:PROMPT_TEXT_LIMIT],
         },
+        "pass_intent_instruction": _pass_intent_instruction(source_context),
+        "evidence_policy": _evidence_policy_prompt_summary(source_context),
         "known_promoted_public_surfaces": registry_context[:8],
         "allowed_public_evidence_urls": allowed_evidence_urls[:40],
         "qwen_authority_bible": _qwen_bible(),
@@ -1010,6 +1354,7 @@ def _repair_prompt_document(
             "If the old packet cited the wrong artifact, replace the URL with the correct allowed URL.",
             "If the old packet was generic, add concrete source values or hold.",
             "Do not repair a blocked controls-only toy by preserving the controls-only toy. Use enrich_existing or hold.",
+            "Respect source.pass_intent. If pass_intent='identity_resolution', repair toward identity/proof/disambiguation or hold; do not preserve source-native artifact enrichment.",
             "For enrich_existing, keep the target on the supplied source page.",
             "Return strict JSON only, no Markdown fence.",
         ],
@@ -1090,6 +1435,7 @@ def _scan_packet_safety(
         duplicate_controls = _duplicate_controls_toy_blocker(packet)
         if duplicate_controls:
             blocking.append(duplicate_controls)
+    blocking.extend(_pass_intent_blockers(packet))
     blocking.extend(_artifact_mismatch_blockers(packet))
     return {"blocking": blocking, "warnings": warnings}
 
@@ -1126,6 +1472,52 @@ def _artifact_mismatch_blockers(packet: dict) -> list[str]:
                 continue
             if any(fragment.lower() in lowered_text for fragment in rule["text_contains"]):
                 blockers.append(f"{rule['message']}: {url!r}")
+    return blockers
+
+
+def _pass_intent_blockers(packet: dict) -> list[str]:
+    intent = packet.get("pass_intent")
+    if intent != "identity_resolution":
+        return []
+    blockers = []
+    output = packet.get("recommended_output")
+    mode = packet.get("promotion_mode")
+    if mode == "new_page" or output in {"toy", "index"}:
+        blockers.append(
+            "identity_resolution pass cannot propose new toy/index/artifact pages; use enrich_existing, hold, or reject"
+        )
+    text = " ".join(
+        str(packet.get(key) or "")
+        for key in (
+            "draft_id",
+            "canonical_title",
+            "title",
+            "description",
+            "one_sentence_claim",
+            "why_this_matters",
+        )
+    ).lower()
+    if not any(term in text for term in IDENTITY_PURPOSE_TERMS):
+        blockers.append(
+            "identity_resolution candidate lacks identity, profile, proof-trail, or disambiguation language"
+        )
+    core_text = " ".join(
+        str(packet.get(key) or "")
+        for key in (
+            "draft_id",
+            "canonical_title",
+            "title",
+            "description",
+            "one_sentence_claim",
+        )
+    ).lower()
+    if (
+        any(term in core_text for term in IDENTITY_LAB_ARTIFACT_DRIFT_TERMS)
+        and not any(term in core_text for term in IDENTITY_ANCHOR_TERMS)
+    ):
+        blockers.append(
+            "identity_resolution candidate is centered on a lab artifact instead of an identity/proof anchor"
+        )
     return blockers
 
 
@@ -1694,6 +2086,202 @@ def _run_self_test() -> int:
     if not any("duplicate controls" in item for item in controls_toy_scan["blocking"]):
         print("FAIL controls-only toy blocker missing")
         print(controls_toy_scan)
+        return 1
+    identity_source = dict(source)
+    identity_source.update(
+        {
+            "path": "content/about/entity-map/index.frag.html",
+            "public_path": "/about/entity-map/",
+            "canonical_url": "https://shanecurry.com/about/entity-map/",
+            "title": "Entity Map",
+            "source_page_role": _source_page_role("/about/entity-map/", "", "Entity Map"),
+            "pass_intent": _resolved_pass_intent("source_native", "identity_resolution"),
+        }
+    )
+    identity_packet = _normalize_candidate(
+        {
+            "canonical_title": "Triangle Engines Index",
+            "recommended_output": "index",
+            "promotion_mode": "new_page",
+            "one_sentence_claim": "Triangle Engines compares native and NES-style triangle tones.",
+            "source_trail": [
+                {"text": "Entity Map page.", "url": "https://shanecurry.com/about/entity-map/"},
+                {"text": "Triangle Engines page.", "url": "https://shanecurry.com/lab/toys/triangle-engines/"},
+            ],
+            "related_public_surfaces": [
+                "https://shanecurry.com/about/entity-map/",
+                "https://shanecurry.com/lab/toys/triangle-engines/",
+            ],
+        },
+        identity_source,
+        4,
+    )
+    identity_scan = _scan_packet_safety(
+        identity_packet,
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/about/entity-map/",
+            "https://shanecurry.com/lab/toys/triangle-engines/",
+        ],
+    )
+    if not any("identity_resolution pass" in item for item in identity_scan["blocking"]):
+        print("FAIL identity pass-intent blocker missing")
+        print(identity_scan)
+        return 1
+    identity_drift_packet = _normalize_candidate(
+        {
+            "canonical_title": "Timing vs. Spacing",
+            "recommended_output": "note",
+            "promotion_mode": "enrich_existing",
+            "one_sentence_claim": "The Timing vs. Spacing toy isolates duration from distribution with parameters and formulas.",
+            "source_trail": [
+                {"text": "Entity Map page.", "url": "https://shanecurry.com/about/entity-map/"},
+                {"text": "Timing vs. Spacing page.", "url": "https://shanecurry.com/lab/toys/timing-vs-spacing/"},
+            ],
+            "related_public_surfaces": [
+                "https://shanecurry.com/about/entity-map/",
+                "https://shanecurry.com/lab/toys/timing-vs-spacing/",
+            ],
+        },
+        identity_source,
+        6,
+    )
+    identity_drift_scan = _scan_packet_safety(
+        identity_drift_packet,
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/about/entity-map/",
+            "https://shanecurry.com/lab/toys/timing-vs-spacing/",
+        ],
+    )
+    if not any("lacks identity" in item for item in identity_drift_scan["blocking"]):
+        print("FAIL identity pass-intent artifact drift blocker missing")
+        print(identity_drift_scan)
+        return 1
+    identity_disguised_drift_packet = _normalize_candidate(
+        {
+            "canonical_title": "ChewGumTimeChime",
+            "recommended_output": "note",
+            "promotion_mode": "enrich_existing",
+            "one_sentence_claim": "ChewGumTimeChime is a stroke-smoothing and timed-chime browser harness.",
+            "why_this_matters": "Enriches the public proof trail for identity resolution by providing technical details about a key project.",
+            "source_trail": [
+                {"text": "Entity Map page.", "url": "https://shanecurry.com/about/entity-map/"},
+                {"text": "Time Chime page.", "url": "https://shanecurry.com/lab/tools/chewgum-time-chime/"},
+            ],
+            "related_public_surfaces": [
+                "https://shanecurry.com/about/entity-map/",
+                "https://shanecurry.com/lab/tools/chewgum-time-chime/",
+            ],
+        },
+        identity_source,
+        7,
+    )
+    identity_disguised_drift_scan = _scan_packet_safety(
+        identity_disguised_drift_packet,
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/about/entity-map/",
+            "https://shanecurry.com/lab/tools/chewgum-time-chime/",
+        ],
+    )
+    if not any("centered on a lab artifact" in item for item in identity_disguised_drift_scan["blocking"]):
+        print("FAIL identity pass-intent disguised artifact drift blocker missing")
+        print(identity_disguised_drift_scan)
+        return 1
+    identity_enrichment = _normalize_candidate(
+        {
+            "canonical_title": "Infinite Hush Release Identity",
+            "recommended_output": "note",
+            "promotion_mode": "enrich_existing",
+            "one_sentence_claim": "Infinite Hush is a release identity that should resolve back to Shane Curry on external game and video surfaces.",
+            "source_trail": [
+                {"text": "Entity Map page.", "url": "https://shanecurry.com/about/entity-map/"},
+                {"text": "Steam page for My Valiant Purpose under INFINITE HUSH.", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/"},
+            ],
+            "related_public_surfaces": [
+                "https://shanecurry.com/about/entity-map/",
+                "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/",
+            ],
+        },
+        identity_source,
+        5,
+    )
+    identity_enrichment_scan = _scan_packet_safety(
+        identity_enrichment,
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/about/entity-map/",
+            "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/",
+        ],
+    )
+    if any("identity_resolution" in item for item in identity_enrichment_scan["blocking"]):
+        print("FAIL identity pass-intent blocker rejected valid enrichment")
+        print(identity_enrichment_scan)
+        return 1
+    toy_identity_source = dict(source)
+    toy_identity_source.update(
+        {
+            "path": "content/lab/toys/chewgum-time-chime/index.frag.html",
+            "public_path": "/lab/toys/chewgum-time-chime/",
+            "canonical_url": "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+            "title": "ChewGum Time Chime",
+            "source_page_role": _source_page_role("/lab/toys/chewgum-time-chime/", "", "ChewGum Time Chime"),
+            "pass_intent": _resolved_pass_intent("identity_resolution", "toy_artifact"),
+        }
+    )
+    toy_identity_packet = _normalize_candidate(
+        {
+            "canonical_title": "ChewGum Time Chime Identity Anchor",
+            "recommended_output": "note",
+            "promotion_mode": "enrich_existing",
+            "one_sentence_claim": "ChewGum Time Chime is a ChewGum Labs toy by Shane Curry connected to the ChewGum Animation public lab lane.",
+            "source_trail": [
+                {"text": "ChewGum Time Chime toy page.", "url": "https://shanecurry.com/lab/toys/chewgum-time-chime/"},
+                {"text": "About page resolving Shane Curry and ChewGum Labs.", "url": "https://shanecurry.com/about/"},
+            ],
+            "related_public_surfaces": [
+                "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+                "https://shanecurry.com/about/",
+            ],
+        },
+        toy_identity_source,
+        8,
+    )
+    toy_identity_scan = _scan_packet_safety(
+        toy_identity_packet,
+        check_reachability=False,
+        allowed_evidence_urls=[
+            "https://shanecurry.com/lab/toys/chewgum-time-chime/",
+            "https://shanecurry.com/about/",
+        ],
+    )
+    if any("identity_resolution" in item for item in toy_identity_scan["blocking"]):
+        print("FAIL identity pass-intent rejected valid toy-page identity sweep")
+        print(toy_identity_scan)
+        return 1
+    identity_allowed_urls = _allowed_evidence_urls(
+        {
+            **toy_identity_source,
+            "text": (
+                "https://shanecurry.com/lab/tools/chewgum-dsp/ "
+                "https://shanecurry.com/about/ "
+                "https://www.youtube.com/@infinitehush"
+            ),
+        },
+        [],
+    )
+    if any("/lab/tools/chewgum-dsp/" in url for url in identity_allowed_urls):
+        print("FAIL identity pass allowed unrelated lab evidence URL")
+        print(identity_allowed_urls)
+        return 1
+    if not any("/about/" in url for url in identity_allowed_urls):
+        print("FAIL identity pass omitted About identity URL")
+        print(identity_allowed_urls)
+        return 1
+    if not any("youtube.com/@infinitehush" in url for url in identity_allowed_urls):
+        print("FAIL identity pass omitted external identity URL")
+        print(identity_allowed_urls)
         return 1
     first_check_slug = _draft_check_slug({"draft_id": "same-target"}, 1, "candidate")
     second_check_slug = _draft_check_slug({"draft_id": "same-target"}, 2, "candidate")

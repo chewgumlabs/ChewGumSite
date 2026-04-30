@@ -28,7 +28,13 @@
             ],
             "subjectOf": [
               { "@id": "https://shanecurry.com/about/credits/#webpage" },
-              { "@type": "VideoGame", "name": "My Valiant Purpose", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/" }
+              { "@type": "VideoGame", "name": "My Valiant Purpose", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/" },
+              {
+                "@type": "VideoGame",
+                "name": "CHEW GUM",
+                "url": "https://infinitehush.itch.io/chew-gum",
+                "description": "A 2023 game-jam project released under Infinite Hush, separate from the current ChewGum Labs / ChewGum Animation umbrella."
+              }
             ]
           },
           {

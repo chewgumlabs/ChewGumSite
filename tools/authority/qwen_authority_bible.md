@@ -91,6 +91,33 @@ prevents a thin public page.
 
 Use `reject` when the idea is wrong, misleading, duplicated, or unsupported.
 
+## Source Role and Pass Intent
+
+The wrapper supplies two deterministic fields:
+
+- `source.source_page_role`: what kind of page you are reading.
+- `source.pass_intent`: what kind of work this run is doing.
+
+Treat their pair as a hard boundary before you get creative.
+
+If `pass_intent` is not `source_native`, it overrides the page's normal lane.
+The source role is context, not permission to keep doing source-native work.
+
+An identity-resolution sweep may run on any source page, including a toy page
+or tool page. In that pass, useful packets are limited to identity, profile,
+proof-trail, `sameAs` / `subjectOf` metadata, and name-collision work. Do not
+propose toys, repo extractions, artifact pages, or general lab notes just
+because the source mentions artifacts.
+
+For example, on a toy page with `pass_intent=identity_resolution`, a useful
+move may connect the toy to Shane Curry, ChewGum Labs, ChewGum Animation, or
+an external identity anchor. A parameter/source-trail enrichment is not useful
+unless it directly resolves identity.
+
+When `pass_intent` is `source_native`, work inside the page's own role. If the
+source makes you want a different lane, use `hold` and explain the gap rather
+than forcing a packet.
+
 ## URL Rules
 
 Only use URLs from the allowed public evidence list. Do not invent URLs.

@@ -513,7 +513,7 @@ def _audit_glossary_links(pages: list[Page], findings: list[Finding]) -> None:
         if _url_path(page.url) == "/glossary/" or not page.frag_path.exists():
             continue
         raw = page.frag_path.read_text(errors="replace")
-        prose = _html_text(raw)
+        prose = _html_text(_strip_anchor_text(raw))
         for term, fragment in terms.items():
             if len(term) < 4:
                 continue
@@ -533,6 +533,10 @@ def _audit_glossary_links(pages: list[Page], findings: list[Finding]) -> None:
                     url=f"https://shanecurry.com/glossary/#{fragment}",
                 )
             )
+
+
+def _strip_anchor_text(raw: str) -> str:
+    return re.sub(r"<a\b[^>]*>.*?</a>", " ", raw, flags=re.IGNORECASE | re.DOTALL)
 
 
 def _public_scope_files() -> list[Path]:
