@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shanecurry.com/schemas/window-taxonomy.v0.json",
+  "title": "Authority Window Taxonomy",
+  "type": "object",
+  "required": ["schema_version", "global_titles", "roles", "aliases"],
+  "properties": {
+    "schema_version": { "const": "window-taxonomy.v0" },
+    "updated": { "type": "string" },
+    "description": { "type": "string" },
+    "global_titles": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "roles": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["required_titles", "allowed_titles"],
+        "properties": {
+          "description": { "type": "string" },
+          "required_titles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "allowed_titles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "allow_page_title_window": { "type": "boolean" },
+          "allow_project_title_windows": { "type": "boolean" },
+          "allow_expressive_titles": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "reason"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "entry_types": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "reserved_titles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "description"],
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}

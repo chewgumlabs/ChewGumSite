@@ -23,6 +23,7 @@ tools/authority/
   validate_authority_draft.py     public-safety gate on a draft directory
   run_authority_smoke.py          deterministic fixture matrix runner
   audit_public_surface.py         read-only audit of public site surfaces
+  audit_window_taxonomy.py        read-only audit of window-title taxonomy drift
   index_authority_registry.py     index private drafts into a review queue
   render_authority_review.py      render private human review memo
   run_authority_proposer.py       private Qwen packet proposer
@@ -36,6 +37,11 @@ tools/authority/
     authority-workflow-trace.v0.json
     authority-trace-labels.v0.json
     authority-memory-index.v0.json
+    pass-evidence-policy.v0.json
+    window-taxonomy.v0.json
+  policies/
+    pass-evidence-policy.v0.json       tracked Truth-state for pass evidence boundaries
+    window-taxonomy.v0.json            tracked public-site window title taxonomy
   fixtures/
     triangle-engines.packet.json
                                           known-good existing-page enrichment fixture
@@ -109,6 +115,8 @@ Runs the full fixture matrix:
   while reporting traces that still need labels
 - editor-pass self-tests must reject HTML structure changes such as
   edited section attributes or removed `<code>` markup
+- window-taxonomy self-tests must preserve page-role, alias, and
+  expressive-title behavior
 - `_Internal/` must not be tracked by git
 
 ```sh
@@ -133,6 +141,21 @@ Runs a read-only audit of `content/`, `site/llms.txt`, and
 `_Internal/authority-audits/<YYYY-MM-DD>/audit.md` and
 `_Internal/authority-audits/<YYYY-MM-DD>/audit.json`. The audit reports
 blocking findings and warnings but does not edit public files.
+
+```sh
+make authority-window-audit
+```
+
+Runs a read-only audit of `content/**/*.frag.html` window titles against
+`tools/authority/policies/window-taxonomy.v0.json`, then writes private
+reports to:
+
+- `_Internal/authority-audits/<YYYY-MM-DD>/window-audit.md`
+- `_Internal/authority-audits/<YYYY-MM-DD>/window-audit.json`
+
+This audit is advisory. It reports deprecated labels, unknown labels, and
+missing expected windows for page roles. It does not edit public files and
+does not block builds.
 
 ```sh
 make authority-registry
@@ -199,6 +222,33 @@ always targets the source page, while `new_page` candidates are placed
 under fixed lanes (`/blog/`, `/lab/`, or `/lab/toys/`) from the output
 kind and title. Qwen can propose the move, but it cannot freehand public
 URLs into the packet.
+
+The proposer also assigns deterministic source-intent fields from the source
+URL and run arguments:
+
+- `source.source_page_role`: what kind of page is being read.
+- `source.pass_intent`: what kind of sweep is being run.
+
+By default, `pass_intent=source_native`, which resolves to the source page's
+own role. A caller can run a different pass explicitly, for example an
+identity-resolution sweep across a toy page. For `pass_intent=identity_resolution`,
+allowed proposals are identity anchors, proof-trail corrections, `sameAs` /
+`subjectOf` metadata, and name-collision fixes. New toy/tool/artifact pages
+from that pass are blocked by the private safety scan even if their facts are
+otherwise true.
+
+Pass-specific evidence boundaries are tracked in
+`tools/authority/policies/pass-evidence-policy.v0.json`. Treat that file as
+Truth-state: when a public branch, external profile, or old release surface
+becomes part of an identity sweep, update the policy instead of hardcoding a
+new allow-list in Python.
+
+Example:
+
+```sh
+make authority-propose SOURCE=content/lab/toys/chewgum-time-chime/index.frag.html \
+  PROPOSE_ARGS="--pass-intent identity_resolution --repair-blocked"
+```
 
 Optional proposer flags can be passed through `PROPOSE_ARGS`:
 

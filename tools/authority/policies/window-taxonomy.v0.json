@@ -1,0 +1,314 @@
+{
+  "$schema": "../schemas/window-taxonomy.v0.json",
+  "schema_version": "window-taxonomy.v0",
+  "updated": "2026-04-30",
+  "description": "Tracked public-site window taxonomy. This policy defines canonical window titles, page-role expectations, and advisory rename aliases for authority tooling.",
+  "global_titles": [
+    "Metadata",
+    "Main Claim",
+    "What It Is",
+    "Why It Matters",
+    "Source Trail",
+    "Verification Trail",
+    "Definitions",
+    "Related Terms",
+    "Related Posts",
+    "Related Project",
+    "Related Projects",
+    "Preferred Citation"
+  ],
+  "roles": {
+    "home": {
+      "description": "Homepage / first public orientation surface.",
+      "required_titles": ["Now", "Start Here", "Current Focus"],
+      "allowed_titles": ["Reading Guidance", "Related Terms", "Recent Notes"],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
+    "section_index": {
+      "description": "Generic section index page.",
+      "required_titles": ["Section Summary"],
+      "allowed_titles": [
+        "Current Status",
+        "Current Focus",
+        "Public Scope",
+        "Public Entry Points",
+        "Reading Guidance",
+        "Related Terms",
+        "Tracks"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "toy_index": {
+      "description": "Index of interactive toy notes.",
+      "required_titles": ["Toy Index"],
+      "allowed_titles": ["Section Summary", "Current Status", "Related Terms"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "tool_index": {
+      "description": "Index of repo-backed public tools.",
+      "required_titles": ["Tool Index"],
+      "allowed_titles": ["Section Summary", "Publication Boundary"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "blog_index": {
+      "description": "Index of essays, notes, and experiment posts.",
+      "required_titles": ["Blog Index"],
+      "allowed_titles": [],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
+    "toy_artifact": {
+      "description": "Interactive lab toy with a working demo and public source trail.",
+      "required_titles": [
+        "Live Toy",
+        "Metadata",
+        "Main Claim",
+        "What Changes On Screen",
+        "Why It Matters",
+        "Demo Parameters",
+        "Source Trail",
+        "Related Terms",
+        "Preferred Citation"
+      ],
+      "allowed_titles": [
+        "Audio Parameters",
+        "Definitions",
+        "Easing Formulas",
+        "External Implementations",
+        "Facts And Definitions",
+        "Final Human Framing",
+        "Related Project",
+        "Technical Parameters"
+      ],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
+    "tool_artifact": {
+      "description": "Repo-backed public tool page.",
+      "required_titles": [
+        "Metadata",
+        "Main Claim",
+        "What Is Included",
+        "What Is Not Included",
+        "Why It Exists",
+        "Install And Use",
+        "Source Trail",
+        "Related Terms",
+        "Preferred Citation"
+      ],
+      "allowed_titles": [
+        "Audio Parameters",
+        "Demo Parameters",
+        "Deployed Lineage",
+        "External Implementations",
+        "Live Artifact",
+        "Technical Parameters",
+        "Verification Trail"
+      ],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
+    "animation_artifact": {
+      "description": "Animation or rendered experiment artifact.",
+      "required_titles": ["What It Is", "Source Trail", "Related Terms"],
+      "allowed_titles": [
+        "Audio Parameters",
+        "Demo Parameters",
+        "Deployed Lineage",
+        "Live Artifact",
+        "Main Claim",
+        "Metadata",
+        "Preferred Citation",
+        "Render Parameters",
+        "Technical Parameters"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "experiment_artifact": {
+      "description": "Interactive or playable experiment that is not formalized as a toy or tool.",
+      "required_titles": ["What It Is", "Source Trail", "Preferred Citation"],
+      "allowed_titles": [
+        "Build Notes",
+        "Controls",
+        "Demo Parameters",
+        "Live Artifact",
+        "Main Claim",
+        "Metadata",
+        "Related Terms",
+        "Technical Parameters",
+        "Why It Matters"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "identity_resolution": {
+      "description": "Identity/disambiguation page for Shane Curry, ChewGum Labs, ChewGum Animation, and related names.",
+      "required_titles": [
+        "Resolution Summary",
+        "Metadata",
+        "Entities",
+        "External Profiles",
+        "Public Proof Trail",
+        "Name Collisions",
+        "Preferred Naming",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Credits Trail", "Public Artifact Anchors", "Related Terms"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "stable_profile": {
+      "description": "Stable profile page for Shane Curry and the public work.",
+      "required_titles": ["Metadata", "Main Claim", "Public Proof Trail", "Canonical Links", "Preferred Citation"],
+      "allowed_titles": [
+        "Credits",
+        "Current Focus",
+        "Profile Facts",
+        "Public Scope",
+        "Related Entities",
+        "Working Facts"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "professional_credits": {
+      "description": "Professional credits page.",
+      "required_titles": [
+        "Metadata",
+        "At A Glance",
+        "Role Summary",
+        "Verification Status",
+        "Verification Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Credits", "Public Purpose", "Related Terms"],
+      "allow_page_title_window": true,
+      "allow_project_title_windows": true,
+      "allow_expressive_titles": false
+    },
+    "glossary": {
+      "description": "Glossary and term-set page.",
+      "required_titles": [
+        "Glossary",
+        "Metadata",
+        "Main Claim",
+        "Linked Pages",
+        "Reading Guidance",
+        "Preferred Citation"
+      ],
+      "allowed_titles": [
+        "ChewGum Lab Vocabulary",
+        "Continuation Terms",
+        "Motion Terms",
+        "Structure Terms"
+      ],
+      "allow_page_title_window": false,
+      "allow_expressive_titles": false
+    },
+    "essay_or_note": {
+      "description": "Human-authored essay or structured note.",
+      "required_titles": ["Metadata", "Preferred Citation"],
+      "allowed_titles": [
+        "Main Claim",
+        "Limits And Caveats",
+        "Related Posts",
+        "Supporting Observations",
+        "Why It Matters"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": true
+    },
+    "general": {
+      "description": "Fallback page role.",
+      "required_titles": [],
+      "allowed_titles": [],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": true
+    }
+  },
+  "aliases": [
+    {
+      "from": "Status",
+      "to": "Current Status",
+      "reason": "Avoid bare status labels drifting from the section-index phrase."
+    },
+    {
+      "from": "Promotion Rule",
+      "to": "Publication Boundary",
+      "reason": "The public meaning is a boundary for publication, not pressure to promote."
+    },
+    {
+      "from": "Why Here",
+      "to": "Section Summary",
+      "reason": "Index pages should use a general summary window unless the heading is part of prose."
+    },
+    {
+      "from": "Why This Page Exists",
+      "to": "Public Purpose",
+      "reason": "Public-facing purpose is clearer than an internal rationale phrase."
+    },
+    {
+      "from": "Live Prototype",
+      "to": "Live Artifact",
+      "reason": "Prototype can imply unfinished public status unless that is intentional."
+    },
+    {
+      "from": "Facts And Definitions",
+      "to": "Definitions",
+      "reason": "The current title mixes glossary links and factual proof; split or rename when cleaning up."
+    },
+    {
+      "from": "Working Facts",
+      "to": "Profile Facts",
+      "reason": "Less provisional for a stable public profile."
+    },
+    {
+      "from": "Working Scope",
+      "to": "Public Scope",
+      "reason": "Less provisional for a stable public section page."
+    },
+    {
+      "from": "Current Direction",
+      "to": "Current Focus",
+      "reason": "Align with homepage language unless a distinct distinction is needed."
+    },
+    {
+      "from": "Current Tools",
+      "to": "Tool Index",
+      "reason": "Sibling indexes should use parallel naming: Tool Index, Toy Index, Blog Index."
+    },
+    {
+      "from": "Record Status",
+      "to": "Verification Status",
+      "reason": "Record Status reads internal; the public meaning is verification/completeness state."
+    }
+  ],
+  "entry_types": [
+    "metadata_pair",
+    "source_trail_entry",
+    "proof_link",
+    "related_term_link",
+    "related_project_link",
+    "external_profile_link",
+    "external_implementation",
+    "non_claim",
+    "citation_sentence",
+    "jsonld_node"
+  ],
+  "reserved_titles": [
+    {
+      "title": "External Implementations",
+      "description": "Third-party projects that used or incorporated a public ChewGum tool/repo. This does not imply customer, client, collaboration, endorsement, partnership, adoption, official integration, or case-study status."
+    }
+  ],
+  "notes": [
+    "Easing Formulas may be a standalone toy window when motion curves are the lesson; otherwise formulas can be entries inside Demo Parameters or Technical Parameters.",
+    "Human-authored essays may use expressive section titles. Do not normalize prose titles unless the page opts into structured-note behavior.",
+    "This policy starts advisory. Use audit findings for review before graduating any rule to a blocking validator gate."
+  ]
+}

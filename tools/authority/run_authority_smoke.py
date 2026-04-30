@@ -26,6 +26,7 @@ PROPOSER = REPO / "tools" / "authority" / "run_authority_proposer.py"
 TRACE_EXPORTER = REPO / "tools" / "authority" / "export_authority_trace.py"
 TRACE_REVIEWER = REPO / "tools" / "authority" / "review_authority_trace.py"
 MEMORY_INDEXER = REPO / "tools" / "authority" / "index_authority_memory.py"
+WINDOW_AUDIT = REPO / "tools" / "authority" / "audit_window_taxonomy.py"
 FIXTURES = REPO / "tools" / "authority" / "fixtures"
 INTERNAL_ROOT = REPO / "_Internal"
 SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "authority-smoke-drafts"
@@ -158,6 +159,14 @@ def main() -> int:
         print("FAIL memory index aggregates reviewed trace records")
         print(detail.rstrip())
         failures.append("memory index aggregates reviewed trace records")
+
+    ok, detail = _check_window_taxonomy_regressions()
+    if ok:
+        print("PASS window taxonomy policy self-test")
+    else:
+        print("FAIL window taxonomy policy self-test")
+        print(detail.rstrip())
+        failures.append("window taxonomy policy self-test")
 
     ok, detail = _check_internal_untracked()
     if ok:
@@ -443,6 +452,20 @@ def _check_memory_index_regressions() -> tuple[bool, str]:
         return False, _format_result("memory index self-test failed", result)
     if "authority memory index self-test passed" not in result.stdout:
         return False, "memory index self-test did not print success marker"
+    return True, ""
+
+
+def _check_window_taxonomy_regressions() -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(WINDOW_AUDIT), "--self-test"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("window taxonomy self-test failed", result)
+    if "window taxonomy self-test passed" not in result.stdout:
+        return False, "window taxonomy self-test did not print success marker"
     return True, ""
 
 
