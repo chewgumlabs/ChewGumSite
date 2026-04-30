@@ -94,6 +94,7 @@
         "source_kind",
         "source_ref",
         "recommended_output",
+        "promotion_mode",
         "status",
         "target_public_path",
         "canonical_url",
@@ -136,6 +137,13 @@
             "note",
             "hold",
             "reject",
+            ""
+          ]
+        },
+        "promotion_mode": {
+          "enum": [
+            "new_page",
+            "enrich_existing",
             ""
           ]
         },

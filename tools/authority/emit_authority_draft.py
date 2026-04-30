@@ -56,6 +56,8 @@ MANAGED_FILES = (
     "post.toml",
     "post.frag.html",
     "post.jsonld",
+    "enrichment.frag.html",
+    "jsonld.enrichment.json",
     "post.extra-head.html",
     "post.extra-body.html",
     "validation.md",
@@ -110,6 +112,15 @@ def main() -> int:
         output = args.kind
         packet = dict(packet)
         packet["recommended_output"] = output
+    packet = dict(packet)
+    promotion_mode = packet.get("promotion_mode") or "new_page"
+    if promotion_mode not in ("new_page", "enrich_existing"):
+        print(
+            f"error: unknown promotion_mode={promotion_mode!r}; not emitting",
+            file=sys.stderr,
+        )
+        return 2
+    packet["promotion_mode"] = promotion_mode
 
     today = _dt.date.today().isoformat()
     draft_dir = drafts_root / f"{today}-{slug}"
@@ -120,9 +131,13 @@ def main() -> int:
     _write_source_trail(draft_dir, packet)
 
     if output in ("toy", "index", "note"):
-        _write_post_toml(draft_dir, packet, output)
-        _write_post_jsonld(draft_dir, packet, output)
-        _write_post_frag(draft_dir, packet, output)
+        if promotion_mode == "enrich_existing":
+            _write_enrichment_frag(draft_dir, packet, output)
+            _write_enrichment_jsonld(draft_dir, packet, output)
+        else:
+            _write_post_toml(draft_dir, packet, output)
+            _write_post_jsonld(draft_dir, packet, output)
+            _write_post_frag(draft_dir, packet, output)
         _write_promotion_notes(draft_dir, packet, output, promotable=True)
     elif output in ("hold", "reject"):
         _write_promotion_notes(draft_dir, packet, output, promotable=False)
@@ -278,7 +293,8 @@ def _write_post_jsonld(draft_dir: Path, packet: dict, output: str) -> None:
 def _write_post_frag(draft_dir: Path, packet: dict, output: str) -> None:
     sections: list[str] = []
 
-    sections.append(_section_live_toy(packet, output))
+    if output == "toy":
+        sections.append(_section_live_toy(packet, output))
     sections.append(_section_metadata(packet, output))
     sections.append(_section_main_claim(packet))
 
@@ -327,15 +343,64 @@ def _write_post_frag(draft_dir: Path, packet: dict, output: str) -> None:
     else:
         sections.append(_section_default_citation(packet))
 
-    sections.append(
-        _section(
-            "Final Human Framing",
-            "text",
-            "<p>(Replace during promotion: one paragraph human framing for the reader.)</p>",
+    (draft_dir / "post.frag.html").write_text("\n\n".join(sections) + "\n")
+
+
+def _write_enrichment_frag(draft_dir: Path, packet: dict, output: str) -> None:
+    sections: list[str] = []
+    sections.append(_section_metadata(packet, output))
+    sections.append(_section_main_claim(packet))
+    if packet.get("why_this_matters"):
+        sections.append(
+            _section(
+                "Why This Enrichment Matters",
+                "text",
+                f"<p>{_escape(packet['why_this_matters'])}</p>",
+            )
         )
+    sections.append(_section_source_trail(packet))
+    if packet.get("related_terms"):
+        sections.append(_section_related_terms(packet))
+    if packet.get("preferred_citation"):
+        sections.append(
+            _section(
+                "Preferred Citation",
+                "text",
+                f"<p>{_escape(packet['preferred_citation'])}</p>",
+            )
+        )
+    (draft_dir / "enrichment.frag.html").write_text(
+        "\n\n".join(sections) + "\n"
     )
 
-    (draft_dir / "post.frag.html").write_text("\n\n".join(sections) + "\n")
+
+def _write_enrichment_jsonld(draft_dir: Path, packet: dict, output: str) -> None:
+    title = packet.get("canonical_title") or packet.get("title") or "(untitled)"
+    description = packet.get("description") or packet.get("one_sentence_claim") or ""
+    canonical = packet.get("canonical_url") or ""
+    today = _dt.date.today().isoformat()
+    data: dict = {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": title,
+        "description": description,
+        "dateModified": today,
+        "author": {"@id": "https://shanecurry.com/about/#shane-curry"},
+        "url": canonical,
+        "mainEntityOfPage": canonical,
+        "isBasedOn": {"@id": canonical},
+    }
+    about = packet.get("related_terms") or []
+    if about:
+        data["about"] = list(about)
+    related = packet.get("related_public_surfaces") or []
+    if related:
+        data["mentions"] = [
+            {"@id": url} for url in related if isinstance(url, str)
+        ]
+    (draft_dir / "jsonld.enrichment.json").write_text(
+        json.dumps(data, indent=2) + "\n"
+    )
 
 
 def _section(title: str, mode: str, inner: str) -> str:
@@ -353,7 +418,7 @@ def _section_live_toy(packet: dict, output: str) -> str:
     interaction = packet.get("user_interaction") or "(describe interaction)"
     visible = packet.get("what_changes_on_screen") or "(describe visible change)"
     placeholder = (
-        f'<p><strong>(Live demo placeholder — replace during promotion.)</strong></p>\n'
+        f'<p><strong>(Live demo placeholder - replace during promotion.)</strong></p>\n'
         f'          <p>Visible change: {_escape(visible)}</p>\n'
         f'          <p>User interaction: {_escape(interaction)}</p>'
     )
@@ -525,30 +590,55 @@ def _write_promotion_notes(
     ]
 
     if promotable:
-        lines.extend(
-            [
-                "## Status",
-                "",
-                "Draft is **scaffold-shape**. Run the validator before any manual promotion.",
-                "",
-                "## Manual Promotion Checklist",
-                "",
-                "1. Inspect the scaffold; replace the Live Toy placeholder with the real interactive demo.",
-                "2. Add the head and body scripts (`post.extra-head.html`, `post.extra-body.html`) by hand.",
-                "3. Tighten any prose the scaffold left as `(replace during promotion)`.",
-                "4. Move/adapt files into the correct content/ directory.",
-                "   - For toys (target `/lab/toys/<slug>/`): rename `post.*` to `index.*`.",
-                "   - For posts/experiments: keep `post.*`.",
-                "5. Run `make build` and review the rendered output locally.",
-                "6. Manually update `site/sitemap.xml` and `site/llms.txt` if the artifact is high-signal.",
-                "7. Commit the content/ change as a single intentional change.",
-                "",
-                "## Internal evidence (allowed only here)",
-                "",
-                "- (record private file paths, internal commit hashes, or Truth Stewardship packet refs here; never in `post.*` files)",
-                "",
-            ]
-        )
+        if packet.get("promotion_mode") == "enrich_existing":
+            lines.extend(
+                [
+                    "## Status",
+                    "",
+                    "Draft is an **existing-page enrichment**. Run the validator before any manual merge.",
+                    "",
+                    "## Manual Merge Checklist",
+                    "",
+                    "Use these artifacts to merge into existing page content; do not treat this as a new page.",
+                    "",
+                    "1. Inspect `enrichment.frag.html` and choose the sections worth merging into the existing content page.",
+                    "2. Inspect `jsonld.enrichment.json` and manually merge only useful public JSON-LD fields.",
+                    "3. Keep the existing page identity, title, canonical URL, and publication history unless a human intentionally changes them.",
+                    "4. Run `make build` and review the rendered page locally.",
+                    "5. Manually update `site/sitemap.xml` and `site/llms.txt` only if the enriched page deserves a separate high-signal update.",
+                    "6. Commit the content change as a single intentional enrichment commit.",
+                    "",
+                    "## Internal evidence (allowed only here)",
+                    "",
+                    "- (record private file paths, internal commit hashes, or Truth Stewardship packet refs here; never in merge artifacts)",
+                    "",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    "## Status",
+                    "",
+                    "Draft is **scaffold-shape**. Run the validator before any manual promotion.",
+                    "",
+                    "## Manual Promotion Checklist",
+                    "",
+                    "1. Inspect the scaffold; for toys, replace the Live Toy placeholder with the real interactive demo.",
+                    "2. Add the head and body scripts (`post.extra-head.html`, `post.extra-body.html`) by hand if needed.",
+                    "3. Tighten any scaffold prose before promotion.",
+                    "4. Move/adapt files into the correct content/ directory.",
+                    "   - For toys (target `/lab/toys/<slug>/`): rename `post.*` to `index.*`.",
+                    "   - For posts/experiments: keep `post.*`.",
+                    "5. Run `make build` and review the rendered output locally.",
+                    "6. Manually update `site/sitemap.xml` and `site/llms.txt` if the artifact is high-signal.",
+                    "7. Commit the content/ change as a single intentional change.",
+                    "",
+                    "## Internal evidence (allowed only here)",
+                    "",
+                    "- (record private file paths, internal commit hashes, or Truth Stewardship packet refs here; never in `post.*` files)",
+                    "",
+                ]
+            )
     else:
         reason = packet.get("hold_reason") or packet.get("reject_reason") or ""
         lines.extend(

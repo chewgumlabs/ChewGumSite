@@ -86,6 +86,7 @@ class RegistryEntry:
     source_kind: str
     source_ref: str
     recommended_output: str
+    promotion_mode: str
     status: str
     target_public_path: str
     canonical_url: str
@@ -181,6 +182,7 @@ def _entry_for_draft(
         source_kind=_source_kind_for(packet),
         source_ref=_source_ref_for(draft_dir, packet),
         recommended_output=recommended_output,
+        promotion_mode=str(packet.get("promotion_mode") or ""),
         status=status,
         target_public_path=str(packet.get("target_public_path") or ""),
         canonical_url=str(packet.get("canonical_url") or ""),
@@ -334,6 +336,7 @@ def _markdown_section(title: str, entries: list[dict]) -> list[str]:
         validation_state = "missing" if passed is None else ("passed" if passed else "blocked")
         lines.append(f"- {entry['id']}")
         lines.append(f"  - recommended_output: {entry['recommended_output']}")
+        lines.append(f"  - promotion_mode: {entry['promotion_mode']}")
         lines.append(f"  - status: {entry['status']}")
         lines.append(f"  - target_public_path: {entry['target_public_path']}")
         lines.append(f"  - canonical_url: {entry['canonical_url']}")

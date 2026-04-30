@@ -1,0 +1,84 @@
+{
+  "schema_version": "0.1",
+  "draft_id": "dead-beat-enrichment-fixture",
+  "test_fixture": true,
+  "source_kind": "public_page",
+  "source_ref": "https://shanecurry.com/blog/dead-beat/",
+  "recommended_output": "note",
+  "promotion_mode": "enrich_existing",
+  "target_public_path": "/blog/dead-beat/",
+  "canonical_url": "https://shanecurry.com/blog/dead-beat/",
+  "canonical_title": "Dead Beat Source Trail",
+  "title": "Dead Beat Source Trail",
+  "description": "A source-trail enrichment for Dead Beat around software rendering, live wall text, and bell-synthesis lineage.",
+  "blurb": "a source-trail enrichment for Dead Beat with public context.",
+  "one_sentence_claim": "Dead Beat is a browser-playable software-rendered room whose public authority trail should connect the live page, later software-rendering experiments, and the chewgum-dsp bell-synthesis extraction.",
+  "why_this_matters": "Dead Beat is already public, but its page has only a compact source trail. This packet tests whether the adapter can stage a truthful enrichment without creating a new public artifact.",
+  "principle": "existing public artifact enrichment, not new public publication",
+  "validation_idea": "Confirm that all cited surfaces are public and that the target path already exists, so the correct human decision is enrichment rather than a new page.",
+  "related_terms": [
+    "software rendering",
+    "web audio",
+    "rust",
+    "webassembly",
+    "interactive art",
+    "chewgum-dsp"
+  ],
+  "related_public_surfaces": [
+    "https://shanecurry.com/blog/dead-beat/",
+    "https://shanecurry.com/blog/phosphor/",
+    "https://shanecurry.com/animation/falling-hall/",
+    "https://shanecurry.com/lab/toys/triangle-engines/"
+  ],
+  "related_project": "ChewGum Animation",
+  "source_library": {
+    "label": "chewgum-dsp v0.1.0",
+    "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+  },
+  "source_trail": [
+    {
+      "text": "Dead Beat public page: browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
+      "url": "https://shanecurry.com/blog/dead-beat/"
+    },
+    {
+      "text": "Phosphor public page: later raycaster experiment that keeps the software-rendering lane visible as a public trail.",
+      "url": "https://shanecurry.com/blog/phosphor/"
+    },
+    {
+      "text": "Falling Hall public page: later software-rendered descent that explicitly cites Dead Beat's bell-synthesis lineage.",
+      "url": "https://shanecurry.com/animation/falling-hall/"
+    },
+    {
+      "text": "Triangle Engines public toy: isolates native triangle versus NES-style PeriodicWave behavior used in the chewgum-dsp lineage.",
+      "url": "https://shanecurry.com/lab/toys/triangle-engines/"
+    },
+    {
+      "text": "chewgum-dsp v0.1.0 public repository: extracted Web Audio helpers for NES-style triangle wave and bell synthesis.",
+      "url": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+    }
+  ],
+  "public_internal_boundary": {
+    "public_safe_terms": [
+      "Dead Beat",
+      "software rendering",
+      "Rust",
+      "WebAssembly",
+      "Web Audio",
+      "chewgum-dsp",
+      "PeriodicWave"
+    ],
+    "internal_only_terms": [],
+    "claims_requiring_signoff": [
+      "Any claim that Dead Beat is the origin point for a reusable audio-library lineage should be human-reviewed against the public source trail."
+    ]
+  },
+  "gate_review": {
+    "claim_steward": "approved",
+    "terminology_steward": "approved",
+    "entity_steward": "approved",
+    "publication_gate": "approved"
+  },
+  "review_owner": "Shane Curry",
+  "preferred_citation": "Shane Curry, \"Dead Beat,\" https://shanecurry.com/blog/dead-beat/, published 2026-04-02.",
+  "human_promotion_required": true
+}

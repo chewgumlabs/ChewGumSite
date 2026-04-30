@@ -1,7 +1,9 @@
 {
   "schema_version": "0.1",
   "draft_id": "bad-private-url-fixture",
+  "test_fixture": true,
   "recommended_output": "toy",
+  "promotion_mode": "new_page",
   "target_public_path": "/lab/toys/bad-private-url/",
   "canonical_url": "https://shanecurry.com/lab/toys/bad-private-url/",
   "canonical_title": "Bad Fixture: private URL leak",

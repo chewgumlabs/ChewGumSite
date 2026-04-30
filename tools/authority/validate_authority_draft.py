@@ -42,11 +42,22 @@ PRIVATE_PATH_PATTERNS = [
 
 ALLOWED_OUTPUTS = {"toy", "index", "note", "hold", "reject"}
 ACTIVE_OUTPUTS = {"toy", "index", "note"}
+PROMOTION_MODES = {"new_page", "enrich_existing"}
 
 # Files that count as public-facing candidate text. Private staging files
 # (packet.json, source-trail.json, validation.*, promotion-notes.md) are
 # allowed to contain internal references.
 PUBLIC_CANDIDATE_FILES = (
+    "post.toml",
+    "post.frag.html",
+    "post.jsonld",
+    "enrichment.frag.html",
+    "jsonld.enrichment.json",
+    "post.extra-head.html",
+    "post.extra-body.html",
+)
+
+REPLACEMENT_POST_FILES = (
     "post.toml",
     "post.frag.html",
     "post.jsonld",
@@ -59,6 +70,7 @@ PACKET_REQUIRED_FIELDS = (
     "schema_version",
     "draft_id",
     "recommended_output",
+    "promotion_mode",
     "target_public_path",
     "canonical_url",
     "one_sentence_claim",
@@ -85,6 +97,13 @@ DESCRIPTION_LABEL_PATTERNS = [
     r"\bthis draft\b",
     r"\binternal note\b",
     r"\binternal draft\b",
+]
+
+SCAFFOLD_RESIDUE_PATTERNS = [
+    r"Live demo placeholder",
+    r"replace during promotion",
+    r"describe visible change",
+    r"describe interaction",
 ]
 
 # URL extraction + public-host checks for source_trail validation.
@@ -123,13 +142,23 @@ def main() -> int:
     _check_source_trail(packet.get("source_trail"), blocking, warnings)
 
     output = packet.get("recommended_output")
+    promotion_mode = packet.get("promotion_mode")
     if output in ACTIVE_OUTPUTS:
-        _check_active_candidate_files(draft, packet, blocking, warnings)
+        if promotion_mode == "enrich_existing":
+            _check_enrichment_candidate_files(draft, packet, blocking, warnings)
+            _check_enrichment_target_exists(packet, blocking)
+        elif promotion_mode == "new_page":
+            _check_active_candidate_files(draft, packet, blocking, warnings)
+            _check_new_page_target_does_not_exist(packet, blocking)
+        else:
+            blocking.append(
+                f"packet.json promotion_mode={promotion_mode!r} not in {sorted(PROMOTION_MODES)}"
+            )
         _check_kind_specific_fields(packet, output, blocking, warnings)
-        _check_target_path_overlap(packet, warnings)
 
     _check_private_path_leaks(draft, blocking)
     _check_public_candidate_urls(draft, blocking)
+    _check_scaffold_residue(draft, blocking)
 
     if len(packet.get("related_public_surfaces") or []) < 2:
         warnings.append("fewer than two related_public_surfaces (warning)")
@@ -158,6 +187,11 @@ def _check_packet_schema(packet: dict, blocking: list[str]) -> None:
     if output not in ALLOWED_OUTPUTS:
         blocking.append(
             f"packet.json recommended_output={output!r} not in {sorted(ALLOWED_OUTPUTS)}"
+        )
+    promotion_mode = packet.get("promotion_mode")
+    if promotion_mode not in PROMOTION_MODES:
+        blocking.append(
+            f"packet.json promotion_mode={promotion_mode!r} not in {sorted(PROMOTION_MODES)}"
         )
 
 
@@ -259,6 +293,29 @@ def _check_active_candidate_files(
         _check_post_jsonld(post_jsonld, packet, blocking, warnings)
 
 
+def _check_enrichment_candidate_files(
+    draft: Path, packet: dict, blocking: list[str], warnings: list[str]
+) -> None:
+    for name in REPLACEMENT_POST_FILES:
+        if (draft / name).exists():
+            blocking.append(
+                f"enrich_existing candidate must not emit replacement {name}"
+            )
+
+    enrichment_frag = draft / "enrichment.frag.html"
+    enrichment_jsonld = draft / "jsonld.enrichment.json"
+
+    if not enrichment_frag.exists():
+        blocking.append("enrich_existing candidate missing enrichment.frag.html")
+    elif not enrichment_frag.read_text(errors="replace").strip():
+        blocking.append("enrichment.frag.html is empty")
+
+    if not enrichment_jsonld.exists():
+        blocking.append("enrich_existing candidate missing jsonld.enrichment.json")
+    else:
+        _check_enrichment_jsonld(enrichment_jsonld, packet, blocking, warnings)
+
+
 def _check_post_toml(
     path: Path, packet: dict, blocking: list[str], warnings: list[str]
 ) -> None:
@@ -353,6 +410,37 @@ def _check_post_jsonld(
         warnings.append("post.jsonld has no `mentions` or `about` fields")
 
 
+def _check_enrichment_jsonld(
+    path: Path, packet: dict, blocking: list[str], warnings: list[str]
+) -> None:
+    try:
+        data = json.loads(path.read_text())
+    except Exception as exc:
+        blocking.append(f"jsonld.enrichment.json parse error: {exc}")
+        return
+    if not isinstance(data, dict):
+        blocking.append("jsonld.enrichment.json must contain a JSON object")
+        return
+
+    pkt_canonical = packet.get("canonical_url")
+    jsonld_url = data.get("url") or data.get("mainEntityOfPage")
+    if pkt_canonical and jsonld_url and jsonld_url != pkt_canonical:
+        blocking.append(
+            f"canonical mismatch: packet={pkt_canonical!r} vs jsonld.enrichment.json={jsonld_url!r}"
+        )
+
+    description = data.get("description") or ""
+    for label in DESCRIPTION_LABEL_PATTERNS:
+        if re.search(label, description, re.IGNORECASE):
+            blocking.append(
+                f"jsonld.enrichment.json description self-labels as draft/prototype: matched /{label}/"
+            )
+            break
+
+    if not data.get("mentions") and not data.get("about"):
+        warnings.append("jsonld.enrichment.json has no `mentions` or `about` fields")
+
+
 def _strip_script_tag(raw: str) -> str:
     match = re.search(r"<script[^>]*>(.*?)</script>", raw, re.DOTALL)
     return match.group(1) if match else raw
@@ -375,10 +463,45 @@ def _check_kind_specific_fields(
             blocking.append("index candidate missing preferred_citation")
 
 
+def _check_new_page_target_does_not_exist(packet: dict, blocking: list[str]) -> None:
+    target = packet.get("target_public_path") or ""
+    source = _content_source_for_target(target)
+    if source:
+        blocking.append(
+            f"new_page target_public_path {target!r} maps to existing content source "
+            f"{source.relative_to(Path(__file__).resolve().parents[2])}; "
+            "use promotion_mode='enrich_existing' for existing pages"
+        )
+
+
+def _check_enrichment_target_exists(packet: dict, blocking: list[str]) -> None:
+    target = packet.get("target_public_path") or ""
+    source = _content_source_for_target(target)
+    if source is None:
+        blocking.append(
+            f"enrich_existing target_public_path {target!r} has no corresponding content source"
+        )
+
+
+def _content_source_for_target(target: str) -> Path | None:
+    if not target.startswith("/"):
+        return None
+    repo = Path(__file__).resolve().parents[2]
+    content = repo / "content"
+    rel = target.strip("/").rstrip("/")
+    if not rel:
+        candidate = content / "index.toml"
+        return candidate if candidate.exists() else None
+    base = content / rel
+    for name in ("index.toml", "post.toml"):
+        candidate = base / name
+        if candidate.exists():
+            return candidate
+    return None
+
+
 def _check_target_path_overlap(packet: dict, warnings: list[str]) -> None:
-    """Heuristic: if target_public_path matches an existing canonical page in
-    site/, this is probably an enrichment target rather than a new page.
-    """
+    """Legacy warning helper retained for callers outside this script."""
     target = packet.get("target_public_path") or ""
     if not target.startswith("/"):
         return
@@ -432,6 +555,21 @@ def _check_public_candidate_urls(draft: Path, blocking: list[str]) -> None:
                 )
 
 
+def _check_scaffold_residue(draft: Path, blocking: list[str]) -> None:
+    for name in PUBLIC_CANDIDATE_FILES:
+        path = draft / name
+        if not path.exists():
+            continue
+        text = path.read_text(errors="replace")
+        for pattern in SCAFFOLD_RESIDUE_PATTERNS:
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                blocking.append(
+                    f"{name} contains scaffold residue: matched {match.group(0)!r}"
+                )
+                break
+
+
 def _write_reports(
     draft: Path,
     packet: dict,
@@ -446,6 +584,7 @@ def _write_reports(
         "",
         f"Status: **{status}**",
         f"recommended_output: {packet.get('recommended_output', '(unknown)')}",
+        f"promotion_mode: {packet.get('promotion_mode', '(unknown)')}",
         f"canonical_url: {packet.get('canonical_url', '(unset)')}",
         "",
     ]
@@ -469,6 +608,7 @@ def _write_reports(
                 "blocking": blocking,
                 "warnings": warnings,
                 "recommended_output": packet.get("recommended_output"),
+                "promotion_mode": packet.get("promotion_mode"),
                 "canonical_url": packet.get("canonical_url"),
             },
             indent=2,

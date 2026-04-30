@@ -1,7 +1,9 @@
 {
   "schema_version": "0.1",
   "draft_id": "triangle-engines-fixture",
+  "test_fixture": true,
   "recommended_output": "toy",
+  "promotion_mode": "enrich_existing",
   "target_public_path": "/lab/toys/triangle-engines/",
   "canonical_url": "https://shanecurry.com/lab/toys/triangle-engines/",
   "canonical_title": "Native Triangle vs. NES-Style Triangle",

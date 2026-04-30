@@ -28,7 +28,9 @@ tools/authority/
     authority-draft-registry.v0.json
   fixtures/
     triangle-engines.packet.json
-                                          known-good fixture
+                                          known-good existing-page enrichment fixture
+    dead-beat-enrichment.packet.json
+                                          known-good note enrichment fixture
     bad-private-path.packet.json
                                           must fail: private filesystem path leak
     bad-public-draft-residue.packet.json
@@ -67,14 +69,20 @@ make authority-smoke
 
 Runs the full fixture matrix:
 
-- the triangle fixture must pass
+- the triangle existing-page enrichment fixture must pass
+- the Dead Beat existing-page enrichment fixture must pass
 - all bad fixtures must block
-- the triangle fixture emitted as `--kind hold` must leave zero `post.*`
-  files
+- the triangle fixture emitted as `--kind hold` must leave zero public
+  candidate files
+- a generated `recommended_output = "note"` scaffold must not contain a
+  Live Toy placeholder
 - smoke drafts are written to `_Internal/authority-smoke-drafts/`, not
   the operational `_Internal/authority-drafts/` root
 - stale passing validation must be re-run before registry readiness
 - fixture drafts must be excluded from the default registry view
+- the Dead Beat enrichment must emit `enrichment.frag.html` and
+  `jsonld.enrichment.json`, not replacement `post.*` files, and must be
+  `ready_for_review` in the include-test registry view
 - `_Internal/` must not be tracked by git
 
 ```sh
@@ -132,15 +140,19 @@ The adapter:
 - creates `_Internal/authority-drafts/<YYYY-MM-DD>-triangle-engines/`
 - writes `packet.json` (normalized copy of the input)
 - writes `source-trail.json`
-- for active candidates (`recommended_output` in `toy | index | note`):
-  scaffolds `post.toml`, `post.frag.html`, and `post.jsonld`
+- for active `promotion_mode = "new_page"` candidates
+  (`recommended_output` in `toy | index | note`): scaffolds
+  `post.toml`, `post.frag.html`, and `post.jsonld`
+- for active `promotion_mode = "enrich_existing"` candidates: writes
+  private merge artifacts, `enrichment.frag.html` and
+  `jsonld.enrichment.json`, and does not emit replacement `post.*` files
 - writes `promotion-notes.md` with a manual promotion checklist
 - runs the validator and writes `validation.md` + `validation.json`
 
 For `recommended_output` of `hold` or `reject` the adapter still creates
 the directory but emits **only** `packet.json`, `source-trail.json`,
 `promotion-notes.md` (with reason), and the validation reports. No
-`post.*` files are produced for held or rejected packets.
+public candidate files are produced for held or rejected packets.
 
 ### Validate a draft
 
@@ -162,30 +174,73 @@ overrides the slug derived from `target_public_path`. `--draft-root`
 must stay under `_Internal/`; it exists so smoke tests can write to a
 separate private test root.
 
+### Packet promotion modes
+
+Every active packet must set:
+
+```json
+"promotion_mode": "new_page"
+```
+
+or:
+
+```json
+"promotion_mode": "enrich_existing"
+```
+
+`new_page` means the packet is staging a new public page. If
+`target_public_path` already maps to an existing `content/` page, the
+validator blocks and asks for `enrich_existing` instead.
+
+`enrich_existing` means the packet is staging public-safe material for a
+page that already exists under `content/`. The validator requires the
+target page to exist and requires merge artifacts:
+
+- `enrichment.frag.html`
+- `jsonld.enrichment.json`
+- `promotion-notes.md`
+
+It also blocks if replacement `post.toml`, `post.frag.html`,
+`post.jsonld`, `post.extra-head.html`, or `post.extra-body.html` files
+are present in an enrichment draft.
+
 ## What the validator checks
 
 **Blocking:**
 
 - `packet.json` exists and parses, with required fields
 - `recommended_output` is one of `toy | index | note | hold | reject`
+- `promotion_mode` is one of `new_page | enrich_existing`
 - `human_promotion_required` is `true`
 - `source_trail` is non-empty
 - Every URL in `source_trail` (across `url` / `href` / `link` fields and
   URLs embedded in `text` / `note` prose) resolves to a publicly-routable
   host. Loopback, RFC 1918 / RFC 6598 (CGN) IPs, link-local, `.local`,
   `.internal`, and `localhost` are blocked.
-- For active candidates: `post.toml`, `post.frag.html`, `post.jsonld`
-  exist and parse
+- For active `new_page` candidates: `post.toml`, `post.frag.html`, and
+  `post.jsonld` exist and parse
+- For active `new_page` candidates: `target_public_path` must not map to
+  an existing `content/` page
+- For active `enrich_existing` candidates: `target_public_path` must map
+  to an existing `content/` page
+- For active `enrich_existing` candidates: `enrichment.frag.html` and
+  `jsonld.enrichment.json` exist and parse, with no replacement `post.*`
+  or `post.extra-*` files
 - Canonical URL agrees across packet, `post.toml`, and `post.jsonld`
-- No private filesystem paths in `post.*` files
+- Canonical URL agrees across packet and `jsonld.enrichment.json` for
+  enrichments
+- No private filesystem paths in public candidate files
   (`_swarmlab/`, `_Company/`, `_ChewGumAnimation/`, `_Internal/`,
   `/Users/<name>/`, `.swarmlab/runs/`)
-- No non-public URLs in `post.*` files. Every URL rendered into a
-  candidate file (canonical, JSON-LD `mentions` / `about`, source_library,
-  HTML hrefs / text) is checked against the same `_is_public_url` rule
-  used for source_trail. Catches private URLs that came in through
-  fields like `related_public_surfaces` or `source_library`, not just
-  `source_trail`.
+- No non-public URLs in public candidate files. Every URL rendered into
+  a candidate file (canonical, JSON-LD `mentions` / `about`,
+  source_library, HTML hrefs / text) is checked against the same
+  `_is_public_url` rule used for source_trail. Catches private URLs that
+  came in through fields like `related_public_surfaces` or
+  `source_library`, not just `source_trail`.
+- No scaffold residue in public candidate files, including
+  `Live demo placeholder`, `replace during promotion`,
+  `describe visible change`, or `describe interaction`
 - `post.toml` `kind` is not a status token
   (`draft | prototype | internal | private | wip`)
 - `post.toml` description / blurb does not self-label as draft
@@ -193,6 +248,7 @@ separate private test root.
 - `post.frag.html` Status field (`<dt>Status</dt><dd>VALUE</dd>`) does
   not contain a status residue token
 - `post.jsonld` description does not self-label as draft
+- `jsonld.enrichment.json` description does not self-label as draft
 - For toys: `what_changes_on_screen` and `user_interaction` are populated
 - For indexes: `related_terms` and `preferred_citation` are populated
 
@@ -200,11 +256,10 @@ separate private test root.
 
 - `source_trail` is prose-only with no URL
 - Fewer than two `related_public_surfaces`
-- `post.frag.html` has no `/glossary/` cross-link
-- `post.jsonld` has no `mentions` or `about` fields
 - For toys: `demo_parameters` missing
-- `target_public_path` overlaps an existing canonical page (probably
-  belongs as enrichment, not a new page)
+- `post.frag.html` has no `/glossary/` cross-link
+- `post.jsonld` or `jsonld.enrichment.json` has no `mentions` or `about`
+  fields
 
 The "draft / prototype / internal / private" check is **scoped**, not a
 naive substring scan. It targets the TOML kind field, TOML
@@ -218,12 +273,15 @@ JSON-LD description. Innocent prose like "internal forces" or
 Promotion is **always** human-driven. The adapter and validator never
 publish.
 
+For `promotion_mode = "new_page"`:
+
 1. Run the validator. Resolve all blocking failures and review warnings.
-2. Inspect the scaffold. Replace the **Live Toy** placeholder with the
-   real interactive demo. The adapter does not generate live demos.
+2. Inspect the scaffold. For toys only, replace the **Live Toy**
+   placeholder with the real interactive demo. Note scaffolds do not get
+   toy placeholders.
 3. Add `post.extra-head.html` and `post.extra-body.html` by hand (e.g.,
    the inline `<script>` that drives the demo). These are not scaffolded.
-4. Tighten any prose marked `(replace during promotion)`.
+4. Tighten any scaffold prose.
 5. Move/adapt files into the chosen `content/` location:
    - For toys (target `/lab/toys/<slug>/`), rename `post.*` to `index.*`
      to match the build convention.
@@ -235,6 +293,21 @@ publish.
    never touches these.
 8. Commit the `content/` change as a single intentional change. Do not
    commit anything from `_Internal/`.
+
+For `promotion_mode = "enrich_existing"`:
+
+1. Run the validator. Resolve all blocking failures and review warnings.
+2. Inspect `enrichment.frag.html` and manually merge useful sections into
+   the existing page.
+3. Inspect `jsonld.enrichment.json` and manually merge only useful
+   public JSON-LD fields.
+4. Preserve the existing page identity, title, canonical URL, and
+   publication history unless a human intentionally changes them.
+5. Run `make build` and review the rendered page locally.
+6. Manually edit `site/sitemap.xml` and `site/llms.txt` only if the
+   enrichment deserves a separate high-signal update.
+7. Commit the `content/` change as a single intentional enrichment
+   commit. Do not commit anything from `_Internal/`.
 
 `shane-publish.el` is the Emacs blog-publish flow for Org-authored
 posts; it is **not** part of this adapter's lane.

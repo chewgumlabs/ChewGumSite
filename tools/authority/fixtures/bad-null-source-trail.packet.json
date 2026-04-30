@@ -1,7 +1,9 @@
 {
   "schema_version": "0.1",
   "draft_id": "bad-null-source-trail-fixture",
+  "test_fixture": true,
   "recommended_output": "toy",
+  "promotion_mode": "new_page",
   "target_public_path": "/lab/toys/bad-null-source-trail/",
   "canonical_url": "https://shanecurry.com/lab/toys/bad-null-source-trail/",
   "canonical_title": "Bad Fixture: null source trail",

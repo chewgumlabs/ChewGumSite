@@ -37,6 +37,11 @@ class SmokeCase:
 
 CASES = (
     SmokeCase("triangle fixture passes", "triangle-engines.packet.json", True),
+    SmokeCase(
+        "Dead Beat enrichment fixture passes",
+        "dead-beat-enrichment.packet.json",
+        True,
+    ),
     SmokeCase("private path blocks", "bad-private-path.packet.json", False),
     SmokeCase("private source URL blocks", "bad-private-url.packet.json", False),
     SmokeCase(
@@ -69,13 +74,21 @@ def main() -> int:
             print(detail.rstrip())
             failures.append(case.name)
 
-    ok, detail = _check_hold_has_no_post_files("triangle-engines")
+    ok, detail = _check_hold_has_no_public_candidate_files("triangle-engines")
     if ok:
-        print("PASS hold override has no post.* files")
+        print("PASS hold override has no public candidate files")
     else:
-        print("FAIL hold override has no post.* files")
+        print("FAIL hold override has no public candidate files")
         print(detail.rstrip())
-        failures.append("hold override has no post.* files")
+        failures.append("hold override has no public candidate files")
+
+    ok, detail = _check_note_scaffold_has_no_live_toy_placeholder()
+    if ok:
+        print("PASS note scaffold has no Live Toy placeholder")
+    else:
+        print("FAIL note scaffold has no Live Toy placeholder")
+        print(detail.rstrip())
+        failures.append("note scaffold has no Live Toy placeholder")
 
     ok, detail = _check_stale_validation_is_revalidated()
     if ok:
@@ -92,6 +105,14 @@ def main() -> int:
         print("FAIL fixture drafts are excluded from default registry")
         print(detail.rstrip())
         failures.append("fixture drafts are excluded from default registry")
+
+    ok, detail = _check_dead_beat_enrichment_artifacts()
+    if ok:
+        print("PASS Dead Beat enrichment emits merge artifacts")
+    else:
+        print("FAIL Dead Beat enrichment emits merge artifacts")
+        print(detail.rstrip())
+        failures.append("Dead Beat enrichment emits merge artifacts")
 
     ok, detail = _check_internal_untracked()
     if ok:
@@ -148,14 +169,64 @@ def _run_case(case: SmokeCase) -> tuple[bool, str]:
     return False, "\n".join(detail)
 
 
-def _check_hold_has_no_post_files(slug: str) -> tuple[bool, str]:
+def _check_hold_has_no_public_candidate_files(slug: str) -> tuple[bool, str]:
     today = dt.date.today().isoformat()
     draft = SMOKE_DRAFTS_ROOT / f"{today}-{slug}"
     if not draft.is_dir():
         return False, f"missing expected hold draft directory: {draft}"
-    post_files = sorted(path.name for path in draft.glob("post.*"))
-    if post_files:
-        return False, "unexpected files: " + ", ".join(post_files)
+    candidates = []
+    for pattern in ("post.*", "enrichment.frag.html", "jsonld.enrichment.json"):
+        candidates.extend(path.name for path in draft.glob(pattern))
+    if candidates:
+        return False, "unexpected files: " + ", ".join(sorted(candidates))
+    return True, ""
+
+
+def _check_note_scaffold_has_no_live_toy_placeholder() -> tuple[bool, str]:
+    packet = json.loads((FIXTURES / "triangle-engines.packet.json").read_text())
+    packet.update(
+        {
+            "draft_id": "note-scaffold-fixture",
+            "recommended_output": "note",
+            "promotion_mode": "new_page",
+            "target_public_path": "/blog/smoke-note-new-page/",
+            "canonical_url": "https://shanecurry.com/blog/smoke-note-new-page/",
+            "canonical_title": "Smoke Note New Page",
+            "title": "Smoke Note New Page",
+            "description": "A note-scaffold fixture that must not emit toy placeholder markup.",
+            "blurb": "a note-scaffold fixture that must not emit toy placeholder markup.",
+            "one_sentence_claim": "A note scaffold should emit article-shaped files without toy-only live-demo markup.",
+        }
+    )
+    for key in ("what_changes_on_screen", "user_interaction", "demo_parameters"):
+        packet.pop(key, None)
+
+    packet_path = SMOKE_DRAFTS_ROOT / "note-scaffold.packet.json"
+    packet_path.write_text(json.dumps(packet, indent=2) + "\n")
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(EMIT),
+            str(packet_path),
+            "--draft-root",
+            str(SMOKE_DRAFTS_ROOT),
+        ],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False, _format_result("failed to emit note scaffold", result)
+
+    draft = SMOKE_DRAFTS_ROOT / f"{dt.date.today().isoformat()}-smoke-note-new-page"
+    post_frag = draft / "post.frag.html"
+    if not post_frag.exists():
+        return False, f"missing note post.frag.html: {post_frag}"
+    text = post_frag.read_text(errors="replace")
+    forbidden = ('data-title="Live Toy"', "Live demo placeholder", "describe interaction")
+    hits = [token for token in forbidden if token in text]
+    if hits:
+        return False, "unexpected note scaffold text: " + ", ".join(hits)
     return True, ""
 
 
@@ -220,6 +291,45 @@ def _check_registry_excludes_fixture_drafts() -> tuple[bool, str]:
         return False, f"expected default registry to index 0 smoke fixtures, got {total}"
     if not excluded:
         return False, "expected default registry to report excluded test drafts"
+    return True, ""
+
+
+def _check_dead_beat_enrichment_artifacts() -> tuple[bool, str]:
+    today = dt.date.today().isoformat()
+    draft = SMOKE_DRAFTS_ROOT / f"{today}-dead-beat"
+    if not draft.is_dir():
+        return False, f"missing expected Dead Beat draft directory: {draft}"
+
+    expected = ("enrichment.frag.html", "jsonld.enrichment.json", "promotion-notes.md")
+    missing = [name for name in expected if not (draft / name).exists()]
+    if missing:
+        return False, "missing files: " + ", ".join(missing)
+
+    replacement_files = sorted(path.name for path in draft.glob("post.*"))
+    if replacement_files:
+        return False, "unexpected replacement files: " + ", ".join(replacement_files)
+
+    notes = (draft / "promotion-notes.md").read_text(errors="replace")
+    if "merge into existing page" not in notes.lower():
+        return False, "promotion notes do not say to merge into existing page"
+    if "move/adapt files" in notes.lower():
+        return False, "promotion notes still use new-page move/adapt language"
+
+    result = _run_registry(include_test_drafts=True)
+    if result.returncode != 0:
+        return False, _format_result("registry failed during Dead Beat check", result)
+    registry = _load_smoke_registry()
+    entry_id = draft.name
+    entries = [entry for entry in registry.get("entries", []) if entry.get("id") == entry_id]
+    if not entries:
+        return False, f"Dead Beat enrichment missing from include-test registry: {entry_id}"
+    entry = entries[0]
+    if entry.get("status") != "validated":
+        return False, f"Dead Beat enrichment status was not validated: {entry}"
+    if entry.get("promotion_decision", {}).get("state") != "ready_for_review":
+        return False, f"Dead Beat enrichment was not ready_for_review: {entry}"
+    if entry.get("promotion_mode") != "enrich_existing":
+        return False, f"Dead Beat enrichment mode was not indexed: {entry}"
     return True, ""
 
 
