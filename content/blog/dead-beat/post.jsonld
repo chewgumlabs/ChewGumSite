@@ -5,7 +5,7 @@
         "headline": "Dead Beat",
         "description": "A browser-playable software-rendered room written in Rust and WebAssembly, with live-editable wall text.",
         "datePublished": "2026-04-02",
-        "dateModified": "2026-04-02",
+        "dateModified": "2026-04-29",
         "author": {
           "@id": "https://shanecurry.com/#person"
         },
@@ -20,7 +20,24 @@
           "WebAssembly",
           "software rendering",
           "interactive art",
-          "browser game"
+          "browser game",
+          "Web Audio",
+          "PeriodicWave",
+          "chewgum-dsp"
+        ],
+        "mentions": [
+          {
+            "@id": "https://shanecurry.com/animation/falling-hall/"
+          },
+          {
+            "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
+          },
+          {
+            "@id": "https://shanecurry.com/blog/phosphor/"
+          },
+          {
+            "@id": "https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0"
+          }
         ]
       }
     </script>
