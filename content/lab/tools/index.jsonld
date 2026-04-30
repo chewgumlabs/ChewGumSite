@@ -7,6 +7,10 @@
         "name": "Tools",
         "description": "Small public software tools and repo-backed lab artifacts by Shane Curry and ChewGum Labs.",
         "author": { "@id": "https://shanecurry.com/#person" },
-        "isPartOf": "https://shanecurry.com/lab/"
+        "isPartOf": "https://shanecurry.com/lab/",
+        "hasPart": [
+          { "@id": "https://shanecurry.com/lab/tools/chewgum-dsp/" },
+          { "@id": "https://shanecurry.com/lab/tools/chewgum-time-chime/" }
+        ]
       }
     </script>

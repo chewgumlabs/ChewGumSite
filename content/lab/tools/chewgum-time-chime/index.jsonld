@@ -1,0 +1,52 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "SoftwareSourceCode"],
+  "headline": "ChewGumTimeChime v0.1.0",
+  "name": "ChewGumTimeChime",
+  "description": "A small public browser harness for comparing stroke smoothing algorithms through timed chimes, extracted from the ChewGum Time Chime live toy.",
+  "datePublished": "2026-04-30",
+  "dateModified": "2026-04-30",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/tools/chewgum-time-chime/",
+  "url": "https://shanecurry.com/lab/tools/chewgum-time-chime/",
+  "codeRepository": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0",
+  "programmingLanguage": "JavaScript",
+  "runtimePlatform": "Web Audio API",
+  "softwareVersion": "0.1.0",
+  "license": "https://github.com/chewgumlabs/ChewGumTimeChime/blob/v0.1.0/LICENSE",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/tools/"
+  },
+  "about": [
+    "stroke smoothing",
+    "timed chimes",
+    "interpretation context",
+    "Web Audio API",
+    "drawing interaction",
+    "sonification",
+    "public repo"
+  ],
+  "mentions": [
+    { "@id": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0" },
+    { "@id": "https://shanecurry.com/lab/toys/chewgum-time-chime/" },
+    { "@id": "https://shanecurry.com/lab/toys/timing-vs-spacing/" },
+    { "@id": "https://shanecurry.com/lab/toys/triangle-engines/" },
+    { "@id": "https://shanecurry.com/glossary/#interpretation-context" }
+  ],
+  "keywords": [
+    "ChewGumTimeChime",
+    "ChewGum Time Chime",
+    "stroke smoothing",
+    "smoothing algorithms",
+    "timed chimes",
+    "drawing sonification",
+    "Web Audio API",
+    "JavaScript audio library",
+    "interpretation context"
+  ]
+}
+    </script>

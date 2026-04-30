@@ -40,6 +40,9 @@
       "@id": "https://shanecurry.com/lab/toys/triangle-engines/"
     },
     {
+      "@id": "https://shanecurry.com/lab/tools/chewgum-time-chime/"
+    },
+    {
       "@id": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0"
     }
   ],

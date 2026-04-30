@@ -1,0 +1,146 @@
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Tool note</dd>
+            <dt>Status</dt>
+            <dd>Active public repo note</dd>
+            <dt>Published</dt>
+            <dd>2026-04-30</dd>
+            <dt>Version</dt>
+            <dd>v0.1.0</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/tools/chewgum-time-chime/">https://shanecurry.com/lab/tools/chewgum-time-chime/</a></dd>
+            <dt>Repository</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0">github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0</a></dd>
+            <dt>Live toy</dt>
+            <dd><a href="/lab/toys/chewgum-time-chime/">ChewGum Time Chime</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            ChewGumTimeChime v0.1.0 is a small public browser harness for
+            comparing stroke smoothing algorithms through timed chimes. A
+            live pointer stroke becomes a smoothed visual trail, high chime
+            events, a low held-note phrase, and a faint air layer.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Included" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt><code>DEFAULT_SMOOTHING_MODES</code></dt>
+            <dd>Three bounded smoothing contracts: <code>1/10 Point</code>, <code>Clocked Bands</code>, and <code>Heavy Drag</code>.</dd>
+            <dt><code>smoothPoint(previousPoint, rawPoint, alpha)</code></dt>
+            <dd>Exponential point smoothing used by the live drawing example.</dd>
+            <dt><code>shouldTriggerNote(...)</code></dt>
+            <dd>Point-count and clocked note-trigger helpers for turning smoothed motion into timed events.</dd>
+            <dt><code>pickRandomNote(...)</code></dt>
+            <dd>Selects random notes from a one-octave C major set.</dd>
+            <dt><code>phraseNoteForIndex(...)</code></dt>
+            <dd>Selects the low F / C / A / F held-note channel in ten-chime blocks.</dd>
+            <dt><code>airNoteForIndex(...)</code></dt>
+            <dd>Schedules the upper air phrase after a low-phrase loop: A5, G5, then fading E5.</dd>
+            <dt><code>TimeChimeAudio</code></dt>
+            <dd>Browser Web Audio output for high chimes, low drone, air layer, panning, and limiter-protected master output.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Not Included" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>No private ChewGum Animation internals.</li>
+            <li>No stroke dataset.</li>
+            <li>No storage or upload behavior.</li>
+            <li>No claim that the three smoothing modes are exhaustive.</li>
+            <li>No framework wrapper.</li>
+            <li>No npm publication claim; this page only claims the public GitHub repository and v0.1.0 tag.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Exists" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The library exists because the live toy needed the smoothing
+            contract to be explicit. Once the toy worked, the reusable part
+            became small enough to name: smoothing modes, note scheduling,
+            pitch selection, and browser audio output.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Live Artifact" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The canonical live demo is
+            <a href="/lab/toys/chewgum-time-chime/">ChewGum Time Chime</a>.
+            This tool note is the repo-backed extraction surface; the toy page
+            is the experiential citation surface.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Install And Use" data-window-mode="rich">
+        <div class="window-content">
+          <p>
+            This is dependency-free ESM with no build step. The public
+            repository contains the source, MIT license, README, browser
+            drawing example, tests, and v0.1.0 tag.
+          </p>
+          <pre><code>import {
+  DEFAULT_SMOOTHING_MODES,
+  TimeChimeAudio,
+  airNoteForIndex,
+  phraseNoteForIndex,
+  pickRandomNote,
+  smoothPoint
+} from './src/index.js';</code></pre>
+          <p>
+            The package name appears in the source metadata, but the public
+            claim here is limited to the GitHub repository and tag.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Repository: <a href="https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0">ChewGumTimeChime v0.1.0</a>.</li>
+            <li>Source files: <a href="https://github.com/chewgumlabs/ChewGumTimeChime/blob/v0.1.0/src/smoothing.js"><code>src/smoothing.js</code></a>, <a href="https://github.com/chewgumlabs/ChewGumTimeChime/blob/v0.1.0/src/scheduler.js"><code>src/scheduler.js</code></a>, <a href="https://github.com/chewgumlabs/ChewGumTimeChime/blob/v0.1.0/src/pitch.js"><code>src/pitch.js</code></a>, and <a href="https://github.com/chewgumlabs/ChewGumTimeChime/blob/v0.1.0/src/audio.js"><code>src/audio.js</code></a>.</li>
+            <li>Live toy: <a href="/lab/toys/chewgum-time-chime/">ChewGum Time Chime</a>.</li>
+            <li>Sibling motion toy: <a href="/lab/toys/timing-vs-spacing/">Timing vs. Spacing</a>.</li>
+            <li>Sibling audio toy: <a href="/lab/toys/triangle-engines/">Native Triangle vs. NES-Style Triangle</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#interpretation-context">interpretation context</a></li>
+            <li><a href="/glossary/#timing">timing</a></li>
+            <li><a href="/glossary/#spacing">spacing</a></li>
+            <li>stroke smoothing</li>
+            <li>Web Audio API</li>
+            <li>sonification</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry / ChewGum Labs, "ChewGumTimeChime v0.1.0,"
+            https://shanecurry.com/lab/tools/chewgum-time-chime/, published
+            2026-04-30.
+          </p>
+        </div>
+      </section>
