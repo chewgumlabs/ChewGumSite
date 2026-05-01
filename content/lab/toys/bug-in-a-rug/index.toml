@@ -1,0 +1,6 @@
+title = "Bug in a Rug"
+description = "A 2D raster point-remapping toy where a height brush uses tint, shade, and rim cues to test how color supports a depth illusion."
+canonical = "https://shanecurry.com/lab/toys/bug-in-a-rug/"
+published = 2026-05-01
+kind = "toy-note"
+blurb = "a 2D raster point-remapping toy where a height brush tests how tint, shade, rimlight, and source color make a depth illusion readable."

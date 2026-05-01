@@ -1,0 +1,226 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface bug-rug-toy" id="toy-bug-in-a-rug">
+            <p>
+              A Gum PNG or checker map is resampled through a 2D raster
+              point-remap. Each drag writes into a height map, with tint,
+              shade, and rim cues added by the brush so the remapped pixels can
+              read as depth.
+            </p>
+
+            <form class="bug-rug-controls" aria-label="Bug in a Rug parameters">
+              <fieldset aria-label="Brush shape">
+                <legend>Brush</legend>
+                <label>
+                  <input type="radio" name="bug-rug-brush" value="square">
+                  <span>Square</span>
+                </label>
+                <label>
+                  <input type="radio" name="bug-rug-brush" value="circle" checked>
+                  <span>Circle</span>
+                </label>
+              </fieldset>
+
+              <label>
+                Footprint
+                <input id="bug-rug-footprint" type="range" min="0.025" max="0.12" step="0.005" value="0.06">
+                <output id="bug-rug-footprint-out">28px</output>
+              </label>
+              <label>
+                Projection
+                <input id="bug-rug-projection" type="range" min="0.004" max="0.026" step="0.002" value="0.02">
+                <output id="bug-rug-projection-out">9px</output>
+              </label>
+              <label>
+                Ramp Width
+                <input id="bug-rug-stretch" type="range" min="0.01" max="0.07" step="0.005" value="0.025">
+                <output id="bug-rug-stretch-out">12px</output>
+              </label>
+              <label class="bug-rug-toggle">
+                Debug
+                <input id="bug-rug-debug" type="checkbox">
+                <span>Overlay</span>
+              </label>
+              <label class="bug-rug-toggle">
+                Cells
+                <input id="bug-rug-checkers" type="checkbox" checked>
+                <span>Map</span>
+              </label>
+              <div class="bug-rug-buttons">
+                <button type="button" id="bug-rug-center">Clear</button>
+              </div>
+            </form>
+
+            <div class="bug-rug-stage">
+              <canvas
+                id="bug-rug-canvas"
+                width="460"
+                height="460"
+                aria-label="Gum PNG with persistent projected height brush"
+              ></canvas>
+              <p id="bug-rug-readout" class="bug-rug-readout" aria-live="polite">
+                height brush ready.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Active toy note</dd>
+            <dt>Published</dt>
+            <dd>2026-05-01</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/bug-in-a-rug/">https://shanecurry.com/lab/toys/bug-in-a-rug/</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+            <dt>Source image</dt>
+            <dd>Gum PNG drawn by Shane Curry</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Bug in a Rug tests M. C. Escher-inspired point-remapping on a 2D
+            raster image: a drawn height field shifts source pixels to simulate
+            depth, while proving that color changes are part of the illusion,
+            not decoration.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Dragging writes height into the source map. Each stroke starts at
+            zero height, fades up to the active brush, and leaves a persistent
+            raised trail. The toy then remaps source pixels and adds brush-side
+            tint, shade, and rimlight cues from the same height data.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The effect is readable only when geometry and color agree. Black
+            areas and flat-color areas can destroy the depth cue because there
+            is no local texture for the remap to reveal; the brush needs tint,
+            shade, and a restrained rimlight to help a flat raster image read
+            as a raised surface.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Context" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            This is not an Escher reconstruction, but it touches the same broad
+            idea of a picture being governed by a coordinate map. Escher's
+            <cite>Print Gallery</cite> has been studied as a mathematical image
+            transformation, and his circle-limit work is often discussed as a
+            distorted map of hyperbolic space. Bug in a Rug keeps the idea much
+            smaller: source-image coordinates in one raster image are lifted by
+            a brush-written height map, projected, tinted, shaded, and drawn
+            back to the screen.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Source</dt>
+            <dd>Built-in Gum PNG at its native 460 by 460 pixel size</dd>
+            <dt>Purpose</dt>
+            <dd>Experiment with 2D raster point-remapping as a depth illusion, and test how much the illusion depends on source color plus brush tint, shade, and rim cues</dd>
+            <dt>Stroke model</dt>
+            <dd>Dragging waits for a committed direction, then max-writes brush falloff into a persistent height-map array; each new stroke eases from zero height to the active brush height</dd>
+            <dt>Brush shapes</dt>
+            <dd>Square and circle use different footprint helpers: square computes side-band falloff, while circle computes radial falloff. Both feed the same height, shadow, and rimlight rules.</dd>
+            <dt>Footprint size</dt>
+            <dd>Controls the plateau size of the active brush</dd>
+            <dt>Projection</dt>
+            <dd>Each committed stroke records one stroke-following projection direction; full-height projection is capped at 12 pixels</dd>
+            <dt>Coordinate map</dt>
+            <dd><code>screen = source + stroke_direction[source] * projection * height_map[source]</code>; the overlay shows the projected mesh vertices used by the texture</dd>
+            <dt>Height highlight</dt>
+            <dd>Source-space height texture: each raised pixel fades from zero to grey; it does not turn the ramp white</dd>
+            <dt>Height shadow</dt>
+            <dd>Source-space shadow texture: each pixel checks the height drop along that pixel's stored stroke direction, so only one stroke-directed slope darkens</dd>
+            <dt>Rimlight</dt>
+            <dd>A separate subdued rim band appears only on top-face pixels at the edge opposite the shadow, with alpha scaled by projection height</dd>
+            <dt>Cell map</dt>
+            <dd>Optional; swaps the source texture from Gum to a source-coordinate checker map, then uses the same projected mesh</dd>
+            <dt>Color dependency</dt>
+            <dd>Solid black and broad flat colors make the remap harder to read; tint, shade, rimlight, and source texture are part of the perceptual proof</dd>
+            <dt>Ramp width</dt>
+            <dd>Controls the falloff width around the active brush; square keeps directional side bands, while circle uses radial falloff</dd>
+            <dt>Draw order</dt>
+            <dd>Base image first, then textured mesh triangles sorted from lower height to higher height</dd>
+            <dt>Surface model</dt>
+            <dd>Brush plateau plus falloff bands; no separate pasted side faces in normal mode</dd>
+            <dt>Debug geometry</dt>
+            <dd>Optional; shows the projected mesh, current brush footprint, projected plateau, and projection direction</dd>
+            <dt>Sampling</dt>
+            <dd>Nearest-neighbor sampling, so Gum and the checker map stay pixel-readable instead of being smoothed</dd>
+            <dt>Scope</dt>
+            <dd>This is a 2D raster point-remapping trick with tint and shade cues; it does not claim physical surface behavior</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>This toy follows earlier image-warp sketches but replaces the failed field warp and pasted-box attempts with a projected mesh.</li>
+            <li>The interaction is narrowed to a brush-written height map, per-stroke projection direction, brush falloff, and the Gum texture.</li>
+            <li>The current purpose is to test whether 2D raster point-remapping can simulate depth, and where the illusion fails when source color or brush tint/shade is removed.</li>
+            <li>The built-in image is Gum, supplied by Shane Curry for this demo.</li>
+            <li><a href="https://pub.math.leidenuniv.nl/~smitbde/escherdroste/">Escher and the Droste effect</a> documents the mathematical structure behind Escher's <cite>Print Gallery</cite>.</li>
+            <li><a href="https://eschermath.org/wiki/Hyperbolic_Geometry.html">EscherMath on hyperbolic geometry</a> describes the circle-limit prints as distorted maps of hyperbolic space.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#overlap">overlap</a></li>
+            <li><a href="/glossary/#raster-image">raster image</a></li>
+            <li><a href="/glossary/#point-remapping">point remapping</a></li>
+            <li><a href="/glossary/#height-map">height map</a></li>
+            <li><a href="/glossary/#sampling">sampling</a></li>
+            <li><a href="/glossary/#displacement-field">displacement field</a></li>
+            <li><a href="/glossary/#procedural-animation">procedural animation</a></li>
+            <li><a href="/glossary/#interpretation-context">interpretation context</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Bug in a Rug,"
+            https://shanecurry.com/lab/toys/bug-in-a-rug/,
+            published 2026-05-01.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Nothing is hiding under the picture except one raster image, a
+            height-map array, a coordinate remap, and the color cues needed for
+            that remap to read as depth.
+          </p>
+        </div>
+      </section>

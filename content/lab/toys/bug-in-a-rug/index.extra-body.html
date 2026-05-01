@@ -1,0 +1,758 @@
+<script>
+(() => {
+  const root = document.getElementById("toy-bug-in-a-rug");
+  if (!root) return;
+
+  const canvas = root.querySelector("#bug-rug-canvas");
+  const ctx = canvas.getContext("2d");
+  const footprintInput = root.querySelector("#bug-rug-footprint");
+  const footprintOut = root.querySelector("#bug-rug-footprint-out");
+  const projectionInput = root.querySelector("#bug-rug-projection");
+  const projectionOut = root.querySelector("#bug-rug-projection-out");
+  const rampInput = root.querySelector("#bug-rug-stretch");
+  const rampOut = root.querySelector("#bug-rug-stretch-out");
+  const debugInput = root.querySelector("#bug-rug-debug");
+  const checkerInput = root.querySelector("#bug-rug-checkers");
+  const centerButton = root.querySelector("#bug-rug-center");
+  const readout = root.querySelector("#bug-rug-readout");
+  const brushRadios = Array.from(root.querySelectorAll('input[name="bug-rug-brush"]'));
+
+  const source = new Image();
+  source.src = "/assets/bug-in-a-rug/gum.png";
+  const strokeRampMs = 420;
+  const strokeDeadZone = 7;
+  const highlightMaxAlpha = 0.25;
+  const highlightBaseGrey = 204;
+  const shadowMaxAlpha = 0.36;
+  const rimAlpha = 0.28;
+  const rimGrey = 224;
+  const rimBandPixels = 3;
+
+  const state = {
+    brush: root.querySelector('input[name="bug-rug-brush"]:checked').value,
+    footprint: Number(footprintInput.value),
+    projection: Number(projectionInput.value),
+    ramp: Number(rampInput.value),
+    debug: debugInput.checked,
+    checker: checkerInput.checked,
+    center: { x: canvas.width * 0.5, y: canvas.height * 0.5 },
+    dirty: true,
+    sourceCanvas: null,
+    mapCanvas: null,
+    shadowCanvas: null,
+    highlightCanvas: null,
+    rimCanvas: null,
+    heightMap: null,
+    dirXMap: null,
+    dirYMap: null,
+    mesh: null,
+    stroke: null
+  };
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function uniqueSorted(values) {
+    return Array.from(new Set(values.map((value) => Math.round(value * 1000) / 1000)))
+      .sort((a, b) => a - b);
+  }
+
+  function fillCoords(start, end, step, required) {
+    const coords = [start, end, ...required.filter((value) => value > start && value < end)];
+    for (let value = Math.ceil(start / step) * step; value < end; value += step) {
+      coords.push(value);
+    }
+    return uniqueSorted(coords);
+  }
+
+  function buildGeometry(centerOverride = state.center) {
+    const width = canvas.width;
+    const height = canvas.height;
+    const base = Math.min(width, height);
+    const footprintSize = Math.max(14, state.footprint * base);
+    const half = footprintSize * 0.5;
+    const projectionMagnitude = Math.min(12, Math.max(2, state.projection * base));
+    const previewDirection = state.stroke?.direction || { x: 0, y: -1 };
+    const projectionX = previewDirection.x * projectionMagnitude;
+    const projectionY = previewDirection.y * projectionMagnitude;
+    const rampBase = Math.max(2, state.ramp * base);
+    const bands = {
+      top: rampBase * 0.48,
+      right: rampBase * 0.82,
+      bottom: rampBase * 1.45,
+      left: rampBase * 1.08
+    };
+    const marginX = Math.max(bands.left, bands.right) + Math.abs(projectionX) + 2;
+    const marginY = Math.max(bands.top, bands.bottom) + Math.abs(projectionY) + 2;
+    const centerBounds = {
+      minX: half + marginX,
+      maxX: width - half - marginX,
+      minY: half + marginY,
+      maxY: height - half - marginY
+    };
+    const cx = clamp(centerOverride.x, centerBounds.minX, centerBounds.maxX);
+    const cy = clamp(centerOverride.y, centerBounds.minY, centerBounds.maxY);
+    const footprint = {
+      left: cx - half,
+      top: cy - half,
+      right: cx + half,
+      bottom: cy + half
+    };
+    const support = {
+      left: Math.max(0, footprint.left - bands.left),
+      top: Math.max(0, footprint.top - bands.top),
+      right: Math.min(width, footprint.right + bands.right),
+      bottom: Math.min(height, footprint.bottom + bands.bottom)
+    };
+    if (state.brush !== "square") {
+      const radius = half + rampBase;
+      support.left = Math.max(0, cx - radius);
+      support.top = Math.max(0, cy - radius);
+      support.right = Math.min(width, cx + radius);
+      support.bottom = Math.min(height, cy + radius);
+    }
+
+    return {
+      width,
+      height,
+      base,
+      half,
+      footprintSize,
+      brush: state.brush,
+      center: { x: cx, y: cy },
+      projection: { x: projectionX, y: projectionY, magnitude: projectionMagnitude },
+      bands,
+      footprint,
+      support,
+      centerBounds,
+      meshStep: Math.max(7, Math.round(base * 0.02))
+    };
+  }
+
+  function smoothHeight(t) {
+    if (t <= 0) return 1;
+    if (t >= 1) return 0;
+    return 0.5 + 0.5 * Math.cos(t * Math.PI);
+  }
+
+  function squareHeightAt(x, y, geom) {
+    const { footprint, bands } = geom;
+    const leftExcess = Math.max(0, footprint.left - x);
+    const rightExcess = Math.max(0, x - footprint.right);
+    const topExcess = Math.max(0, footprint.top - y);
+    const bottomExcess = Math.max(0, y - footprint.bottom);
+    const t = Math.max(
+      leftExcess / bands.left,
+      rightExcess / bands.right,
+      topExcess / bands.top,
+      bottomExcess / bands.bottom
+    );
+
+    return smoothHeight(t);
+  }
+
+  function circleHeightAt(x, y, geom) {
+    const distance = Math.hypot(x - geom.center.x, y - geom.center.y);
+    return smoothHeight((distance - geom.half) / geom.bands.right);
+  }
+
+  function heightAt(x, y, geom) {
+    if (geom.brush === "circle") return circleHeightAt(x, y, geom);
+    return squareHeightAt(x, y, geom);
+  }
+
+  function makeVertex(x, y) {
+    return {
+      sourceX: x,
+      sourceY: y,
+      x,
+      y,
+      z: 0
+    };
+  }
+
+  function buildFixedMesh(width, height, step) {
+    const xs = fillCoords(0, width, step, []);
+    const ys = fillCoords(0, height, step, []);
+    const rows = ys.map((y) => xs.map((x) => makeVertex(x, y)));
+    const triangles = [];
+    let order = 0;
+
+    for (let row = 0; row < ys.length - 1; row += 1) {
+      for (let col = 0; col < xs.length - 1; col += 1) {
+        const a = rows[row][col];
+        const b = rows[row][col + 1];
+        const c = rows[row + 1][col];
+        const d = rows[row + 1][col + 1];
+        const first = [a, b, c];
+        const second = [b, d, c];
+        first.order = order;
+        order += 1;
+        second.order = order;
+        order += 1;
+        triangles.push(first);
+        triangles.push(second);
+      }
+    }
+
+    return { xs, ys, rows, triangles };
+  }
+
+  function sampleHeightMap(x, y) {
+    if (!state.heightMap) return 0;
+    const ix = clamp(Math.round(x), 0, canvas.width - 1);
+    const iy = clamp(Math.round(y), 0, canvas.height - 1);
+    return state.heightMap[iy * canvas.width + ix];
+  }
+
+  function sampleHeightPixel(x, y) {
+    if (!state.heightMap || x < 0 || y < 0 || x >= canvas.width || y >= canvas.height) {
+      return 0;
+    }
+    return state.heightMap[Math.round(y) * canvas.width + Math.round(x)];
+  }
+
+  function sampleDirectionMap(map, x, y) {
+    if (!map) return 0;
+    const ix = clamp(Math.round(x), 0, canvas.width - 1);
+    const iy = clamp(Math.round(y), 0, canvas.height - 1);
+    return map[iy * canvas.width + ix];
+  }
+
+  function triangleHeight(triangle) {
+    return (triangle[0].z + triangle[1].z + triangle[2].z) / 3;
+  }
+
+  function updateMeshFromHeightMap(mesh, geom) {
+    mesh.rows.forEach((row) => {
+      row.forEach((vertex) => {
+        const z = sampleHeightMap(vertex.sourceX, vertex.sourceY);
+        const dirX = sampleDirectionMap(state.dirXMap, vertex.sourceX, vertex.sourceY);
+        const dirY = sampleDirectionMap(state.dirYMap, vertex.sourceX, vertex.sourceY);
+        vertex.z = z;
+        vertex.x = vertex.sourceX + dirX * geom.projection.magnitude;
+        vertex.y = vertex.sourceY + dirY * geom.projection.magnitude;
+      });
+    });
+
+    mesh.triangles.sort((left, right) => {
+      const heightDelta = triangleHeight(left) - triangleHeight(right);
+      return heightDelta || left.order - right.order;
+    });
+  }
+
+  function strokeRamp(timestamp) {
+    if (!state.stroke) return 0;
+    const t = clamp((timestamp - state.stroke.startedAt) / strokeRampMs, 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  function stampBrushAt(center, strength, direction) {
+    if (
+      !state.heightMap ||
+      !state.dirXMap ||
+      !state.dirYMap ||
+      strength <= 0
+    ) {
+      return;
+    }
+    const geom = buildGeometry(center);
+    const left = clamp(Math.floor(geom.support.left), 0, canvas.width - 1);
+    const right = clamp(Math.ceil(geom.support.right), 0, canvas.width - 1);
+    const top = clamp(Math.floor(geom.support.top), 0, canvas.height - 1);
+    const bottom = clamp(Math.ceil(geom.support.bottom), 0, canvas.height - 1);
+
+    for (let y = top; y <= bottom; y += 1) {
+      for (let x = left; x <= right; x += 1) {
+        const amount = heightAt(x + 0.5, y + 0.5, geom);
+        if (amount <= 0) continue;
+        const index = y * canvas.width + x;
+        const stampAmount = amount * strength;
+        const previousHeight = state.heightMap[index];
+        const nextHeight = Math.max(previousHeight, stampAmount);
+        if (nextHeight <= previousHeight) continue;
+        state.heightMap[index] = nextHeight;
+        state.dirXMap[index] = direction.x * nextHeight;
+        state.dirYMap[index] = direction.y * nextHeight;
+      }
+    }
+  }
+
+  function stampStroke(timestamp) {
+    if (!state.stroke?.committed) return;
+    const ramp = strokeRamp(timestamp);
+    const strength = ramp;
+    const from = state.stroke.last || state.center;
+    const to = state.center;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const distance = Math.hypot(dx, dy);
+    const spacing = Math.max(2, geomMeshStepForCanvas() * 0.55);
+    const steps = Math.max(1, Math.ceil(distance / spacing));
+
+    for (let step = 0; step <= steps; step += 1) {
+      const t = step / steps;
+      stampBrushAt({
+        x: from.x + dx * t,
+        y: from.y + dy * t
+      }, strength, state.stroke.direction);
+    }
+
+    state.stroke.last = { x: to.x, y: to.y };
+    requestRender();
+  }
+
+  function buildSourceMapCanvas(width, height, cellSize) {
+    const mapCanvas = document.createElement("canvas");
+    mapCanvas.width = width;
+    mapCanvas.height = height;
+    const mapCtx = mapCanvas.getContext("2d");
+    mapCtx.imageSmoothingEnabled = false;
+
+    for (let y = 0; y < height; y += cellSize) {
+      for (let x = 0; x < width; x += cellSize) {
+        mapCtx.fillStyle = ((Math.floor(x / cellSize) + Math.floor(y / cellSize)) % 2 === 0)
+          ? "#ffffff"
+          : "#000000";
+        mapCtx.fillRect(x, y, cellSize, cellSize);
+      }
+    }
+
+    return mapCanvas;
+  }
+
+  function triangleTransform(triangle) {
+    const [p0, p1, p2] = triangle;
+    const u0 = p0.sourceX;
+    const v0 = p0.sourceY;
+    const u1 = p1.sourceX;
+    const v1 = p1.sourceY;
+    const u2 = p2.sourceX;
+    const v2 = p2.sourceY;
+    const x0 = p0.x;
+    const y0 = p0.y;
+    const x1 = p1.x;
+    const y1 = p1.y;
+    const x2 = p2.x;
+    const y2 = p2.y;
+    const denominator = u0 * (v1 - v2) + u1 * (v2 - v0) + u2 * (v0 - v1);
+
+    if (Math.abs(denominator) < 0.0001) return null;
+
+    return {
+      a: (x0 * (v1 - v2) + x1 * (v2 - v0) + x2 * (v0 - v1)) / denominator,
+      b: (y0 * (v1 - v2) + y1 * (v2 - v0) + y2 * (v0 - v1)) / denominator,
+      c: (x0 * (u2 - u1) + x1 * (u0 - u2) + x2 * (u1 - u0)) / denominator,
+      d: (y0 * (u2 - u1) + y1 * (u0 - u2) + y2 * (u1 - u0)) / denominator,
+      e: (
+        x0 * (u1 * v2 - u2 * v1) +
+        x1 * (u2 * v0 - u0 * v2) +
+        x2 * (u0 * v1 - u1 * v0)
+      ) / denominator,
+      f: (
+        y0 * (u1 * v2 - u2 * v1) +
+        y1 * (u2 * v0 - u0 * v2) +
+        y2 * (u0 * v1 - u1 * v0)
+      ) / denominator
+    };
+  }
+
+  function drawTexturedTriangle(triangle, texture) {
+    const transform = triangleTransform(triangle);
+    if (!transform) return;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(triangle[0].x, triangle[0].y);
+    ctx.lineTo(triangle[1].x, triangle[1].y);
+    ctx.lineTo(triangle[2].x, triangle[2].y);
+    ctx.closePath();
+    ctx.clip();
+    ctx.setTransform(transform.a, transform.b, transform.c, transform.d, transform.e, transform.f);
+    ctx.drawImage(texture, 0, 0);
+    ctx.restore();
+  }
+
+  function drawMesh(geom, mesh, texture) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(texture, 0, 0);
+    mesh.triangles.forEach((triangle) => drawTexturedTriangle(triangle, texture));
+  }
+
+  function updateHeightShadowTexture() {
+    if (!state.shadowCanvas || !state.heightMap || !state.dirXMap || !state.dirYMap) return;
+    const shadowCtx = state.shadowCanvas.getContext("2d");
+    const imageData = shadowCtx.createImageData(canvas.width, canvas.height);
+    const pixels = imageData.data;
+    const geom = buildGeometry();
+    const projectionT = clamp(geom.projection.magnitude / 12, 0, 1);
+    const slopeStep = Math.max(2, Math.round(state.ramp * geom.base * 0.45));
+
+    for (let y = 0; y < canvas.height; y += 1) {
+      for (let x = 0; x < canvas.width; x += 1) {
+        const index = y * canvas.width + x;
+        const height = clamp(state.heightMap[index], 0, 1);
+        if (height <= 0) continue;
+
+        const dirLength = Math.hypot(state.dirXMap[index], state.dirYMap[index]);
+        if (dirLength <= 0.0001) continue;
+        const dirX = state.dirXMap[index] / dirLength;
+        const dirY = state.dirYMap[index] / dirLength;
+        const forwardHeight = sampleHeightPixel(x - dirX * slopeStep, y - dirY * slopeStep);
+        const oneSidedDrop = clamp((height - forwardHeight) * 2.2, 0, 1);
+        if (oneSidedDrop <= 0) continue;
+
+        const alpha = Math.round(oneSidedDrop * height * projectionT * shadowMaxAlpha * 255);
+        const offset = index * 4;
+        pixels[offset] = 0;
+        pixels[offset + 1] = 0;
+        pixels[offset + 2] = 0;
+        pixels[offset + 3] = alpha;
+      }
+    }
+
+    shadowCtx.putImageData(imageData, 0, 0);
+  }
+
+  function drawHeightShadow(mesh) {
+    if (!state.shadowCanvas) return;
+    updateHeightShadowTexture();
+    mesh.triangles.forEach((triangle) => drawTexturedTriangle(triangle, state.shadowCanvas));
+  }
+
+  function updateHeightHighlightTexture() {
+    if (!state.highlightCanvas || !state.heightMap) return;
+    const highlightCtx = state.highlightCanvas.getContext("2d");
+    const imageData = highlightCtx.createImageData(canvas.width, canvas.height);
+    const pixels = imageData.data;
+
+    for (let index = 0; index < state.heightMap.length; index += 1) {
+      const height = clamp(state.heightMap[index], 0, 1);
+      const alpha = Math.round(height * highlightMaxAlpha * 255);
+      const offset = index * 4;
+      pixels[offset] = highlightBaseGrey;
+      pixels[offset + 1] = highlightBaseGrey;
+      pixels[offset + 2] = highlightBaseGrey;
+      pixels[offset + 3] = alpha;
+    }
+
+    highlightCtx.putImageData(imageData, 0, 0);
+  }
+
+  function drawHeightHighlight(mesh) {
+    if (!state.highlightCanvas) return;
+    updateHeightHighlightTexture();
+    mesh.triangles.forEach((triangle) => drawTexturedTriangle(triangle, state.highlightCanvas));
+  }
+
+  function updateHeightRimTexture() {
+    if (!state.rimCanvas || !state.heightMap || !state.dirXMap || !state.dirYMap) return;
+    const rimCtx = state.rimCanvas.getContext("2d");
+    const imageData = rimCtx.createImageData(canvas.width, canvas.height);
+    const pixels = imageData.data;
+    const geom = buildGeometry();
+    const projectionT = clamp(geom.projection.magnitude / 12, 0, 1);
+    const topThreshold = 0.92;
+
+    for (let y = 0; y < canvas.height; y += 1) {
+      for (let x = 0; x < canvas.width; x += 1) {
+        const index = y * canvas.width + x;
+        const height = clamp(state.heightMap[index], 0, 1);
+        if (height < topThreshold) continue;
+
+        const dirLength = Math.hypot(state.dirXMap[index], state.dirYMap[index]);
+        if (dirLength <= 0.0001) continue;
+        const dirX = state.dirXMap[index] / dirLength;
+        const dirY = state.dirYMap[index] / dirLength;
+        let touchesEdge = false;
+        for (let step = 1; step <= rimBandPixels; step += 1) {
+          const oppositeEdgeHeight = sampleHeightPixel(x + dirX * step, y + dirY * step);
+          if (oppositeEdgeHeight < topThreshold) {
+            touchesEdge = true;
+            break;
+          }
+        }
+        if (!touchesEdge) continue;
+
+        const alpha = Math.round(rimAlpha * projectionT * 255);
+        const offset = index * 4;
+        pixels[offset] = rimGrey;
+        pixels[offset + 1] = rimGrey;
+        pixels[offset + 2] = rimGrey;
+        pixels[offset + 3] = alpha;
+      }
+    }
+
+    rimCtx.putImageData(imageData, 0, 0);
+  }
+
+  function drawHeightRim(mesh) {
+    if (!state.rimCanvas) return;
+    updateHeightRimTexture();
+    mesh.triangles.forEach((triangle) => drawTexturedTriangle(triangle, state.rimCanvas));
+  }
+
+  function drawDebugGeometry(geom, mesh) {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.lineWidth = 1;
+
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = "#55ffff";
+    mesh.rows.forEach((row) => {
+      ctx.beginPath();
+      row.forEach((vertex, index) => {
+        if (index === 0) ctx.moveTo(vertex.x, vertex.y);
+        else ctx.lineTo(vertex.x, vertex.y);
+      });
+      ctx.stroke();
+    });
+    for (let col = 0; col < mesh.xs.length; col += 1) {
+      ctx.beginPath();
+      mesh.rows.forEach((row, index) => {
+        const vertex = row[col];
+        if (index === 0) ctx.moveTo(vertex.x, vertex.y);
+        else ctx.lineTo(vertex.x, vertex.y);
+      });
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    drawBrushOutline(geom, 0, 0, "#ff55ff", [5, 4]);
+    drawBrushOutline(geom, geom.projection.x, geom.projection.y, "#ffff55", []);
+    drawArrow(
+      geom.center.x,
+      geom.center.y,
+      geom.center.x + geom.projection.x,
+      geom.center.y + geom.projection.y
+    );
+    ctx.restore();
+  }
+
+  function drawBrushOutline(geom, offsetX, offsetY, color, dash) {
+    ctx.save();
+    ctx.setLineDash(dash);
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    if (geom.brush === "circle") {
+      ctx.arc(geom.center.x + offsetX, geom.center.y + offsetY, geom.half, 0, Math.PI * 2);
+    } else {
+      ctx.rect(
+        geom.footprint.left + offsetX,
+        geom.footprint.top + offsetY,
+        geom.footprint.right - geom.footprint.left,
+        geom.footprint.bottom - geom.footprint.top
+      );
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawArrow(x1, y1, x2, y2) {
+    const length = Math.max(1, Math.hypot(x2 - x1, y2 - y1));
+    const ux = (x2 - x1) / length;
+    const uy = (y2 - y1) / length;
+    const px = -uy;
+    const py = ux;
+    const headLength = 7;
+    const headWidth = 4;
+    ctx.strokeStyle = "#ff5555";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x2 - ux * headLength + px * headWidth, y2 - uy * headLength + py * headWidth);
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ux * headLength - px * headWidth, y2 - uy * headLength - py * headWidth);
+    ctx.stroke();
+  }
+
+  function syncOutputs() {
+    const geom = buildGeometry();
+    const meshSize = state.mesh ? `${state.mesh.xs.length}x${state.mesh.ys.length}` : "pending";
+    footprintOut.textContent = `${Math.round(geom.footprintSize)}px`;
+    projectionOut.textContent = `${Math.round(geom.projection.magnitude)}px`;
+    rampOut.textContent = `${Math.round(state.ramp * geom.base)}px`;
+    readout.textContent =
+      `fixed mesh ${meshSize}; ` +
+      `${geom.brush} brush writes to a height map; ` +
+      `${Math.round(geom.projection.magnitude)}px projection at full height; ` +
+      `stroke direction commits after ${strokeDeadZone}px.`;
+  }
+
+  function render() {
+    if (!state.sourceCanvas || !state.mesh) return;
+    const geom = buildGeometry();
+    updateMeshFromHeightMap(state.mesh, geom);
+    drawMesh(geom, state.mesh, state.checker ? state.mapCanvas : state.sourceCanvas);
+    drawHeightShadow(state.mesh);
+    drawHeightHighlight(state.mesh);
+    drawHeightRim(state.mesh);
+    if (state.debug) drawDebugGeometry(geom, state.mesh);
+    syncOutputs();
+  }
+
+  function requestRender() {
+    state.dirty = true;
+  }
+
+  function clearHeightMap() {
+    if (state.heightMap) state.heightMap.fill(0);
+    if (state.dirXMap) state.dirXMap.fill(0);
+    if (state.dirYMap) state.dirYMap.fill(0);
+    state.center = { x: canvas.width * 0.5, y: canvas.height * 0.5 };
+    state.stroke = null;
+    requestRender();
+  }
+
+  function pointerToCanvas(event) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: ((event.clientX - rect.left) / rect.width) * canvas.width,
+      y: ((event.clientY - rect.top) / rect.height) * canvas.height
+    };
+  }
+
+  function frame(timestamp) {
+    if (state.stroke) stampStroke(timestamp);
+    if (state.dirty) {
+      render();
+      state.dirty = false;
+    }
+    requestAnimationFrame(frame);
+  }
+
+  source.addEventListener("load", () => {
+    canvas.width = source.naturalWidth;
+    canvas.height = source.naturalHeight;
+    const sourceCanvas = document.createElement("canvas");
+    sourceCanvas.width = canvas.width;
+    sourceCanvas.height = canvas.height;
+    const sourceCtx = sourceCanvas.getContext("2d");
+    sourceCtx.imageSmoothingEnabled = false;
+    sourceCtx.drawImage(source, 0, 0);
+    state.sourceCanvas = sourceCanvas;
+    state.mapCanvas = buildSourceMapCanvas(canvas.width, canvas.height, Math.max(8, geomMeshStepForCanvas()));
+    state.shadowCanvas = document.createElement("canvas");
+    state.shadowCanvas.width = canvas.width;
+    state.shadowCanvas.height = canvas.height;
+    state.highlightCanvas = document.createElement("canvas");
+    state.highlightCanvas.width = canvas.width;
+    state.highlightCanvas.height = canvas.height;
+    state.rimCanvas = document.createElement("canvas");
+    state.rimCanvas.width = canvas.width;
+    state.rimCanvas.height = canvas.height;
+    state.heightMap = new Float32Array(canvas.width * canvas.height);
+    state.dirXMap = new Float32Array(canvas.width * canvas.height);
+    state.dirYMap = new Float32Array(canvas.width * canvas.height);
+    state.mesh = buildFixedMesh(canvas.width, canvas.height, geomMeshStepForCanvas());
+    ctx.imageSmoothingEnabled = false;
+    clearHeightMap();
+    syncOutputs();
+    requestAnimationFrame(frame);
+  });
+
+  function geomMeshStepForCanvas() {
+    return Math.max(7, Math.round(Math.min(canvas.width, canvas.height) * 0.02));
+  }
+
+  function beginStroke(timestamp) {
+    state.stroke = {
+      startedAt: timestamp,
+      origin: { x: state.center.x, y: state.center.y },
+      committed: false,
+      direction: null,
+      last: { x: state.center.x, y: state.center.y }
+    };
+  }
+
+  function maybeCommitStroke(timestamp) {
+    if (!state.stroke || state.stroke.committed) return;
+    const dx = state.center.x - state.stroke.origin.x;
+    const dy = state.center.y - state.stroke.origin.y;
+    const distance = Math.hypot(dx, dy);
+    if (distance < strokeDeadZone) return;
+
+    state.stroke.committed = true;
+    state.stroke.startedAt = timestamp;
+    state.stroke.last = {
+      x: state.stroke.origin.x,
+      y: state.stroke.origin.y
+    };
+    state.stroke.direction = {
+      x: dx / distance,
+      y: dy / distance
+    };
+  }
+
+  canvas.addEventListener("pointermove", (event) => {
+    state.center = pointerToCanvas(event);
+    if (!state.stroke && event.buttons === 1) {
+      beginStroke(performance.now());
+    }
+    maybeCommitStroke(performance.now());
+    if (state.stroke) {
+      stampStroke(performance.now());
+    }
+    requestRender();
+  });
+
+  canvas.addEventListener("pointerdown", (event) => {
+    canvas.setPointerCapture(event.pointerId);
+    state.center = pointerToCanvas(event);
+    beginStroke(performance.now());
+    requestRender();
+  });
+
+  function endStroke() {
+    maybeCommitStroke(performance.now());
+    if (state.stroke) stampStroke(performance.now());
+    state.stroke = null;
+  }
+
+  canvas.addEventListener("pointerup", endStroke);
+  canvas.addEventListener("pointercancel", endStroke);
+  canvas.addEventListener("lostpointercapture", endStroke);
+
+  brushRadios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (!radio.checked) return;
+      state.brush = radio.value;
+      requestRender();
+    });
+  });
+
+  footprintInput.addEventListener("input", () => {
+    state.footprint = Number(footprintInput.value);
+    requestRender();
+  });
+
+  projectionInput.addEventListener("input", () => {
+    state.projection = Number(projectionInput.value);
+    requestRender();
+  });
+
+  rampInput.addEventListener("input", () => {
+    state.ramp = Number(rampInput.value);
+    requestRender();
+  });
+
+  debugInput.addEventListener("change", () => {
+    state.debug = debugInput.checked;
+    requestRender();
+  });
+
+  checkerInput.addEventListener("change", () => {
+    state.checker = checkerInput.checked;
+    requestRender();
+  });
+
+  centerButton.addEventListener("click", () => {
+    clearHeightMap();
+  });
+
+  syncOutputs();
+})();
+</script>

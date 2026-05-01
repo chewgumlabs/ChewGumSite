@@ -1,0 +1,168 @@
+<style>
+  .bug-rug-toy {
+    display: grid;
+    gap: 16px;
+  }
+
+  .bug-rug-toy > p,
+  .bug-rug-readout {
+    margin: 0;
+  }
+
+  .bug-rug-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 8px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .bug-rug-controls label,
+  .bug-rug-controls fieldset {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    color: var(--ega-yellow);
+    text-transform: uppercase;
+  }
+
+  .bug-rug-controls fieldset {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--ega-lt-cyan);
+    padding: 8px;
+  }
+
+  .bug-rug-controls legend {
+    padding: 0 6px;
+  }
+
+  .bug-rug-controls fieldset label {
+    display: grid;
+    min-height: 34px;
+  }
+
+  .bug-rug-controls input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .bug-rug-controls fieldset span {
+    display: grid;
+    place-items: center;
+    color: var(--ega-lt-cyan);
+    background: var(--ega-black);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .bug-rug-controls input[type="radio"]:checked + span {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+    border-color: var(--ega-white);
+  }
+
+  .bug-rug-controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--ega-yellow);
+  }
+
+  .bug-rug-toggle {
+    align-content: end;
+  }
+
+  .bug-rug-toggle input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .bug-rug-toggle span {
+    display: grid;
+    min-height: 34px;
+    place-items: center;
+    color: var(--ega-lt-cyan);
+    background: var(--ega-black);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .bug-rug-toggle input:checked + span {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+    border-color: var(--ega-white);
+  }
+
+  .bug-rug-controls output {
+    min-height: 1.25em;
+    color: var(--ega-white);
+  }
+
+  .bug-rug-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: end;
+  }
+
+  .bug-rug-buttons button {
+    appearance: none;
+    min-height: 34px;
+    flex: 1 1 0;
+    padding: 6px 8px;
+    cursor: pointer;
+    font: inherit;
+    color: var(--ega-yellow);
+    background: var(--ega-magenta);
+    border: 1px solid var(--ega-yellow);
+  }
+
+  .bug-rug-buttons button:hover,
+  .bug-rug-buttons button:focus-visible {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+    outline: 1px solid var(--ega-white);
+  }
+
+  .bug-rug-stage {
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    padding: 8px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  #bug-rug-canvas {
+    display: block;
+    width: min(100%, 690px);
+    height: auto;
+    background: var(--ega-black);
+    outline: 1px solid var(--ega-lt-cyan);
+    image-rendering: pixelated;
+    touch-action: none;
+    cursor: crosshair;
+  }
+
+  .bug-rug-readout {
+    justify-self: stretch;
+    min-height: 1.4em;
+    color: var(--ega-yellow);
+  }
+
+  @media (max-width: 860px) {
+    .bug-rug-controls fieldset {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .bug-rug-controls {
+      grid-template-columns: 1fr;
+    }
+
+    .bug-rug-controls fieldset {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,33 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "@id": "https://shanecurry.com/lab/toys/bug-in-a-rug/#toy",
+  "name": "Bug in a Rug",
+  "description": "A 2D raster point-remapping toy where a height brush uses tint, shade, and rim cues to test how color supports a depth illusion.",
+  "creator": {
+    "@id": "https://shanecurry.com/#person"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/bug-in-a-rug/",
+  "url": "https://shanecurry.com/lab/toys/bug-in-a-rug/",
+  "dateCreated": "2026-05-01",
+  "learningResourceType": "interactive toy",
+  "educationalUse": "demonstration",
+  "keywords": [
+    "image projection",
+    "raster image",
+    "point remapping",
+    "height map",
+    "color cue",
+    "tint and shade",
+    "overlap",
+    "perspective projection",
+    "sampling",
+    "procedural animation",
+    "interactive image processing"
+  ],
+  "isPartOf": {
+    "@id": "https://shanecurry.com/#website"
+  }
+}
+    </script>
