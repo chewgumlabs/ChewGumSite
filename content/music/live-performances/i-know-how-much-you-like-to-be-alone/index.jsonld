@@ -18,6 +18,7 @@
               { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#sonic-pi" }
             ],
             "mentions": [
+              { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#audience-pamphlet" },
               { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#wonderville" },
               { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#shelly-xiong" }
             ]
@@ -35,7 +36,7 @@
               "name": "Infinite Hush",
               "url": "https://www.youtube.com/@infinitehush"
             },
-            "description": "YouTube-hosted live coding performance in New York. Shane Curry-supplied notes state that the performance took place at Wonderville in Brooklyn; the audio was programmed with Sonic Pi; the music and original story were written by Shane Curry; the live instruments and narration were performed by Shane Curry; and the images and visuals were drawn and coded by Shelly Xiong.",
+            "description": "YouTube-hosted live coding performance in New York. Shane Curry-supplied notes state that the performance took place at Wonderville in Brooklyn; the audio was programmed with Sonic Pi; the music and original story were written by Shane Curry; the story premise is a silly yet somber satire of Frog and Toad where a light hearted tale turns tragic when Toad turns to Technology for comfort; the live instruments and narration were performed by Shane Curry; and the images and visuals were drawn and coded by Shelly Xiong.",
             "keywords": [
               "live coding",
               "Sonic Pi",
@@ -64,6 +65,16 @@
             "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#shelly-xiong",
             "name": "Shelly Xiong",
             "description": "Drew the images and coded the visuals for this live coding performance, per Shane Curry-supplied performance notes."
+          },
+          {
+            "@type": "DigitalDocument",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#audience-pamphlet",
+            "name": "I Know How Much You Like To Be Alone audience pamphlet",
+            "url": "https://shanecurry.com/assets/docs/i-know-how-much-you-like-to-be-alone-pamphlet.pdf",
+            "encodingFormat": "application/pdf",
+            "numberOfPages": 8,
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "description": "Read-along PDF pamphlet distributed to audience members at Wonderville for this live coding performance, per Shane Curry-supplied performance notes."
           },
           {
             "@type": "SoftwareApplication",

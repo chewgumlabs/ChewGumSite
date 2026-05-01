@@ -69,6 +69,8 @@ PAGE_SCHEMA_TYPES = {
     "WebPage",
     "WebSite",
 }
+PUBLIC_STATIC_EXTENSIONS = {".pdf"}
+PUBLIC_STATIC_PREFIXES = ("/assets/docs/",)
 
 
 @dataclass
@@ -399,7 +401,7 @@ def _audit_sitemap_sources(
     for url in sorted(sitemap_urls):
         if not _is_own_site_url(url):
             continue
-        if url not in page_urls:
+        if url not in page_urls and not _is_public_static_asset_url(url):
             findings.append(
                 Finding(
                     "blocking",
@@ -414,8 +416,8 @@ def _audit_sitemap_sources(
 
 def _audit_llms_rendered_pages(llms_urls: set[str], findings: list[Finding]) -> None:
     for url in sorted(_own_site_urls(llms_urls)):
-        rendered = _rendered_path_for_url(url)
-        if not rendered.exists():
+        public_path = _public_path_for_url(url)
+        if not public_path.exists():
             findings.append(
                 Finding(
                     "blocking",
@@ -424,7 +426,7 @@ def _audit_llms_rendered_pages(llms_urls: set[str], findings: list[Finding]) -> 
                     _rel(LLMS),
                     _line_containing(LLMS, url),
                     url=url,
-                    evidence=_rel(rendered),
+                    evidence=_rel(public_path),
                 )
             )
 
@@ -571,6 +573,14 @@ def _rendered_path_for_url(url: str) -> Path:
     return SITE / path.strip("/") / "index.html"
 
 
+def _public_path_for_url(url: str) -> Path:
+    parsed = urlparse(url)
+    path = parsed.path or "/"
+    if _is_public_static_path(path):
+        return SITE / path.strip("/")
+    return _rendered_path_for_url(url)
+
+
 def _extract_urls(text: str) -> list[str]:
     urls = []
     for raw in ANY_URL_PATTERN.findall(text):
@@ -590,7 +600,7 @@ def _normalize_url(url: str) -> str:
     scheme = (parsed.scheme or "https").lower()
     netloc = parsed.netloc.lower()
     path = parsed.path or "/"
-    if path != "/" and not path.endswith("/"):
+    if path != "/" and not path.endswith("/") and not Path(path).suffix:
         path += "/"
     return urlunparse((scheme, netloc, path, "", "", ""))
 
@@ -606,9 +616,21 @@ def _is_own_site_url(url: str) -> bool:
 def _url_path(url: str) -> str:
     parsed = urlparse(url)
     path = parsed.path or "/"
-    if path != "/" and not path.endswith("/"):
+    if path != "/" and not path.endswith("/") and not Path(path).suffix:
         path += "/"
     return path
+
+
+def _is_public_static_asset_url(url: str) -> bool:
+    parsed = urlparse(url)
+    if (parsed.hostname or "").lower() != SITE_HOST:
+        return False
+    path = parsed.path or "/"
+    return _is_public_static_path(path) and (SITE / path.strip("/")).exists()
+
+
+def _is_public_static_path(path: str) -> bool:
+    return path.startswith(PUBLIC_STATIC_PREFIXES) and Path(path).suffix.lower() in PUBLIC_STATIC_EXTENSIONS
 
 
 def _load_jsonld(path: Path, findings: list[Finding]) -> object | None:

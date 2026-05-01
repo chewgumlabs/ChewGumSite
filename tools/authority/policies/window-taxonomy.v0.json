@@ -244,7 +244,7 @@
         "Source Trail",
         "Preferred Citation"
       ],
-      "allowed_titles": ["Claim Boundary", "Performance Summary", "Related Pages"],
+      "allowed_titles": ["Audience Pamphlet", "Claim Boundary", "Performance Summary", "Related Pages"],
       "allow_page_title_window": true,
       "allow_expressive_titles": false
     },
