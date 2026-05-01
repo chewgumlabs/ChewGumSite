@@ -146,6 +146,12 @@ Runs a read-only audit of `content/`, `site/llms.txt`, and
 `_Internal/authority-audits/<YYYY-MM-DD>/audit.json`. The audit reports
 blocking findings and warnings but does not edit public files.
 
+The audit also permits explicitly hosted public static documents under
+`site/assets/docs/` when those files are linked from curated public surfaces
+such as `sitemap.xml` or `llms.txt`. That exception is intentionally narrow:
+static assets must be local files with an allowed public extension, currently
+PDF, and must not become a general file-drop lane.
+
 ```sh
 make authority-window-audit
 ```

@@ -113,12 +113,37 @@ Applied structure:
 
 - `/music/`: local music hub
 - `/music/discography/`: album chronology
+- `/music/live-performances/`: public live music, storytelling, and live
+  coding performance index
+- `/music/live-performances/i-know-how-much-you-like-to-be-alone/`: single
+  live coding performance record with local PDF pamphlet link
 - `/music/streaming-links/`: music platform links with availability notes
 - `/music/uses-in-media/`: external media-use index
 - `/music/uses-in-media/migration/`: Migration music/tool credit page
 - `/animation/cartoons/`: local cartoon/video index
 - `/animation/cartoons/wizard-saga/`: embedded Wizard Saga cartoon record
 - `/links/`: local landing page for outbound profile and proof links
+
+### Frozen Catalog Expansion
+
+Use when a mostly historical lane gets a one-time public buildout: albums,
+cartoons, streaming profiles, live performances, festival proof, or external
+implementation records.
+
+Good outcomes:
+
+- create stable local pages for durable public facts
+- keep external links inside local context pages
+- update `sitemap.xml` and `llms.txt` only for high-signal pages or documents
+- add static public documents under `site/assets/docs/` only when the document
+  is intentionally hosted and citeable
+- record author-supplied production notes as author-supplied, not third-party
+  verification
+- keep frozen/historical lanes from polluting blog, toy, or tool indexes
+
+Guardrail: a catalog expansion is not permission to over-explain the pipeline.
+The page should be about the first-order work: album, cartoon, performance,
+festival record, or implementation.
 
 ### Public Surface Audit
 
@@ -177,8 +202,8 @@ Current doctrine:
 - `animation`: literal animation showcase, personal cartoons, embedded
   watchable cartoon/video records, credits-adjacent animation work, and
   YouTube/portfolio material
-- `music`: albums, streaming profiles, soundtrack-use anchors, and music proof
-  trails
+- `music`: albums, streaming profiles, soundtrack-use anchors, live performance
+  records, hosted audience documents, and music proof trails
 - `links`: local landing pages for outbound profile, music, animation, code,
   and release links
 - `about`: identity, proof trail, external profile resolution

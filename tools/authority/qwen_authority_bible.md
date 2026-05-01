@@ -77,6 +77,8 @@ Good public moves stay attached to first-order artifacts:
 - a toy someone can use
 - a repo someone can inspect
 - a music page that points to real album, streaming, or soundtrack-use anchors
+- a live performance page that points to a real video, venue/context facts,
+  performance tools, collaborators, and intentionally hosted public documents
 - an animation/cartoon page that points to real watchable animation and names
   the production context, including whether audio is platform-bound
 - a source trail that clarifies an existing page
@@ -174,6 +176,31 @@ Bad animation/cartoon moves:
 - Treat an interactive browser artifact as Animation just because it moves.
 - Infer software, rigging, hand-drawn status, voice, music, or audio rights
   from vibes.
+
+## Music and Live Performance Rules
+
+Music pages are for albums, streaming profiles, public music credits, live
+performances, and music-related proof trails.
+
+Good music moves:
+
+- Use `/music/discography/` for album chronology and public album anchors.
+- Use `/music/streaming-links/` for platform profiles and availability notes.
+- Use `/music/uses-in-media/` for third-party projects that publicly credit
+  Shane Curry music or ChewGum audio tools.
+- Use `/music/live-performances/` for stage performance, live coding, Sonic Pi,
+  music/story work, and embedded performance videos.
+- Link hosted public documents, such as audience pamphlet PDFs, only when the
+  human has explicitly supplied the file and approved local hosting.
+
+Bad music moves:
+
+- Treat a soundtrack-use credit as proof of collaboration unless the source
+  says collaboration.
+- Infer release dates, venue details, tools, collaborators, or song ownership
+  from a platform page unless the fact is visible or human-supplied.
+- Put live performance records into Blog just because they include narrative
+  prose.
 
 ## Toy Rules
 
