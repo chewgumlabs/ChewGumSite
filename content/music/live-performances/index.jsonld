@@ -1,0 +1,15 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/music/live-performances/#webpage",
+        "url": "https://shanecurry.com/music/live-performances/",
+        "name": "Live Performances — Shane Curry",
+        "description": "Live music, storytelling, and live coding performance records for Shane Curry.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "about": { "@id": "https://shanecurry.com/#person" },
+        "hasPart": { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#webpage" }
+      }
+    </script>

@@ -224,6 +224,30 @@
       "allow_page_title_window": true,
       "allow_expressive_titles": false
     },
+    "music_live_performances": {
+      "description": "Index of live music, storytelling, and live coding performance records.",
+      "required_titles": [
+        "Performance Index",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "music_live_performance": {
+      "description": "Single live music, storytelling, or live coding performance record.",
+      "required_titles": [
+        "Video",
+        "Metadata",
+        "Performance Notes",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Claim Boundary", "Performance Summary", "Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
     "music_streaming_links": {
       "description": "Public music-platform link index.",
       "required_titles": [
@@ -251,7 +275,7 @@
       "description": "Single external media-use proof page.",
       "required_titles": [
         "Music Credit",
-        "Tool Credit",
+        "External Implementations",
         "Metadata",
         "Source Trail",
         "Preferred Citation"
@@ -279,7 +303,7 @@
         "Source Trail",
         "Preferred Citation"
       ],
-      "allowed_titles": ["Claim Boundary", "Production Notes", "Related Pages"],
+      "allowed_titles": ["Campaign Context", "Claim Boundary", "Festival Context", "Production Notes", "Public Cartoon Surfaces", "Related Pages"],
       "allow_page_title_window": true,
       "allow_expressive_titles": false
     },

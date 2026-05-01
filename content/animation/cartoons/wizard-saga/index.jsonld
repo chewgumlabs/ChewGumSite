@@ -7,7 +7,7 @@
             "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#webpage",
             "url": "https://shanecurry.com/animation/cartoons/wizard-saga/",
             "name": "The Wizard Saga — Chew Gum",
-            "description": "Embedded local animation record for the YouTube-hosted CHEW GUM Wizard Saga cartoon compilation, with Shane Curry-supplied production notes.",
+            "description": "Embedded local animation record for the CHEW GUM Wizard Saga cartoon compilation, with Shane Curry-supplied production notes plus public campaign and festival context.",
             "datePublished": "2026-04-30",
             "dateModified": "2026-04-30",
             "author": { "@id": "https://shanecurry.com/#person" },
@@ -15,6 +15,12 @@
             "about": [
               { "@id": "https://shanecurry.com/#chewgum-animation" },
               { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#video" }
+            ],
+            "mentions": [
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#newgrounds-wizard-saga" },
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#festival-short" },
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#kickstarter-campaign" },
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#animation-block-party-2023" }
             ]
           },
           {
@@ -40,6 +46,43 @@
               "no AI"
             ],
             "isPartOf": { "@id": "https://shanecurry.com/animation/cartoons/#webpage" }
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#newgrounds-wizard-saga",
+            "name": "CHEW GUM | THE WIZARD SAGA (ALL SIX EPISODES)",
+            "url": "https://www.newgrounds.com/portal/view/881420",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "description": "Newgrounds mirror of the CHEW GUM Wizard Saga cartoon compilation."
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#festival-short",
+            "name": "\"CHEW GUM\" | A Short Film",
+            "url": "https://youtu.be/sGA3k_VqR70",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "description": "CHEW GUM short identified by Shane Curry as the cartoon that screened at Animation Block Party 2023."
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#kickstarter-campaign",
+            "name": "CHEW GUM: An Animated Musical Series",
+            "url": "https://www.kickstarter.com/projects/thepapermachine/chew-gum-an-animated-musical-series",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "description": "2023 Kickstarter campaign for CHEW GUM. Kicktraq records the campaign as funding unsuccessful, with $12,010 pledged toward a $30,000 goal from 163 backers, and mirrors a June 8 update noting Kickstarter's Project We Love designation."
+          },
+          {
+            "@type": "Event",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#animation-block-party-2023",
+            "name": "Animation Block Party 2023 Shorts Program One",
+            "url": "https://www.bam.org/film/2023/animation-block-party-shorts-program1",
+            "startDate": "2023-08-19T14:00:00-04:00",
+            "location": {
+              "@type": "Place",
+              "name": "BAM",
+              "address": "30 Lafayette Ave, Brooklyn, NY 11217"
+            },
+            "description": "Animation Block Party 2023 public lineup listing that includes Chew Gum by Shane Curry in Shorts Program One."
           }
         ]
       }

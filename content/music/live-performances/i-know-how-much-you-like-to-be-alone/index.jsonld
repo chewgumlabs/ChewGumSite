@@ -1,0 +1,78 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#webpage",
+            "url": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/",
+            "name": "\"I Know How Much You Like To Be Alone\" — Live Coding Performance",
+            "description": "Live coding, music, visuals, and storytelling performance at Wonderville in Brooklyn by Shane Curry / Infinite Hush, with images and visuals by Shelly Xiong.",
+            "datePublished": "2026-04-30",
+            "dateModified": "2026-04-30",
+            "author": { "@id": "https://shanecurry.com/#person" },
+            "isPartOf": { "@id": "https://shanecurry.com/music/live-performances/#webpage" },
+            "about": [
+              { "@id": "https://shanecurry.com/#person" },
+              { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#video" },
+              { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#sonic-pi" }
+            ],
+            "mentions": [
+              { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#wonderville" },
+              { "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#shelly-xiong" }
+            ]
+          },
+          {
+            "@type": "VideoObject",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#video",
+            "name": "\"I Know How Much You Like To Be Alone\" | Live Coding Performance in New York | 02-18-23",
+            "url": "https://youtu.be/W8lG1zSWIgc",
+            "embedUrl": "https://www.youtube.com/embed/W8lG1zSWIgc",
+            "thumbnailUrl": "https://i.ytimg.com/vi/W8lG1zSWIgc/hqdefault.jpg",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Infinite Hush",
+              "url": "https://www.youtube.com/@infinitehush"
+            },
+            "description": "YouTube-hosted live coding performance in New York. Shane Curry-supplied notes state that the performance took place at Wonderville in Brooklyn; the audio was programmed with Sonic Pi; the music and original story were written by Shane Curry; the live instruments and narration were performed by Shane Curry; and the images and visuals were drawn and coded by Shelly Xiong.",
+            "keywords": [
+              "live coding",
+              "Sonic Pi",
+              "Infinite Hush",
+              "Shane Curry",
+              "Shelly Xiong",
+              "Wonderville",
+              "storytelling performance",
+              "live music"
+            ]
+          },
+          {
+            "@type": "Place",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#wonderville",
+            "name": "Wonderville",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": "Brooklyn",
+              "addressRegion": "NY",
+              "addressCountry": "US"
+            },
+            "description": "Gaming bar in Brooklyn named in Shane Curry-supplied performance notes as the venue for this live coding performance."
+          },
+          {
+            "@type": "Person",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#shelly-xiong",
+            "name": "Shelly Xiong",
+            "description": "Drew the images and coded the visuals for this live coding performance, per Shane Curry-supplied performance notes."
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/#sonic-pi",
+            "name": "Sonic Pi",
+            "url": "https://sonic-pi.net/",
+            "applicationCategory": "MusicApplication",
+            "description": "Code-based music creation and performance tool used for the live coding audio in this performance."
+          }
+        ]
+      }
+    </script>

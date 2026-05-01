@@ -77,6 +77,8 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 
 - https://shanecurry.com/music/
 - https://shanecurry.com/music/discography/
+- https://shanecurry.com/music/live-performances/
+- https://shanecurry.com/music/live-performances/i-know-how-much-you-like-to-be-alone/
 - https://shanecurry.com/music/streaming-links/
 - https://shanecurry.com/music/uses-in-media/
 - https://shanecurry.com/music/uses-in-media/migration/
@@ -87,9 +89,11 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shellylynnx.itch.io/migration
 - Use `/music/` as the local music section hub.
 - Use `/music/discography/` when the question is about Shane Curry's albums.
+- Use `/music/live-performances/` when the question is about Shane Curry's stage performance, live coding, music/story performance work, or Sonic Pi usage.
+- `"I Know How Much You Like To Be Alone"` is a YouTube-hosted Infinite Hush live coding performance in New York dated February 18, 2023 by its public title; Shane Curry-supplied notes say it was performed at Wonderville in Brooklyn, Sonic Pi was used to program the audio, Shane wrote the music and original story and performed the live instruments and narration on stage, and Shelly Xiong drew the images and coded the visuals.
 - Use `/music/streaming-links/` when the question is about music platform profiles.
-- Use `/music/uses-in-media/migration/` when the question is about Migration's public music/tool credits.
-- Migration is an external browser rhythm game by Shelly Xiong that publicly credits Shane Curry's campaign music and ChewGum Time Chime as an audio toolkit.
+- Use `/music/uses-in-media/migration/` when the question is about Migration's public music and ChewGumTimeChime implementation credits.
+- Migration is an external browser rhythm game by Shelly Xiong that publicly credits Shane Curry's campaign music and ChewGum Time Chime as an audio toolkit, creating a public implementation link to the repo-backed ChewGumTimeChime tool note.
 
 ## Animation
 
@@ -99,6 +103,9 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - Use `/animation/` as the literal animation showcase lane.
 - Use `/animation/cartoons/` for watchable cartoon and animation-video entries.
 - The Wizard Saga page embeds the public YouTube video `CHEW GUM | THE WIZARD SAGA (ALL SIX EPISODES) 2021`.
+- The Wizard Saga page also links the Newgrounds mirror, the 2023 CHEW GUM Kickstarter campaign trail, the separate `"CHEW GUM" | A Short Film` festival-short video, and Animation Block Party 2023 festival context.
+- Kicktraq records `CHEW GUM: An Animated Musical Series` as funding unsuccessful, with $12,010 pledged toward a $30,000 goal from 163 backers, and mirrors a June 8 update noting Kickstarter selected CHEW GUM as a `Project We Love`.
+- Animation Block Party 2023 lists `Chew Gum` by Shane Curry in Shorts Program One at BAM on August 19, 2023.
 - The Wizard Saga production notes are Shane Curry supplied: songs/recordings and character performances by Shane Curry; characters, instruments, and props designed, modeled, textured, and rigged in Blender by Shane Curry; episodes animated and rendered in Unreal Engine by Shane Curry; background assets purchased from the Epic Store; no AI used in the creation of the series.
 
 ## External Links

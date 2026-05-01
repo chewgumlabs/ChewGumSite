@@ -6,8 +6,8 @@
             "@type": "WebPage",
             "@id": "https://shanecurry.com/music/uses-in-media/migration/#webpage",
             "url": "https://shanecurry.com/music/uses-in-media/migration/",
-            "name": "Migration — Music Use",
-            "description": "Public music and audio-tool credit notes for Migration by Shelly Xiong.",
+            "name": "Migration",
+            "description": "Public music and ChewGumTimeChime implementation credit notes for Migration by Shelly Xiong.",
             "datePublished": "2026-04-30",
             "dateModified": "2026-04-30",
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
@@ -28,7 +28,7 @@
               "url": "https://shellylynnx.com/"
             },
             "contributor": { "@id": "https://shanecurry.com/#person" },
-            "description": "A browser rhythm game that publicly credits Shane Curry's campaign music and ChewGum Time Chime as an audio toolkit."
+            "description": "A browser rhythm game that publicly credits Shane Curry's campaign music and ChewGum Time Chime as an audio toolkit, creating a public implementation link to the repo-backed ChewGumTimeChime tool note."
           }
         ]
       }

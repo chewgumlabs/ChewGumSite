@@ -46,7 +46,7 @@
       ]
     },
     "music": {
-      "definition": "Albums, streaming profiles, soundtrack-use anchors, and Shane Curry music proof trails.",
+      "definition": "Albums, streaming profiles, soundtrack-use anchors, live performance records, and Shane Curry music proof trails.",
       "public_prefix": "/music/",
       "content_prefix": "content/music/"
     },
@@ -87,7 +87,7 @@
     "Blog index contains prose only.",
     "Toy index contains interactive artifacts only.",
     "Tool index contains repo-backed artifacts only.",
-    "Music pages contain music/discography/soundtrack proof only.",
+    "Music pages contain music, discography, live performance, streaming, or soundtrack proof only.",
     "Dropdown menus point to local pages only; outbound links belong inside local link/proof pages."
   ],
   "training_memory_policy": {

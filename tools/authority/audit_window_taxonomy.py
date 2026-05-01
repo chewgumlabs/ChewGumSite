@@ -221,6 +221,10 @@ def _classify_page(frag_path: Path, frontmatter: dict) -> str:
         return "music_index"
     if kind == "music-discography":
         return "music_discography"
+    if kind == "music-live-performances":
+        return "music_live_performances"
+    if kind == "music-live-performance":
+        return "music_live_performance"
     if kind == "music-streaming-links":
         return "music_streaming_links"
     if kind == "music-media-uses":
