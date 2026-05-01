@@ -395,6 +395,7 @@ blockquote {
   font-size: 16px;
   line-height: 16px;
   box-sizing: border-box;
+  overflow-wrap: anywhere;
 }
 
 /* Real ║ chars on left and right edges, stacked one per row to span
@@ -422,6 +423,10 @@ blockquote {
 .ansi-window-body::after  { right: 0; }
 .ansi-window-body a { color: var(--ega-yellow); }
 .ansi-window-body a:hover { background: var(--ega-yellow); color: var(--ega-black); }
+.ansi-window-body > *,
+.ansi-window-body * {
+  min-width: 0;
+}
 .ansi-window-body p,
 .ansi-window-body dl,
 .ansi-window-body ul,
@@ -591,12 +596,22 @@ blockquote {
 
 .meta-grid {
   display: grid;
-  grid-template-columns: max-content 1fr;
+  grid-template-columns: max-content minmax(0, 1fr);
   gap: 0 16px;
 }
 .meta-grid dt { color: var(--ega-yellow); }
 .meta-grid dt::after { content: ":"; color: var(--ega-white); }
-.meta-grid dd { margin: 0; color: var(--ega-white); }
+.meta-grid dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--ega-white);
+  overflow-wrap: anywhere;
+}
+.meta-grid dd a,
+.meta-grid dd code {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
 
 /* ============================================================
    DISCOGRAPHY — compact album cards for the music lane.

@@ -1,16 +1,19 @@
       <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
         <div class="window-content">
-          <div class="toy-note-surface chew-dither-note" id="toy-chew-dither-lab">
+          <div class="toy-note-surface dithering-heights-note" id="toy-dithering-heights">
             <p>
-              A shadeless <a href="/glossary/#chew">Chew</a> model supplies the live source image. The toy
-              samples that render at low resolution, applies a palette and
-              <a href="/glossary/#dithering">dithering</a> rule, and redraws the interpreted result at 4 fps.
+              Dithering Heights tests resolution-dependent perception: as
+              spatial resolution drops, object identity depends more heavily on
+              palette size and color separation. The same shadeless 3D model
+              can remain readable or collapse into noise depending on the
+              balance between pixel count, palette count, and
+              <a href="/glossary/#dithering">dithering</a> rule.
             </p>
 
-            <form class="chew-dither-controls" aria-label="Chew dither controls">
+            <form class="dithering-heights-controls" aria-label="Dithering Heights controls">
               <label>
                 Algorithm
-                <select id="chew-dither-algorithm">
+                <select id="dithering-heights-algorithm">
                   <option value="threshold">Threshold</option>
                   <option value="bayer" selected>Ordered Bayer</option>
                   <option value="floyd">Floyd-Steinberg</option>
@@ -19,7 +22,7 @@
               </label>
               <label>
                 Palette
-                <select id="chew-dither-palette">
+                <select id="dithering-heights-palette">
                   <option value="onebit">1-bit monochrome</option>
                   <option value="gameboy" selected>Game Boy 4-color</option>
                   <option value="nes">NES RGB 64-color</option>
@@ -28,7 +31,7 @@
               </label>
               <label>
                 Resolution
-                <select id="chew-dither-resolution">
+                <select id="dithering-heights-resolution">
                   <option value="24x24">24 x 24</option>
                   <option value="48x48">48 x 48</option>
                   <option value="96x96">96 x 96</option>
@@ -36,14 +39,14 @@
                   <option value="192x192">192 x 192</option>
                 </select>
               </label>
-              <button type="button" id="chew-dither-spin">Pause Spin</button>
+              <button type="button" id="dithering-heights-spin">Pause Spin</button>
             </form>
 
-            <div class="chew-dither-bench">
+            <div class="dithering-heights-bench">
               <div class="chew-source-stage">
                 <h3>Source Model</h3>
-                <p class="chew-dither-readout">
-                  Drag the small source window to rotate Chew on every axis.
+                <p class="dithering-heights-readout">
+                  Drag the small source window to rotate <a href="/glossary/#chew">Chew</a> on every axis.
                 </p>
                 <div class="chew-source-frame" id="chew-source-frame" aria-label="Drag to rotate the shadeless Chew source model"></div>
               </div>
@@ -51,12 +54,12 @@
               <div class="chew-output-stage">
                 <h3>Dither Output</h3>
                 <canvas
-                  id="chew-dither-output"
+                  id="dithering-heights-output"
                   width="640"
                   height="640"
                   aria-label="Low-resolution dithered output from the live Chew model"
                 ></canvas>
-                <p id="chew-dither-readout" class="chew-dither-readout" aria-live="polite">
+                <p id="dithering-heights-readout" class="dithering-heights-readout" aria-live="polite">
                   loading Chew source...
                 </p>
               </div>
@@ -75,24 +78,12 @@
             <dt>Published</dt>
             <dd>2026-05-01</dd>
             <dt>Canonical URL</dt>
-            <dd><a href="https://shanecurry.com/lab/toys/chew-dither-lab/">https://shanecurry.com/lab/toys/chew-dither-lab/</a></dd>
+            <dd><a href="https://shanecurry.com/lab/toys/dithering-heights/">https://shanecurry.com/lab/toys/dithering-heights/</a></dd>
             <dt>Source asset</dt>
             <dd>Chew GLB and hand-drawn texture from the <code>ps1-devlog</code> experiment archive</dd>
             <dt>Implementation</dt>
             <dd>Inline browser toy with local Three.js vendor files, no React runtime</dd>
           </dl>
-        </div>
-      </section>
-
-      <section class="window" data-title="Main Claim" data-window-mode="text">
-        <div class="window-content">
-          <p>
-            Chew Dither Lab tests resolution-dependent perception: as spatial
-            resolution drops, object identity depends more heavily on palette
-            size and color separation. The same shadeless 3D model can remain
-            readable or collapse into noise depending on the balance between
-            pixel count, palette count, and <a href="/glossary/#dithering">dithering</a> rule.
-          </p>
         </div>
       </section>
 
@@ -168,8 +159,8 @@
       <section class="window" data-title="Preferred Citation" data-window-mode="text">
         <div class="window-content">
           <p>
-            Shane Curry, "Chew Dither Lab,"
-            https://shanecurry.com/lab/toys/chew-dither-lab/,
+            Shane Curry, "Dithering Heights,"
+            https://shanecurry.com/lab/toys/dithering-heights/,
             draft page, prepared 2026-05-01.
           </p>
         </div>

@@ -74,7 +74,6 @@
       "required_titles": [
         "Live Toy",
         "Metadata",
-        "Main Claim",
         "What Changes On Screen",
         "Why It Matters",
         "Demo Parameters",
@@ -90,6 +89,7 @@
         "External Implementations",
         "Facts And Definitions",
         "Final Human Framing",
+        "Related Context",
         "Related Project",
         "Source Model",
         "Technical Parameters"
@@ -114,6 +114,7 @@
         "Audio Parameters",
         "Demo Parameters",
         "Deployed Lineage",
+        "Demo Asset Boundary",
         "External Implementations",
         "Live Artifact",
         "Technical Parameters",

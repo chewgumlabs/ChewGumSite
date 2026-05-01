@@ -71,6 +71,33 @@
     };
   }
 
+  function preferredBreakIndex(text, max) {
+    if (text.length <= max) return text.length;
+    const slice = text.slice(0, max);
+    const floor = Math.max(8, Math.floor(max * 0.45));
+    let best = -1;
+    for (const mark of ['/', '-', '_', '.', '?', '&', '=']) {
+      const found = slice.lastIndexOf(mark);
+      if (found > best) best = found;
+    }
+    return best >= floor ? best + 1 : max;
+  }
+
+  function pushWrappedToken(words, visible, markupForPiece, cols) {
+    if (visible.length <= cols) {
+      words.push({ visible, markup: markupForPiece(visible) });
+      return;
+    }
+    let rest = visible;
+    while (rest.length > cols) {
+      const cut = preferredBreakIndex(rest, cols);
+      const piece = rest.slice(0, cut);
+      words.push({ visible: piece, markup: markupForPiece(piece) });
+      rest = rest.slice(cut);
+    }
+    if (rest) words.push({ visible: rest, markup: markupForPiece(rest) });
+  }
+
   /** Word-wrap a single line of HTML to `cols` visible chars per row. */
   function wrapHtmlLine(html, cols) {
     const tmp = document.createElement('div');
@@ -84,20 +111,34 @@
           if (/^\s+$/.test(p)) {
             words.push({ visible: ' ', markup: ' ', isSpace: true });
           } else {
-            words.push({
-              visible: p,
-              markup: openTags + escapeHtml(p) + closeTags,
-            });
+            pushWrappedToken(
+              words,
+              p,
+              piece => openTags + escapeHtml(piece) + closeTags,
+              cols,
+            );
           }
         }
       } else if (node.nodeType === Node.ELEMENT_NODE) {
         if (ATOMIC_TAGS.has(node.tagName)) {
           // Whole element stays together as one wrap unit.
           const atomic = normalizedAtomicMarkup(node);
-          words.push({
-            visible: atomic.visible,
-            markup: openTags + atomic.markup + closeTags,
-          });
+          if (atomic.visible.length <= cols) {
+            words.push({
+              visible: atomic.visible,
+              markup: openTags + atomic.markup + closeTags,
+            });
+          } else {
+            const tag = node.tagName.toLowerCase();
+            const attrs = Array.from(node.attributes)
+              .map(a => ` ${a.name}="${escapeAttr(a.value)}"`).join('');
+            pushWrappedToken(
+              words,
+              atomic.visible,
+              piece => `${openTags}<${tag}${attrs}>${escapeHtml(piece)}</${tag}>${closeTags}`,
+              cols,
+            );
+          }
           return;
         }
         // Inline element — recurse, wrapping each emitted word in this

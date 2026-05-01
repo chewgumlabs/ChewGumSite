@@ -1,18 +1,18 @@
-<!-- Chew Dither Lab -->
+<!-- Dithering Heights -->
 <script type="module">
   import * as THREE from '/assets/vendor/three/three.module.js';
   import { GLTFLoader } from '/assets/vendor/three/examples/jsm/loaders/GLTFLoader.js';
 
-  const root = document.getElementById('toy-chew-dither-lab');
+  const root = document.getElementById('toy-dithering-heights');
   const sourceFrame = document.getElementById('chew-source-frame');
-  const outputCanvas = document.getElementById('chew-dither-output');
-  const readout = document.getElementById('chew-dither-readout');
+  const outputCanvas = document.getElementById('dithering-heights-output');
+  const readout = document.getElementById('dithering-heights-readout');
 
   if (root && sourceFrame && outputCanvas) {
-    const algorithmControl = document.getElementById('chew-dither-algorithm');
-    const paletteControl = document.getElementById('chew-dither-palette');
-    const resolutionControl = document.getElementById('chew-dither-resolution');
-    const spinButton = document.getElementById('chew-dither-spin');
+    const algorithmControl = document.getElementById('dithering-heights-algorithm');
+    const paletteControl = document.getElementById('dithering-heights-palette');
+    const resolutionControl = document.getElementById('dithering-heights-resolution');
+    const spinButton = document.getElementById('dithering-heights-spin');
 
     const sourceSize = 260;
     const outputCtx = outputCanvas.getContext('2d', { alpha: false });
@@ -331,14 +331,14 @@
       spinButton.textContent = spin ? 'Pause Spin' : 'Resume Spin';
     });
 
-    const fallbackTexture = textureLoader.load('/assets/chew-dither-lab/textures/chew_padded.png');
+    const fallbackTexture = textureLoader.load('/assets/dithering-heights/textures/chew_padded.png');
     fallbackTexture.colorSpace = THREE.SRGBColorSpace;
     fallbackTexture.magFilter = THREE.NearestFilter;
     fallbackTexture.minFilter = THREE.NearestFilter;
     fallbackTexture.generateMipmaps = false;
 
     loader.load(
-      '/assets/chew-dither-lab/models/chew6.glb',
+      '/assets/dithering-heights/models/chew6.glb',
       (gltf) => {
         chew = gltf.scene;
         applyShadelessTexture(chew, fallbackTexture);

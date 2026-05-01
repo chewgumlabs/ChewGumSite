@@ -2,12 +2,10 @@
         <div class="window-content">
           <div class="toy-note-surface triangle-demo" id="toy-triangle-engines">
             <p>
-              Both buttons sustain the same pure diatonic note through the
-              same direct output path. There are no filters, added partials,
-              panners, or bell effects here. The only difference is the
-              triangle wave source. The pitch advances only after both sources
-              have been heard, or after the same source is clicked twice in a
-              row.
+              A 32-step NES-style source table reconstructed as a 24-harmonic
+              <code>PeriodicWave</code> is a different audio artifact from the
+              browser's <a href="/glossary/#native-triangle-oscillator">native triangle oscillator</a>. The contrast is audible
+              when both are played as bare oscillator tones at a synced pitch.
             </p>
             <ul>
               <li><strong>Native</strong> uses the browser's built-in <code>oscillator.type = 'triangle'</code>.</li>
@@ -41,17 +39,6 @@
             <dt>Source library</dt>
             <dd><a href="https://github.com/chewgumlabs/ChewGumDSP/tree/v0.1.0">chewgum-dsp v0.1.0</a></dd>
           </dl>
-        </div>
-      </section>
-
-      <section class="window" data-title="Main Claim" data-window-mode="text">
-        <div class="window-content">
-          <p>
-            A 32-step NES-style source table reconstructed as a 24-harmonic
-            <code>PeriodicWave</code> is a different audio artifact from the
-            browser's <a href="/glossary/#native-triangle-oscillator">native triangle oscillator</a>. The contrast is audible
-            when both are played as bare oscillator tones at a synced pitch.
-          </p>
         </div>
       </section>
 

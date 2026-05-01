@@ -575,11 +575,13 @@
     footprintOut.textContent = `${Math.round(geom.footprintSize)}px`;
     projectionOut.textContent = `${Math.round(geom.projection.magnitude)}px`;
     rampOut.textContent = `${Math.round(state.ramp * geom.base)}px`;
-    readout.textContent =
-      `fixed mesh ${meshSize}; ` +
-      `${geom.brush} brush writes to a height map; ` +
-      `${Math.round(geom.projection.magnitude)}px projection at full height; ` +
-      `stroke direction commits after ${strokeDeadZone}px.`;
+    if (readout) {
+      readout.textContent =
+        `fixed mesh ${meshSize}; ` +
+        `${geom.brush} brush writes to a height map; ` +
+        `${Math.round(geom.projection.magnitude)}px projection at full height; ` +
+        `stroke direction commits after ${strokeDeadZone}px.`;
+    }
   }
 
   function render() {

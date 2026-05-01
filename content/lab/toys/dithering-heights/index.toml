@@ -1,6 +1,6 @@
-title = "Chew Dither Lab"
+title = "Dithering Heights"
 description = "A live browser toy where a shadeless, hand-textured Chew model becomes the source for low-resolution dithering algorithms."
-canonical = "https://shanecurry.com/lab/toys/chew-dither-lab/"
+canonical = "https://shanecurry.com/lab/toys/dithering-heights/"
 published = 2026-05-01
 kind = "toy-note"
 blurb = "a live dither toy where a rotating hand-textured Chew model is sampled down into threshold, ordered, Floyd-Steinberg, and Atkinson outputs."

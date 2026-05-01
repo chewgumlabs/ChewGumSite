@@ -6,27 +6,27 @@
 }
 </script>
 <style>
-  .chew-dither-note {
+  .dithering-heights-note {
     display: grid;
     gap: 16px;
   }
 
-  .chew-dither-controls {
+  .dithering-heights-controls {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
     align-items: end;
   }
 
-  .chew-dither-controls label,
-  .chew-dither-controls button {
+  .dithering-heights-controls label,
+  .dithering-heights-controls button {
     display: grid;
     gap: 4px;
   }
 
-  .chew-dither-controls select,
-  .chew-dither-controls input,
-  .chew-dither-controls button {
+  .dithering-heights-controls select,
+  .dithering-heights-controls input,
+  .dithering-heights-controls button {
     min-height: 34px;
     font: inherit;
     color: var(--ega-yellow);
@@ -34,7 +34,7 @@
     border: 1px solid var(--ega-white);
   }
 
-  .chew-dither-controls button {
+  .dithering-heights-controls button {
     align-items: center;
     cursor: pointer;
     justify-content: center;
@@ -45,13 +45,13 @@
     line-height: 1;
   }
 
-  .chew-dither-controls button:hover,
-  .chew-dither-controls button:focus-visible {
+  .dithering-heights-controls button:hover,
+  .dithering-heights-controls button:focus-visible {
     color: var(--ega-black);
     background: var(--ega-yellow);
   }
 
-  .chew-dither-bench {
+  .dithering-heights-bench {
     display: grid;
     grid-template-columns: minmax(220px, 0.52fr) minmax(360px, 1fr);
     gap: 18px;
@@ -100,7 +100,7 @@
     height: 100%;
   }
 
-  #chew-dither-output {
+  #dithering-heights-output {
     display: block;
     width: 100%;
     max-width: 680px;
@@ -110,28 +110,28 @@
     image-rendering: pixelated;
   }
 
-  .chew-dither-readout {
+  .dithering-heights-readout {
     width: 100%;
     margin: 0;
     color: var(--ega-yellow);
   }
 
-  .chew-output-stage .chew-dither-readout {
+  .chew-output-stage .dithering-heights-readout {
     max-width: 680px;
   }
 
   @media (max-width: 760px) {
-    .chew-dither-controls {
+    .dithering-heights-controls {
       grid-template-columns: 1fr 1fr;
     }
 
-    .chew-dither-bench {
+    .dithering-heights-bench {
       grid-template-columns: 1fr;
     }
 
     .chew-source-frame,
-    #chew-dither-output,
-    .chew-output-stage .chew-dither-readout {
+    #dithering-heights-output,
+    .chew-output-stage .dithering-heights-readout {
       max-width: 100%;
     }
   }

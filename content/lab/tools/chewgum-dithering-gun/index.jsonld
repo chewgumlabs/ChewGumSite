@@ -33,7 +33,7 @@
   ],
   "mentions": [
     { "@id": "https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1" },
-    { "@id": "https://shanecurry.com/lab/toys/chew-dither-lab/" },
+    { "@id": "https://shanecurry.com/lab/toys/dithering-heights/" },
     { "@id": "https://shanecurry.com/lab/toys/sine-dot-grid/" },
     { "@id": "https://shanecurry.com/glossary/#dithering" },
     { "@id": "https://shanecurry.com/glossary/#palette-reduction" },
@@ -41,7 +41,7 @@
   ],
   "keywords": [
     "ChewGumDitheringGun",
-    "Chew Dither Lab",
+    "Dithering Heights",
     "dithering",
     "palette reduction",
     "error diffusion",

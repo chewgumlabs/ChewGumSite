@@ -2,14 +2,14 @@
 {
   "@context": "https://schema.org",
   "@type": "LearningResource",
-  "@id": "https://shanecurry.com/lab/toys/chew-dither-lab/#toy",
-  "name": "Chew Dither Lab",
+  "@id": "https://shanecurry.com/lab/toys/dithering-heights/#toy",
+  "name": "Dithering Heights",
   "description": "A live browser toy where a shadeless, hand-textured Chew model becomes the source for low-resolution dithering algorithms.",
   "creator": {
     "@id": "https://shanecurry.com/#person"
   },
-  "mainEntityOfPage": "https://shanecurry.com/lab/toys/chew-dither-lab/",
-  "url": "https://shanecurry.com/lab/toys/chew-dither-lab/",
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/dithering-heights/",
+  "url": "https://shanecurry.com/lab/toys/dithering-heights/",
   "dateCreated": "2026-05-01",
   "learningResourceType": "interactive toy",
   "educationalUse": "demonstration",

@@ -2,10 +2,10 @@
         <div class="window-content">
           <div class="toy-note-surface bug-rug-toy" id="toy-bug-in-a-rug">
             <p>
-              A Gum PNG or checker map is resampled through a 2D raster
-              point-remap. Each drag writes into a height map, with tint,
-              shade, and rim cues added by the brush so the remapped pixels can
-              read as depth.
+              Bug in a Rug tests M. C. Escher-inspired point-remapping on a 2D
+              raster image: a drawn height field shifts source pixels to
+              simulate depth, while proving that color changes are part of the
+              illusion, not decoration.
             </p>
 
             <form class="bug-rug-controls" aria-label="Bug in a Rug parameters">
@@ -43,7 +43,7 @@
               </label>
               <label class="bug-rug-toggle">
                 Cells
-                <input id="bug-rug-checkers" type="checkbox" checked>
+                <input id="bug-rug-checkers" type="checkbox">
                 <span>Map</span>
               </label>
               <div class="bug-rug-buttons">
@@ -58,9 +58,6 @@
                 height="460"
                 aria-label="Gum PNG with persistent projected height brush"
               ></canvas>
-              <p id="bug-rug-readout" class="bug-rug-readout" aria-live="polite">
-                height brush ready.
-              </p>
             </div>
           </div>
         </div>
@@ -82,17 +79,6 @@
             <dt>Source image</dt>
             <dd>Gum PNG drawn by Shane Curry</dd>
           </dl>
-        </div>
-      </section>
-
-      <section class="window" data-title="Main Claim" data-window-mode="text">
-        <div class="window-content">
-          <p>
-            Bug in a Rug tests M. C. Escher-inspired point-remapping on a 2D
-            raster image: a drawn height field shifts source pixels to simulate
-            depth, while proving that color changes are part of the illusion,
-            not decoration.
-          </p>
         </div>
       </section>
 

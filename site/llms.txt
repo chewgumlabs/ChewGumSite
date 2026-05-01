@@ -34,7 +34,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/animation/
 - https://shanecurry.com/music/
 - https://shanecurry.com/glossary/
-- https://shanecurry.com/lab/toys/chew-dither-lab/
+- https://shanecurry.com/lab/toys/dithering-heights/
 - https://shanecurry.com/blog/gum-in-the-machine/
 - https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/
 - https://shanecurry.com/lab/toys/phosphor/
@@ -125,7 +125,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 
 ## Lab / Toys
 
-- https://shanecurry.com/lab/toys/chew-dither-lab/
+- https://shanecurry.com/lab/toys/dithering-heights/
 - https://shanecurry.com/lab/toys/sine-dot-grid/
 - https://shanecurry.com/lab/toys/chewgum-time-chime/
 - https://shanecurry.com/lab/toys/triangle-engines/
