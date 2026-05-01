@@ -38,34 +38,29 @@
               </label>
               <button type="button" id="chew-dither-spin">Pause Spin</button>
             </form>
-          </div>
-        </div>
-      </section>
 
-      <section class="window" data-title="Source Model" data-window-mode="rich">
-        <div class="window-content">
-          <div class="chew-source-stage">
-            <p class="chew-dither-readout">
-              Drag the small source window to rotate Chew on every axis. After
-              release, the model eases back into turntable motion.
-            </p>
-            <div class="chew-source-frame" id="chew-source-frame" aria-label="Drag to rotate the shadeless Chew source model"></div>
-          </div>
-        </div>
-      </section>
+            <div class="chew-dither-bench">
+              <div class="chew-source-stage">
+                <h3>Source Model</h3>
+                <p class="chew-dither-readout">
+                  Drag the small source window to rotate Chew on every axis.
+                </p>
+                <div class="chew-source-frame" id="chew-source-frame" aria-label="Drag to rotate the shadeless Chew source model"></div>
+              </div>
 
-      <section class="window" data-title="Dither Output" data-window-mode="rich">
-        <div class="window-content">
-          <div class="chew-output-stage">
-            <canvas
-              id="chew-dither-output"
-              width="640"
-              height="640"
-              aria-label="Low-resolution dithered output from the live Chew model"
-            ></canvas>
-            <p id="chew-dither-readout" class="chew-dither-readout" aria-live="polite">
-              loading Chew source...
-            </p>
+              <div class="chew-output-stage">
+                <h3>Dither Output</h3>
+                <canvas
+                  id="chew-dither-output"
+                  width="640"
+                  height="640"
+                  aria-label="Low-resolution dithered output from the live Chew model"
+                ></canvas>
+                <p id="chew-dither-readout" class="chew-dither-readout" aria-live="polite">
+                  loading Chew source...
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

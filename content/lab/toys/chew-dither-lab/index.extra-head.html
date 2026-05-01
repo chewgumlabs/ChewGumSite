@@ -51,22 +51,37 @@
     background: var(--ega-yellow);
   }
 
+  .chew-dither-bench {
+    display: grid;
+    grid-template-columns: minmax(220px, 0.52fr) minmax(360px, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
   .chew-source-stage,
   .chew-output-stage {
     display: grid;
-    justify-items: center;
+    align-content: start;
+    justify-items: start;
   }
 
   .chew-source-stage {
-    gap: 6px;
+    gap: 8px;
   }
 
   .chew-output-stage {
     gap: 8px;
   }
 
+  .chew-source-stage h3,
+  .chew-output-stage h3 {
+    margin: 0;
+    color: var(--ega-yellow);
+    font: inherit;
+  }
+
   .chew-source-frame {
-    width: min(260px, 100%);
+    width: min(300px, 100%);
     aspect-ratio: 1;
     background: var(--ega-black);
     border: 1px solid var(--ega-white);
@@ -87,7 +102,8 @@
 
   #chew-dither-output {
     display: block;
-    width: min(576px, 100%);
+    width: 100%;
+    max-width: 680px;
     aspect-ratio: 1;
     background: var(--ega-black);
     border: 1px solid var(--ega-white);
@@ -100,9 +116,23 @@
     color: var(--ega-yellow);
   }
 
+  .chew-output-stage .chew-dither-readout {
+    max-width: 680px;
+  }
+
   @media (max-width: 760px) {
     .chew-dither-controls {
       grid-template-columns: 1fr 1fr;
+    }
+
+    .chew-dither-bench {
+      grid-template-columns: 1fr;
+    }
+
+    .chew-source-frame,
+    #chew-dither-output,
+    .chew-output-stage .chew-dither-readout {
+      max-width: 100%;
     }
   }
 </style>
