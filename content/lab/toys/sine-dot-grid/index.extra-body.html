@@ -30,11 +30,9 @@
     const HEIGHT = 540;
     const PALETTE = {
       bg: '#000000',
-      ghost: 'rgba(85, 255, 255, 0.16)',
-      grid: 'rgba(85, 255, 255, 0.09)',
       pos: '#ffff55',
       neg: '#ff55ff',
-      zero: '#55ffff',
+      zero: '#ffffff',
       white: '#ffffff',
       red: '#ff5555',
     };
@@ -62,7 +60,7 @@
       outputs.amp.textContent = number('amp').toFixed(2);
       outputs.count.textContent = String(Math.round(number('count')));
       outputs.speed.textContent = number('speed').toFixed(2);
-      setReadout(`mode ${mode().toUpperCase()} | field = sin(2pi*${number('fx').toFixed(2)}*x + phase) * sin(2pi*${number('fy').toFixed(2)}*y + phase*0.73)`);
+      setReadout(`mode ${mode().toUpperCase()} | yellow positive, magenta negative, white near zero`);
     }
 
     function mixColor(value) {
@@ -71,21 +69,8 @@
       return value >= 0 ? PALETTE.pos : PALETTE.neg;
     }
 
-    function drawGuideGrid() {
-      ctx.strokeStyle = PALETTE.grid;
-      ctx.lineWidth = 1;
-      for (let x = 0; x <= WIDTH; x += 48) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, HEIGHT);
-        ctx.stroke();
-      }
-      for (let y = 0; y <= HEIGHT; y += 48) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(WIDTH, y);
-        ctx.stroke();
-      }
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
     }
 
     function drawSineGuides(fx, fy) {
@@ -135,6 +120,15 @@
       const bottom = HEIGHT - 28;
       const stageWidth = right - left;
       const stageHeight = bottom - top;
+      const plotX = left - 10;
+      const plotY = top - 10;
+      const plotWidth = stageWidth + 20;
+      const plotHeight = stageHeight + 20;
+      const plotInset = 2;
+      const clipX = plotX + plotInset;
+      const clipY = plotY + plotInset;
+      const clipWidth = plotWidth - plotInset * 2;
+      const clipHeight = plotHeight - plotInset * 2;
       const rows = Math.max(5, Math.round(cols * stageHeight / stageWidth));
       const spacingX = stageWidth / Math.max(1, cols - 1);
       const spacingY = stageHeight / Math.max(1, rows - 1);
@@ -145,8 +139,12 @@
       ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = PALETTE.bg;
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
-      drawGuideGrid();
       drawSineGuides(fx, fy);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(clipX, clipY, clipWidth, clipHeight);
+      ctx.clip();
 
       for (let row = 0; row < rows; row += 1) {
         for (let col = 0; col < cols; col += 1) {
@@ -160,11 +158,6 @@
           let x = baseX;
           let y = baseY;
           let radius = baseRadius;
-
-          if (selectedMode !== 'size') {
-            ctx.fillStyle = PALETTE.ghost;
-            ctx.fillRect(baseX - 1, baseY - 1, 2, 2);
-          }
 
           if (selectedMode === 'y') {
             y += field * maxDisplace;
@@ -184,6 +177,10 @@
             radius = Math.max(0.7, baseRadius * (1.2 + field * amp * 1.8));
           }
 
+          const radiusGuard = radius + 1;
+          x = clamp(x, clipX + radiusGuard, clipX + clipWidth - radiusGuard);
+          y = clamp(y, clipY + radiusGuard, clipY + clipHeight - radiusGuard);
+
           if (selectedMode !== 'size') {
             ctx.strokeStyle = mixColor(field);
             ctx.globalAlpha = 0.45;
@@ -200,10 +197,11 @@
           ctx.fill();
         }
       }
+      ctx.restore();
 
       ctx.strokeStyle = PALETTE.white;
       ctx.lineWidth = 1;
-      ctx.strokeRect(left - 10, top - 10, stageWidth + 20, stageHeight + 20);
+      ctx.strokeRect(plotX, plotY, plotWidth, plotHeight);
     }
 
     function tick(now) {

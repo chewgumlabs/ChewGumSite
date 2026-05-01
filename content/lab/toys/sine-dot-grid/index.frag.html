@@ -111,7 +111,9 @@
             The yellow curve across the top shows the horizontal sine wave.
             The magenta curve along the left edge shows the vertical sine wave.
             Each dot samples both waves, multiplies the results, and then moves
-            or changes size according to the selected mode.
+            or changes size according to the selected mode. Yellow dots are
+            positive field values, magenta dots are negative field values, and
+            white dots are near zero.
           </p>
         </div>
       </section>
@@ -146,6 +148,10 @@
             <dd>8 to 54 columns; rows are derived from the stage aspect ratio</dd>
             <dt>Animation</dt>
             <dd>Speed changes phase drift only; it does not alter the sampled grid positions</dd>
+            <dt>Color mapping</dt>
+            <dd>Yellow means <code>field &gt; 0</code>; magenta means <code>field &lt; 0</code>; white means the multiplied field is close to zero</dd>
+            <dt>Rendering bounds</dt>
+            <dd>Dot centers are kept inside the plot border, with radius accounted for, before the clip mask prevents spill into the sine-guide bands</dd>
           </dl>
         </div>
       </section>
