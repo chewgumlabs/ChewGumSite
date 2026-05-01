@@ -287,6 +287,33 @@
         },
         {
           "@type": "DefinedTerm",
+          "name": "Dithering",
+          "description": "Dithering is a reduction technique that uses patterned or distributed pixels to suggest colors or values that are not directly available in the active palette.",
+          "url": "https://shanecurry.com/glossary/#dithering",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Palette Reduction",
+          "description": "Palette reduction maps an image into a smaller set of allowed colors, making the choice of palette part of the visible result.",
+          "url": "https://shanecurry.com/glossary/#palette-reduction",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Error Diffusion",
+          "description": "Error diffusion is a dithering method that spreads each pixel's quantization error into neighboring pixels so the local mistakes become a larger texture.",
+          "url": "https://shanecurry.com/glossary/#error-diffusion",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
           "name": "Contract-First",
           "description": "Contract-first is a methodology where formal contracts and validators are written before implementation, so creative software stays auditable as it grows. The contract specifies inputs, outputs, and invariants; the implementation must satisfy the contract. ChewGum Animation uses contract-first as its primary discipline.",
           "url": "https://shanecurry.com/glossary/#contract-first",

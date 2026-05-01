@@ -38,6 +38,7 @@ PRIVATE_PATH_PATTERNS = [
     r"\.swarmlab/runs/",
     r"_Internal/",
     r"/Users/[^/\s\"']+/",
+    r"/Volumes/[^/\s\"']+/",
 ]
 
 ALLOWED_OUTPUTS = {"toy", "index", "note", "hold", "reject"}

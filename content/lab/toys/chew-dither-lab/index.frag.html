@@ -1,0 +1,190 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface chew-dither-note" id="toy-chew-dither-lab">
+            <p>
+              A shadeless <a href="/glossary/#chew">Chew</a> model supplies the live source image. The toy
+              samples that render at low resolution, applies a palette and
+              <a href="/glossary/#dithering">dithering</a> rule, and redraws the interpreted result at 4 fps.
+            </p>
+
+            <form class="chew-dither-controls" aria-label="Chew dither controls">
+              <label>
+                Algorithm
+                <select id="chew-dither-algorithm">
+                  <option value="threshold">Threshold</option>
+                  <option value="bayer" selected>Ordered Bayer</option>
+                  <option value="floyd">Floyd-Steinberg</option>
+                  <option value="atkinson">Atkinson</option>
+                </select>
+              </label>
+              <label>
+                Palette
+                <select id="chew-dither-palette">
+                  <option value="onebit">1-bit monochrome</option>
+                  <option value="gameboy" selected>Game Boy 4-color</option>
+                  <option value="nes">NES RGB 64-color</option>
+                  <option value="rgb216">RGB cube 216-color</option>
+                </select>
+              </label>
+              <label>
+                Resolution
+                <select id="chew-dither-resolution">
+                  <option value="24x24">24 x 24</option>
+                  <option value="48x48">48 x 48</option>
+                  <option value="96x96">96 x 96</option>
+                  <option value="144x144" selected>144 x 144</option>
+                  <option value="192x192">192 x 192</option>
+                </select>
+              </label>
+              <button type="button" id="chew-dither-spin">Pause Spin</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Model" data-window-mode="rich">
+        <div class="window-content">
+          <div class="chew-source-stage">
+            <p class="chew-dither-readout">
+              Drag the small source window to rotate Chew on every axis. After
+              release, the model eases back into turntable motion.
+            </p>
+            <div class="chew-source-frame" id="chew-source-frame" aria-label="Drag to rotate the shadeless Chew source model"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Dither Output" data-window-mode="rich">
+        <div class="window-content">
+          <div class="chew-output-stage">
+            <canvas
+              id="chew-dither-output"
+              width="640"
+              height="640"
+              aria-label="Low-resolution dithered output from the live Chew model"
+            ></canvas>
+            <p id="chew-dither-readout" class="chew-dither-readout" aria-live="polite">
+              loading Chew source...
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Active toy note</dd>
+            <dt>Published</dt>
+            <dd>2026-05-01</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/chew-dither-lab/">https://shanecurry.com/lab/toys/chew-dither-lab/</a></dd>
+            <dt>Source asset</dt>
+            <dd>Chew GLB and hand-drawn texture from the <code>ps1-devlog</code> experiment archive</dd>
+            <dt>Implementation</dt>
+            <dd>Inline browser toy with local Three.js vendor files, no React runtime</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Chew Dither Lab tests resolution-dependent perception: as spatial
+            resolution drops, object identity depends more heavily on palette
+            size and color separation. The same shadeless 3D model can remain
+            readable or collapse into noise depending on the balance between
+            pixel count, palette count, and <a href="/glossary/#dithering">dithering</a> rule.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The small source window shows a clean textured model. The large
+            output window intentionally updates slower and at lower resolution,
+            so thresholding, ordered patterns, and <a href="/glossary/#error-diffusion">error diffusion</a> become visible as
+            different image-making behaviors. At 48 x 48 and below, 1-bit and
+            Game Boy palettes lose much of the model's object separation, while
+            NES RGB and RGB cube palettes preserve more readable parts.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            <a href="/glossary/#dithering">Dithering</a> is not just a filter. It is a decision rule for what can
+            survive when color and resolution are constrained. A live 3D source
+            makes that rule easier to see because the same model keeps moving
+            underneath the reduction. The readout reports an illustrative
+            nearest-color decision budget: pixel count multiplied by palette
+            size, not a browser performance profile.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Source render</dt>
+            <dd>Shadeless <code>MeshBasicMaterial</code>, hand-drawn texture map, fixed camera, drag-to-rotate on yaw, pitch, and roll</dd>
+            <dt>Output cadence</dt>
+            <dd>4 fps dither pass, independent from the smoother source render</dd>
+            <dt>Algorithms</dt>
+            <dd>Threshold, ordered Bayer, Floyd-Steinberg, and Atkinson <a href="/glossary/#dithering">dithering</a></dd>
+            <dt>Palettes</dt>
+            <dd>1-bit monochrome, Game Boy 4-color, NES RGB 64-color, and RGB cube 216-color nearest-color palettes</dd>
+            <dt>Resolution</dt>
+            <dd>24 x 24, 48 x 48, 96 x 96, 144 x 144, or 192 x 192 before scaling to the square output window</dd>
+            <dt>Decision budget</dt>
+            <dd>Approximate nearest-color checks per dither frame: sampled pixels multiplied by palette colors</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Source asset: <code>ps1-devlog</code> experiment archive.</li>
+            <li>The old project used React Three Fiber; this toy keeps only the Chew model, texture, and a small Three.js loader path.</li>
+            <li>The model is rendered without lighting so the hand-drawn texture remains the source signal.</li>
+            <li>The NES RGB palette is treated as a named emulator-style RGB table; stock NES video does not define one canonical RGB palette.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#sampling">sampling</a></li>
+            <li><a href="/glossary/#procedural-animation">procedural animation</a></li>
+            <li><a href="/glossary/#software-rendering">software rendering</a></li>
+            <li><a href="/glossary/#dithering">dithering</a></li>
+            <li><a href="/glossary/#palette-reduction">palette reduction</a></li>
+            <li><a href="/glossary/#error-diffusion">error diffusion</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Chew Dither Lab,"
+            https://shanecurry.com/lab/toys/chew-dither-lab/,
+            draft page, prepared 2026-05-01.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The big picture is worse on purpose. It is larger, slower, and less
+            faithful, which makes the interpretation easier to inspect.
+          </p>
+        </div>
+      </section>

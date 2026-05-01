@@ -1,0 +1,357 @@
+<!-- Chew Dither Lab -->
+<script type="module">
+  import * as THREE from '/assets/vendor/three/three.module.js';
+  import { GLTFLoader } from '/assets/vendor/three/examples/jsm/loaders/GLTFLoader.js';
+
+  const root = document.getElementById('toy-chew-dither-lab');
+  const sourceFrame = document.getElementById('chew-source-frame');
+  const outputCanvas = document.getElementById('chew-dither-output');
+  const readout = document.getElementById('chew-dither-readout');
+
+  if (root && sourceFrame && outputCanvas) {
+    const algorithmControl = document.getElementById('chew-dither-algorithm');
+    const paletteControl = document.getElementById('chew-dither-palette');
+    const resolutionControl = document.getElementById('chew-dither-resolution');
+    const spinButton = document.getElementById('chew-dither-spin');
+
+    const sourceSize = 260;
+    const outputCtx = outputCanvas.getContext('2d', { alpha: false });
+    const sampleCanvas = document.createElement('canvas');
+    const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+    const ditherCanvas = document.createElement('canvas');
+    const ditherCtx = ditherCanvas.getContext('2d', { alpha: false });
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: false,
+      alpha: false,
+      preserveDrawingBuffer: true,
+    });
+    renderer.setPixelRatio(1);
+    renderer.setSize(sourceSize, sourceSize, false);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    sourceFrame.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
+
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+    camera.position.set(0, 0.18, 4.2);
+    camera.lookAt(0, 0, 0);
+
+    const loader = new GLTFLoader();
+    const textureLoader = new THREE.TextureLoader();
+    let chew = null;
+    let rotationY = -0.35;
+    let rotationX = 0;
+    let rotationZ = 0;
+    let spin = true;
+    let dragging = false;
+    let previousX = 0;
+    let previousY = 0;
+    let lastDither = 0;
+
+    const bayer4 = [
+      0, 8, 2, 10,
+      12, 4, 14, 6,
+      3, 11, 1, 9,
+      15, 7, 13, 5,
+    ];
+
+    function rgbCube(steps) {
+      const colors = [];
+      steps.forEach((red) => {
+        steps.forEach((green) => {
+          steps.forEach((blue) => colors.push([red, green, blue]));
+        });
+      });
+      return colors;
+    }
+
+    const palettes = {
+      onebit: ['#000000', '#ffffff'],
+      gameboy: ['#0f380f', '#306230', '#8bac0f', '#9bbc0f'],
+      nes: [
+        '#545454', '#001e74', '#081090', '#300088',
+        '#440064', '#5c0030', '#540400', '#3c1800',
+        '#202a00', '#083a00', '#004000', '#003c00',
+        '#00323c', '#000000', '#000000', '#000000',
+        '#989698', '#084cc4', '#3032ec', '#5c1ee4',
+        '#8814b0', '#a01464', '#982220', '#783c00',
+        '#545a00', '#287200', '#087c00', '#007628',
+        '#006678', '#000000', '#000000', '#000000',
+        '#eceeec', '#4c9aec', '#787cec', '#b062ec',
+        '#e454ec', '#ec58b4', '#ec6a64', '#d48820',
+        '#a0aa00', '#74c400', '#4cd020', '#38cc6c',
+        '#38b4cc', '#3c3c3c', '#000000', '#000000',
+        '#eceeec', '#a8ccec', '#bcbcec', '#d4b2ec',
+        '#ecaeec', '#ecaed4', '#ecb4b0', '#e4c490',
+        '#ccd278', '#b4de78', '#a8e290', '#98e2b4',
+        '#a0d6e4', '#a0a2a0', '#000000', '#000000',
+      ],
+      rgb216: rgbCube([0, 51, 102, 153, 204, 255]),
+    };
+
+    function setReadout(text) {
+      if (readout) readout.textContent = text;
+    }
+
+    function hexToRgb(hex) {
+      const value = Number.parseInt(hex.slice(1), 16);
+      return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+    }
+
+    function currentPalette() {
+      return palettes[paletteControl.value].map((color) => (
+        Array.isArray(color) ? color : hexToRgb(color)
+      ));
+    }
+
+    function nearestByRgb(rgb, palette) {
+      let nearest = palette[0];
+      let nearestDistance = Infinity;
+      palette.forEach((candidate) => {
+        const red = rgb[0] - candidate[0];
+        const green = rgb[1] - candidate[1];
+        const blue = rgb[2] - candidate[2];
+        const distance = red * red + green * green + blue * blue;
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = candidate;
+        }
+      });
+      return nearest;
+    }
+
+    function clampByte(value) {
+      return Math.max(0, Math.min(255, value));
+    }
+
+    function writeRgb(data, index, rgb) {
+      data[index] = rgb[0];
+      data[index + 1] = rgb[1];
+      data[index + 2] = rgb[2];
+      data[index + 3] = 255;
+    }
+
+    function ditherPoint(imageData, palette) {
+      const { data, width, height } = imageData;
+      const algorithm = algorithmControl.value;
+
+      if (algorithm === 'threshold' || algorithm === 'bayer') {
+        for (let y = 0; y < height; y += 1) {
+          for (let x = 0; x < width; x += 1) {
+            const index = (y * width + x) * 4;
+            const rgb = [data[index], data[index + 1], data[index + 2]];
+            if (algorithm === 'bayer') {
+              const threshold = (bayer4[(y % 4) * 4 + (x % 4)] / 15 - 0.5) * 64;
+              rgb[0] = clampByte(rgb[0] + threshold);
+              rgb[1] = clampByte(rgb[1] + threshold);
+              rgb[2] = clampByte(rgb[2] + threshold);
+            }
+            writeRgb(data, index, nearestByRgb(rgb, palette));
+          }
+        }
+        return imageData;
+      }
+
+      const buffer = new Float32Array(width * height * 3);
+      for (let i = 0; i < width * height; i += 1) {
+        buffer[i * 3] = data[i * 4];
+        buffer[i * 3 + 1] = data[i * 4 + 1];
+        buffer[i * 3 + 2] = data[i * 4 + 2];
+      }
+
+      const spread = algorithm === 'atkinson'
+        ? [
+            [1, 0, 1 / 8], [2, 0, 1 / 8],
+            [-1, 1, 1 / 8], [0, 1, 1 / 8], [1, 1, 1 / 8],
+            [0, 2, 1 / 8],
+          ]
+        : [
+            [1, 0, 7 / 16],
+            [-1, 1, 3 / 16], [0, 1, 5 / 16], [1, 1, 1 / 16],
+          ];
+
+      for (let y = 0; y < height; y += 1) {
+        for (let x = 0; x < width; x += 1) {
+          const scalarIndex = y * width + x;
+          const bufferIndex = scalarIndex * 3;
+          const oldRgb = [
+            clampByte(buffer[bufferIndex]),
+            clampByte(buffer[bufferIndex + 1]),
+            clampByte(buffer[bufferIndex + 2]),
+          ];
+          const rgb = nearestByRgb(oldRgb, palette);
+          const error = [
+            oldRgb[0] - rgb[0],
+            oldRgb[1] - rgb[1],
+            oldRgb[2] - rgb[2],
+          ];
+          writeRgb(data, scalarIndex * 4, rgb);
+
+          spread.forEach(([dx, dy, amount]) => {
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx < 0 || nx >= width || ny < 0 || ny >= height) return;
+            const nextIndex = (ny * width + nx) * 3;
+            buffer[nextIndex] += error[0] * amount;
+            buffer[nextIndex + 1] += error[1] * amount;
+            buffer[nextIndex + 2] += error[2] * amount;
+          });
+        }
+      }
+
+      return imageData;
+    }
+
+    function setSampleResolution() {
+      const [width, height] = resolutionControl.value.split('x').map(Number);
+      sampleCanvas.width = width;
+      sampleCanvas.height = height;
+      ditherCanvas.width = width;
+      ditherCanvas.height = height;
+    }
+
+    function formatCount(value) {
+      if (value >= 1000000) return `${(value / 1000000).toFixed(2)}M`;
+      if (value >= 1000) return `${Math.round(value / 1000)}k`;
+      return `${value}`;
+    }
+
+    function fitModel(model) {
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+      const scale = 2.35 / maxAxis;
+      model.scale.setScalar(scale);
+      model.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+    }
+
+    function applyShadelessTexture(model, fallbackTexture) {
+      model.traverse((node) => {
+        if (!node.isMesh) return;
+        const materials = Array.isArray(node.material) ? node.material : [node.material];
+        const nextMaterials = materials.map((material) => {
+          const map = material?.map || fallbackTexture;
+          if (map) {
+            map.flipY = false;
+            map.colorSpace = THREE.SRGBColorSpace;
+            map.magFilter = THREE.NearestFilter;
+            map.minFilter = THREE.NearestFilter;
+            map.generateMipmaps = false;
+            map.needsUpdate = true;
+          }
+          return new THREE.MeshBasicMaterial({
+            map,
+            color: 0xffffff,
+            transparent: material?.transparent || false,
+            opacity: material?.opacity ?? 1,
+            alphaTest: material?.alphaTest ?? 0,
+            side: material?.side ?? THREE.FrontSide,
+            toneMapped: false,
+          });
+        });
+        node.material = Array.isArray(node.material) ? nextMaterials : nextMaterials[0];
+      });
+    }
+
+    function drawDither(now) {
+      sampleCtx.drawImage(renderer.domElement, 0, 0, sampleCanvas.width, sampleCanvas.height);
+      const imageData = sampleCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height);
+      const palette = currentPalette();
+      ditherPoint(imageData, palette);
+      ditherCtx.putImageData(imageData, 0, 0);
+      outputCtx.imageSmoothingEnabled = false;
+      outputCtx.fillStyle = '#000000';
+      outputCtx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+      outputCtx.drawImage(ditherCanvas, 0, 0, outputCanvas.width, outputCanvas.height);
+      const checks = sampleCanvas.width * sampleCanvas.height * palette.length;
+      setReadout(`${algorithmControl.options[algorithmControl.selectedIndex].text} | ${paletteControl.options[paletteControl.selectedIndex].text} | ${sampleCanvas.width} x ${sampleCanvas.height} source | ${formatCount(checks)} checks/frame | 4 fps output`);
+      lastDither = now;
+    }
+
+    function animate(now) {
+      if (spin && !dragging) rotationY += 0.006;
+      if (!dragging) {
+        rotationX += (0 - rotationX) * 0.08;
+        rotationZ += (0 - rotationZ) * 0.08;
+      }
+      if (chew) {
+        chew.rotation.x = rotationX;
+        chew.rotation.y = rotationY;
+        chew.rotation.z = rotationZ;
+        renderer.render(scene, camera);
+        if (now - lastDither >= 250) drawDither(now);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    function handlePointerDown(event) {
+      dragging = true;
+      previousX = event.clientX;
+      previousY = event.clientY;
+      sourceFrame.setPointerCapture(event.pointerId);
+    }
+
+    function handlePointerMove(event) {
+      if (!dragging) return;
+      const deltaX = event.clientX - previousX;
+      const deltaY = event.clientY - previousY;
+      previousX = event.clientX;
+      previousY = event.clientY;
+      rotationY += deltaX * 0.018;
+      rotationX += deltaY * 0.012;
+      rotationZ += (deltaX + deltaY) * 0.004;
+      rotationX = Math.max(-0.8, Math.min(0.8, rotationX));
+      rotationZ = Math.max(-0.4, Math.min(0.4, rotationZ));
+      if (performance.now() - lastDither > 80) drawDither(performance.now());
+    }
+
+    function handlePointerUp(event) {
+      dragging = false;
+      sourceFrame.releasePointerCapture(event.pointerId);
+    }
+
+    setSampleResolution();
+    sourceFrame.addEventListener('pointerdown', handlePointerDown);
+    sourceFrame.addEventListener('pointermove', handlePointerMove);
+    sourceFrame.addEventListener('pointerup', handlePointerUp);
+    sourceFrame.addEventListener('pointercancel', handlePointerUp);
+
+    [algorithmControl, paletteControl, resolutionControl].forEach((control) => {
+      control.addEventListener('change', () => {
+        setSampleResolution();
+        if (chew) drawDither(performance.now());
+      });
+    });
+
+    spinButton.addEventListener('click', () => {
+      spin = !spin;
+      spinButton.textContent = spin ? 'Pause Spin' : 'Resume Spin';
+    });
+
+    const fallbackTexture = textureLoader.load('/assets/chew-dither-lab/textures/chew_padded.png');
+    fallbackTexture.colorSpace = THREE.SRGBColorSpace;
+    fallbackTexture.magFilter = THREE.NearestFilter;
+    fallbackTexture.minFilter = THREE.NearestFilter;
+    fallbackTexture.generateMipmaps = false;
+
+    loader.load(
+      '/assets/chew-dither-lab/models/chew6.glb',
+      (gltf) => {
+        chew = gltf.scene;
+        applyShadelessTexture(chew, fallbackTexture);
+        fitModel(chew);
+        scene.add(chew);
+        setReadout('Chew source loaded. Drag the small window or change the dither controls.');
+      },
+      undefined,
+      () => {
+        setReadout('Could not load the Chew GLB source.');
+      }
+    );
+
+    requestAnimationFrame(animate);
+  }
+</script>

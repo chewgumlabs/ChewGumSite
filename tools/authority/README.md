@@ -503,7 +503,7 @@ are present in an enrichment draft.
   enrichments
 - No private filesystem paths in public candidate files
   (`_swarmlab/`, `_Company/`, `_ChewGumAnimation/`, `_Internal/`,
-  `/Users/<name>/`, `.swarmlab/runs/`)
+  `/Users/<name>/`, `/Volumes/<drive>/`, `.swarmlab/runs/`)
 - No non-public URLs in public candidate files. Every URL rendered into
   a candidate file (canonical, JSON-LD `mentions` / `about`,
   source_library, HTML hrefs / text) is checked against the same

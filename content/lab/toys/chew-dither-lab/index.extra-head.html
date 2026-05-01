@@ -1,0 +1,108 @@
+<script type="importmap">
+{
+  "imports": {
+    "three": "/assets/vendor/three/three.module.js"
+  }
+}
+</script>
+<style>
+  .chew-dither-note {
+    display: grid;
+    gap: 16px;
+  }
+
+  .chew-dither-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: end;
+  }
+
+  .chew-dither-controls label,
+  .chew-dither-controls button {
+    display: grid;
+    gap: 4px;
+  }
+
+  .chew-dither-controls select,
+  .chew-dither-controls input,
+  .chew-dither-controls button {
+    min-height: 34px;
+    font: inherit;
+    color: var(--ega-yellow);
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-white);
+  }
+
+  .chew-dither-controls button {
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+    padding: 0 8px;
+    color: var(--ega-yellow);
+    background: var(--ega-magenta);
+    border-color: var(--ega-yellow);
+    line-height: 1;
+  }
+
+  .chew-dither-controls button:hover,
+  .chew-dither-controls button:focus-visible {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+  }
+
+  .chew-source-stage,
+  .chew-output-stage {
+    display: grid;
+    justify-items: center;
+  }
+
+  .chew-source-stage {
+    gap: 6px;
+  }
+
+  .chew-output-stage {
+    gap: 8px;
+  }
+
+  .chew-source-frame {
+    width: min(260px, 100%);
+    aspect-ratio: 1;
+    background: var(--ega-black);
+    border: 1px solid var(--ega-white);
+    cursor: grab;
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  .chew-source-frame:active {
+    cursor: grabbing;
+  }
+
+  .chew-source-frame canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #chew-dither-output {
+    display: block;
+    width: min(576px, 100%);
+    aspect-ratio: 1;
+    background: var(--ega-black);
+    border: 1px solid var(--ega-white);
+    image-rendering: pixelated;
+  }
+
+  .chew-dither-readout {
+    width: 100%;
+    margin: 0;
+    color: var(--ega-yellow);
+  }
+
+  @media (max-width: 760px) {
+    .chew-dither-controls {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

@@ -32,6 +32,10 @@
     {
       "text": "Internal swarmlab evidence at _swarmlab/runs/2026-04-29/whatever (this should NEVER end up in a public file).",
       "url": "https://shanecurry.com/lab/"
+    },
+    {
+      "text": "Local source archive at /Volumes/SSD/00_Pile_For_Digging/02_The_Lab/ps1-devlog (this should also NEVER end up in a public file).",
+      "url": "https://shanecurry.com/lab/"
     }
   ],
   "public_internal_boundary": {

@@ -85,11 +85,13 @@
       "allowed_titles": [
         "Audio Parameters",
         "Definitions",
+        "Dither Output",
         "Easing Formulas",
         "External Implementations",
         "Facts And Definitions",
         "Final Human Framing",
         "Related Project",
+        "Source Model",
         "Technical Parameters"
       ],
       "allow_page_title_window": false,
