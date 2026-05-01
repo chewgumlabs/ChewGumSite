@@ -1,0 +1,199 @@
+      <section class="window" data-title="Live Toy" data-window-mode="rich" data-experiment>
+        <div class="window-content">
+          <div class="toy-note-surface sine-dot-toy" id="toy-sine-dot-grid">
+            <p>
+              Two sine waves run across a dot grid: one left-to-right, one
+              top-to-bottom. The page multiplies them into a field, then uses
+              that field to move or resize each dot.
+            </p>
+
+            <form class="sine-dot-controls" aria-label="Sine dot grid parameters">
+              <fieldset aria-label="Displacement mode">
+                <legend>Displacement Mode</legend>
+                <label>
+                  <input type="radio" name="sine-dot-mode" value="y" checked>
+                  <span>Y</span>
+                </label>
+                <label>
+                  <input type="radio" name="sine-dot-mode" value="xy">
+                  <span>XY</span>
+                </label>
+                <label>
+                  <input type="radio" name="sine-dot-mode" value="radial">
+                  <span>Radial</span>
+                </label>
+                <label>
+                  <input type="radio" name="sine-dot-mode" value="size">
+                  <span>Size</span>
+                </label>
+              </fieldset>
+
+              <label>
+                Freq X
+                <input id="sine-dot-fx" type="range" min="1" max="8" step="0.25" value="2.25">
+                <output id="sine-dot-fx-out">2.25</output>
+              </label>
+              <label>
+                Freq Y
+                <input id="sine-dot-fy" type="range" min="1" max="8" step="0.25" value="3.00">
+                <output id="sine-dot-fy-out">3.00</output>
+              </label>
+              <label>
+                Amplitude
+                <input id="sine-dot-amp" type="range" min="0" max="1.25" step="0.01" value="0.58">
+                <output id="sine-dot-amp-out">0.58</output>
+              </label>
+              <label>
+                Dots
+                <input id="sine-dot-count" type="range" min="8" max="54" step="1" value="32">
+                <output id="sine-dot-count-out">32</output>
+              </label>
+              <label>
+                Speed
+                <input id="sine-dot-speed" type="range" min="0" max="2" step="0.05" value="0.45">
+                <output id="sine-dot-speed-out">0.45</output>
+              </label>
+
+              <div class="sine-dot-buttons">
+                <button type="button" id="sine-dot-randomize">Randomize</button>
+                <button type="button" id="sine-dot-pause">Pause</button>
+              </div>
+            </form>
+
+            <div class="sine-dot-stage">
+              <canvas
+                id="sine-dot-canvas"
+                width="960"
+                height="540"
+                aria-label="Animated sine-displaced dot grid"
+              ></canvas>
+              <p id="sine-dot-readout" class="sine-dot-readout" aria-live="polite">
+                field(x,y) = sin(2pi fx x + phase) * sin(2pi fy y + phase)
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Toy note</dd>
+            <dt>Status</dt>
+            <dd>Active toy note</dd>
+            <dt>Published</dt>
+            <dd>2026-05-01</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/toys/sine-dot-grid/">https://shanecurry.com/lab/toys/sine-dot-grid/</a></dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+            <dt>Implementation</dt>
+            <dd>Inline canvas toy; no external runtime or uploaded data</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Sine Dot Grid turns a pair of one-dimensional sine waves into a
+            two-dimensional displacement field. The same field produces
+            different visible behavior depending on how each sampled value is
+            interpreted.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Changes On Screen" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The yellow curve across the top shows the horizontal sine wave.
+            The magenta curve along the left edge shows the vertical sine wave.
+            Each dot samples both waves, multiplies the results, and then moves
+            or changes size according to the selected mode.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Procedural animation often begins as a small rule, not a finished
+            picture. This toy keeps the rule visible: change frequency,
+            amplitude, density, or interpretation mode and the surface changes
+            without changing the underlying grid.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Parameters" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Field formula</dt>
+            <dd><code>field = sin(2*pi*freqX*x + phase) * sin(2*pi*freqY*y + phase*0.73)</code></dd>
+            <dt>Y mode</dt>
+            <dd>Moves dots up and down only by the multiplied field value</dd>
+            <dt>XY mode</dt>
+            <dd>Moves X by the horizontal sine and Y by the vertical sine before coloring by their product</dd>
+            <dt>Radial mode</dt>
+            <dd>Pushes each dot toward or away from the canvas center according to the field</dd>
+            <dt>Size mode</dt>
+            <dd>Keeps positions fixed and maps the field value to dot radius</dd>
+            <dt>Frequency controls</dt>
+            <dd><code>freqX</code> and <code>freqY</code> range from 1 to 8 cycles across the grid</dd>
+            <dt>Dot count</dt>
+            <dd>8 to 54 columns; rows are derived from the stage aspect ratio</dd>
+            <dt>Animation</dt>
+            <dd>Speed changes phase drift only; it does not alter the sampled grid positions</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>This page is a public rewrite of a private March 2026 Sine Dot Grid prototype.</li>
+            <li>The original prototype tested frequency, amplitude, grid density, <a href="/glossary/#spacing">row spacing</a>, and four displacement modes.</li>
+            <li>This public version keeps the four modes, exposes the main controls, and uses only inline browser canvas code.</li>
+            <li>Related toy: <a href="/lab/toys/chewgum-time-chime/">Stroke Chime</a>, another toy where a sampled mathematical path changes the visible and audible output.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>procedural animation</li>
+            <li>displacement field</li>
+            <li>sampling</li>
+            <li>sine wave</li>
+            <li><a href="/glossary/#interpretation-context">interpretation context</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Project" data-window-mode="text">
+        <div class="window-content">
+          <p>ChewGum Animation</p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "Sine Dot Grid,"
+            https://shanecurry.com/lab/toys/sine-dot-grid/,
+            published 2026-05-01.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Final Human Framing" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The dots are not a picture of the math. They are the math, sampled
+            into little moving decisions.
+          </p>
+        </div>
+      </section>

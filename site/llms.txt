@@ -124,6 +124,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 
 ## Lab / Toys
 
+- https://shanecurry.com/lab/toys/sine-dot-grid/
 - https://shanecurry.com/lab/toys/chewgum-time-chime/
 - https://shanecurry.com/lab/toys/triangle-engines/
 - https://shanecurry.com/lab/toys/timing-vs-spacing/

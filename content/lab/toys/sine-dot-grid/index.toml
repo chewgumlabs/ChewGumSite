@@ -1,0 +1,6 @@
+title = "Sine Dot Grid"
+description = "An interactive sine-field toy: two sine waves multiply across a dot grid, then different displacement modes turn the same math into different motion."
+canonical = "https://shanecurry.com/lab/toys/sine-dot-grid/"
+published = 2026-05-01
+kind = "toy-note"
+blurb = "an interactive sine-field toy where two multiplied sine waves push a dot grid through Y, XY, radial, and size-only displacement modes."

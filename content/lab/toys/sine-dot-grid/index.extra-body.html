@@ -1,0 +1,249 @@
+<!-- Sine Dot Grid -->
+<script>
+  (() => {
+    const root = document.getElementById('toy-sine-dot-grid');
+    if (!root) return;
+
+    const canvas = document.getElementById('sine-dot-canvas');
+    const ctx = canvas.getContext('2d');
+    const readout = document.getElementById('sine-dot-readout');
+    const pauseButton = document.getElementById('sine-dot-pause');
+    const randomButton = document.getElementById('sine-dot-randomize');
+    const modeInputs = Array.from(document.querySelectorAll('input[name="sine-dot-mode"]'));
+    const controls = {
+      fx: document.getElementById('sine-dot-fx'),
+      fy: document.getElementById('sine-dot-fy'),
+      amp: document.getElementById('sine-dot-amp'),
+      count: document.getElementById('sine-dot-count'),
+      speed: document.getElementById('sine-dot-speed'),
+    };
+    const outputs = {
+      fx: document.getElementById('sine-dot-fx-out'),
+      fy: document.getElementById('sine-dot-fy-out'),
+      amp: document.getElementById('sine-dot-amp-out'),
+      count: document.getElementById('sine-dot-count-out'),
+      speed: document.getElementById('sine-dot-speed-out'),
+    };
+
+    const TAU = Math.PI * 2;
+    const WIDTH = 960;
+    const HEIGHT = 540;
+    const PALETTE = {
+      bg: '#000000',
+      ghost: 'rgba(85, 255, 255, 0.16)',
+      grid: 'rgba(85, 255, 255, 0.09)',
+      pos: '#ffff55',
+      neg: '#ff55ff',
+      zero: '#55ffff',
+      white: '#ffffff',
+      red: '#ff5555',
+    };
+
+    let paused = false;
+    let phase = 0;
+    let lastTime = performance.now();
+
+    function number(name) {
+      return Number(controls[name].value);
+    }
+
+    function mode() {
+      const selected = modeInputs.find((input) => input.checked);
+      return selected ? selected.value : 'y';
+    }
+
+    function setReadout(text) {
+      if (readout) readout.textContent = text;
+    }
+
+    function updateOutputs() {
+      outputs.fx.textContent = number('fx').toFixed(2);
+      outputs.fy.textContent = number('fy').toFixed(2);
+      outputs.amp.textContent = number('amp').toFixed(2);
+      outputs.count.textContent = String(Math.round(number('count')));
+      outputs.speed.textContent = number('speed').toFixed(2);
+      setReadout(`mode ${mode().toUpperCase()} | field = sin(2pi*${number('fx').toFixed(2)}*x + phase) * sin(2pi*${number('fy').toFixed(2)}*y + phase*0.73)`);
+    }
+
+    function mixColor(value) {
+      const amount = Math.min(1, Math.abs(value));
+      if (amount < 0.06) return PALETTE.zero;
+      return value >= 0 ? PALETTE.pos : PALETTE.neg;
+    }
+
+    function drawGuideGrid() {
+      ctx.strokeStyle = PALETTE.grid;
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= WIDTH; x += 48) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, HEIGHT);
+        ctx.stroke();
+      }
+      for (let y = 0; y <= HEIGHT; y += 48) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(WIDTH, y);
+        ctx.stroke();
+      }
+    }
+
+    function drawSineGuides(fx, fy) {
+      const topHeight = 54;
+      const leftWidth = 54;
+      ctx.save();
+      ctx.lineWidth = 2;
+
+      ctx.strokeStyle = PALETTE.pos;
+      ctx.beginPath();
+      for (let i = 0; i <= WIDTH - leftWidth - 28; i += 3) {
+        const t = i / (WIDTH - leftWidth - 28);
+        const x = leftWidth + 14 + i;
+        const y = 28 + Math.sin(TAU * fx * t + phase) * 18;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.strokeStyle = PALETTE.neg;
+      ctx.beginPath();
+      for (let i = 0; i <= HEIGHT - topHeight - 28; i += 3) {
+        const t = i / (HEIGHT - topHeight - 28);
+        const x = 28 + Math.sin(TAU * fy * t + phase * 0.73) * 18;
+        const y = topHeight + 14 + i;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = PALETTE.pos;
+      ctx.fillText('sin X', leftWidth + 16, 20);
+      ctx.fillStyle = PALETTE.neg;
+      ctx.fillText('sin Y', 8, topHeight + 14);
+      ctx.restore();
+    }
+
+    function drawDots() {
+      const fx = number('fx');
+      const fy = number('fy');
+      const amp = number('amp');
+      const cols = Math.round(number('count'));
+      const selectedMode = mode();
+      const left = 72;
+      const top = 72;
+      const right = WIDTH - 28;
+      const bottom = HEIGHT - 28;
+      const stageWidth = right - left;
+      const stageHeight = bottom - top;
+      const rows = Math.max(5, Math.round(cols * stageHeight / stageWidth));
+      const spacingX = stageWidth / Math.max(1, cols - 1);
+      const spacingY = stageHeight / Math.max(1, rows - 1);
+      const maxDisplace = Math.min(spacingX, spacingY) * amp * 2.4;
+      const baseRadius = Math.max(1.35, Math.min(4.8, spacingX * 0.09));
+
+      ctx.font = '16px VGA, monospace';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = PALETTE.bg;
+      ctx.fillRect(0, 0, WIDTH, HEIGHT);
+      drawGuideGrid();
+      drawSineGuides(fx, fy);
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const tx = cols <= 1 ? 0 : col / (cols - 1);
+          const ty = rows <= 1 ? 0 : row / (rows - 1);
+          const baseX = left + tx * stageWidth;
+          const baseY = top + ty * stageHeight;
+          const sx = Math.sin(TAU * fx * tx + phase);
+          const sy = Math.sin(TAU * fy * ty + phase * 0.73);
+          const field = sx * sy;
+          let x = baseX;
+          let y = baseY;
+          let radius = baseRadius;
+
+          if (selectedMode !== 'size') {
+            ctx.fillStyle = PALETTE.ghost;
+            ctx.fillRect(baseX - 1, baseY - 1, 2, 2);
+          }
+
+          if (selectedMode === 'y') {
+            y += field * maxDisplace;
+          } else if (selectedMode === 'xy') {
+            x += sx * maxDisplace * 0.72;
+            y += sy * maxDisplace * 0.72;
+          } else if (selectedMode === 'radial') {
+            const cx = left + stageWidth / 2;
+            const cy = top + stageHeight / 2;
+            const vx = baseX - cx;
+            const vy = baseY - cy;
+            const dist = Math.hypot(vx, vy) || 1;
+            const push = field * maxDisplace * 1.35;
+            x += (vx / dist) * push;
+            y += (vy / dist) * push;
+          } else {
+            radius = Math.max(0.7, baseRadius * (1.2 + field * amp * 1.8));
+          }
+
+          if (selectedMode !== 'size') {
+            ctx.strokeStyle = mixColor(field);
+            ctx.globalAlpha = 0.45;
+            ctx.beginPath();
+            ctx.moveTo(baseX, baseY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+
+          ctx.fillStyle = mixColor(field);
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, TAU);
+          ctx.fill();
+        }
+      }
+
+      ctx.strokeStyle = PALETTE.white;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(left - 10, top - 10, stageWidth + 20, stageHeight + 20);
+    }
+
+    function tick(now) {
+      const elapsed = Math.min(80, now - lastTime);
+      lastTime = now;
+      if (!paused) {
+        phase += elapsed * 0.0012 * number('speed');
+      }
+      drawDots();
+      requestAnimationFrame(tick);
+    }
+
+    function randomize() {
+      controls.fx.value = (1 + Math.random() * 7).toFixed(2);
+      controls.fy.value = (1 + Math.random() * 7).toFixed(2);
+      controls.amp.value = (0.22 + Math.random() * 0.92).toFixed(2);
+      controls.count.value = String(14 + Math.floor(Math.random() * 34));
+      controls.speed.value = (0.15 + Math.random() * 1.2).toFixed(2);
+      const selected = modeInputs[Math.floor(Math.random() * modeInputs.length)];
+      modeInputs.forEach((input) => {
+        input.checked = input.value === selected.value;
+      });
+      updateOutputs();
+      drawDots();
+    }
+
+    Object.values(controls).forEach((control) => {
+      control.addEventListener('input', updateOutputs);
+    });
+    modeInputs.forEach((input) => {
+      input.addEventListener('change', updateOutputs);
+    });
+    randomButton.addEventListener('click', randomize);
+    pauseButton.addEventListener('click', () => {
+      paused = !paused;
+      pauseButton.textContent = paused ? 'Play' : 'Pause';
+      updateOutputs();
+    });
+
+    updateOutputs();
+    requestAnimationFrame(tick);
+  })();
+</script>

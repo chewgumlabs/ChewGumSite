@@ -1,0 +1,143 @@
+<style>
+  .sine-dot-toy {
+    display: grid;
+    gap: 16px;
+  }
+
+  .sine-dot-toy > p,
+  .sine-dot-readout {
+    margin: 0;
+  }
+
+  .sine-dot-controls {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 8px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .sine-dot-controls label,
+  .sine-dot-controls fieldset {
+    display: grid;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+    color: var(--ega-yellow);
+    text-transform: uppercase;
+  }
+
+  .sine-dot-controls fieldset {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border: 1px solid var(--ega-lt-cyan);
+    padding: 8px;
+  }
+
+  .sine-dot-controls legend {
+    padding: 0 6px;
+  }
+
+  .sine-dot-controls fieldset label {
+    display: grid;
+    min-height: 34px;
+  }
+
+  .sine-dot-controls input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .sine-dot-controls fieldset span {
+    display: grid;
+    place-items: center;
+    color: var(--ega-lt-cyan);
+    background: var(--ega-black);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  .sine-dot-controls input[type="radio"]:checked + span {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+    border-color: var(--ega-white);
+  }
+
+  .sine-dot-controls input[type="range"] {
+    width: 100%;
+    accent-color: var(--ega-yellow);
+  }
+
+  .sine-dot-controls output {
+    min-height: 1.25em;
+    color: var(--ega-white);
+  }
+
+  .sine-dot-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: end;
+  }
+
+  .sine-dot-buttons button {
+    appearance: none;
+    min-height: 34px;
+    flex: 1 1 0;
+    padding: 6px 8px;
+    cursor: pointer;
+    font: inherit;
+    color: var(--ega-yellow);
+    background: var(--ega-magenta);
+    border: 1px solid var(--ega-yellow);
+  }
+
+  .sine-dot-buttons button:hover,
+  .sine-dot-buttons button:focus-visible {
+    color: var(--ega-black);
+    background: var(--ega-yellow);
+    outline: 1px solid var(--ega-white);
+  }
+
+  .sine-dot-stage {
+    display: grid;
+    gap: 8px;
+    padding: 8px;
+    background: var(--ega-blue);
+    border: 1px solid var(--ega-lt-cyan);
+  }
+
+  #sine-dot-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--ega-black);
+    outline: 1px solid var(--ega-lt-cyan);
+  }
+
+  .sine-dot-readout {
+    min-height: 1.4em;
+    color: var(--ega-yellow);
+  }
+
+  @media (max-width: 800px) {
+    .sine-dot-controls {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sine-dot-controls fieldset {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sine-dot-buttons {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .sine-dot-controls {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

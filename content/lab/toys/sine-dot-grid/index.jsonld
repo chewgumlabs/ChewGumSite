@@ -1,0 +1,39 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "LearningResource"],
+  "learningResourceType": "interactive simulation",
+  "headline": "Sine Dot Grid",
+  "description": "An interactive sine-field toy: two sine waves multiply across a dot grid, then different displacement modes turn the same math into different motion.",
+  "datePublished": "2026-05-01",
+  "dateModified": "2026-05-01",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/toys/sine-dot-grid/",
+  "url": "https://shanecurry.com/lab/toys/sine-dot-grid/",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/toys/"
+  },
+  "about": [
+    "procedural animation",
+    "sine waves",
+    "displacement fields",
+    "sampling",
+    "interactive visualization"
+  ],
+  "keywords": [
+    "sine dot grid",
+    "sine wave displacement",
+    "procedural dot grid",
+    "interactive math toy",
+    "displacement field visualization"
+  ],
+  "mentions": [
+    { "@id": "https://shanecurry.com/lab/toys/chewgum-time-chime/" },
+    { "@id": "https://shanecurry.com/lab/toys/timing-vs-spacing/" },
+    { "@id": "https://shanecurry.com/lab/toys/phosphor/" }
+  ]
+}
+    </script>
