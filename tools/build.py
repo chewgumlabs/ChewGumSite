@@ -32,6 +32,7 @@ implemented; Part 2 adds an .org reader that produces the same Post shape.
 from __future__ import annotations
 
 import datetime as _dt
+import re
 import sys
 import tomllib
 from dataclasses import dataclass
@@ -51,6 +52,7 @@ TEMPLATE = REPO / "tools" / "templates" / "page.html"
 # every build invalidates browser cache (CSS+JS asset URLs include this).
 ASSET_DATE = _dt.date.today().isoformat()
 ASSET_VERSION = _dt.datetime.now().strftime("%Y%m%d%H%M%S")
+MENUITEM_WORD_LIMIT = 5
 
 
 # ----------------------------------------------------------------------
@@ -169,6 +171,49 @@ def render_menubar_blog_items(posts: list[dict], limit: int = 5) -> str:
     return "\n".join(lines) + ("\n" if lines else "")
 
 
+def _truncate_words(text: str, limit: int) -> str:
+    words = text.split()
+    if len(words) <= limit:
+        return text
+    return " ".join(words[:limit])
+
+
+MENUITEM_RE = re.compile(
+    r'(<a\b(?=[^>]*\brole="menuitem")[^>]*>)(.*?)(</a>)',
+    re.DOTALL,
+)
+TAG_RE = re.compile(r"<[^>]+>")
+HOTKEY_RE = re.compile(r'<span class="hk">(.*?)</span>', re.DOTALL)
+
+
+def _truncate_menu_items(html: str, word_limit: int = MENUITEM_WORD_LIMIT) -> str:
+    def replace(match: re.Match[str]) -> str:
+        open_tag, inner_html, close_tag = match.groups()
+        visible = TAG_RE.sub("", inner_html)
+        truncated = _truncate_words(visible, word_limit)
+        if truncated == visible:
+            return match.group(0)
+        return f"{open_tag}{_restore_hotkey(inner_html, truncated)}{close_tag}"
+
+    return MENUITEM_RE.sub(replace, html)
+
+
+def _restore_hotkey(original_inner_html: str, label: str) -> str:
+    if not label:
+        return label
+    hotkey_match = HOTKEY_RE.search(original_inner_html)
+    hotkey = TAG_RE.sub("", hotkey_match.group(1)) if hotkey_match else label[0]
+    index = label.find(hotkey)
+    if index < 0:
+        index = 0
+        hotkey = label[0]
+    return (
+        _html_escape(label[:index])
+        + f'<span class="hk">{_html_escape(hotkey)}</span>'
+        + _html_escape(label[index + len(hotkey):])
+    )
+
+
 # ----------------------------------------------------------------------
 # Output paths
 # ----------------------------------------------------------------------
@@ -223,7 +268,7 @@ def render_page(template: str, post: Post, banner: str,
     out = template
     for k, v in subs.items():
         out = out.replace(k, v)
-    return out
+    return _truncate_menu_items(out)
 
 
 # ----------------------------------------------------------------------
