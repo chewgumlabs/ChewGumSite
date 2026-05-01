@@ -1,0 +1,138 @@
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Tool note</dd>
+            <dt>Status</dt>
+            <dd>Active public repo note</dd>
+            <dt>Published</dt>
+            <dd>2026-05-01</dd>
+            <dt>Version</dt>
+            <dd>v0.0.1</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/lab/tools/chewgum-dithering-gun/">https://shanecurry.com/lab/tools/chewgum-dithering-gun/</a></dd>
+            <dt>Repository</dt>
+            <dd><a href="https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1">github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1</a></dd>
+            <dt>Live toy</dt>
+            <dd><a href="/lab/toys/chew-dither-lab/">Origin toy</a> using <a href="/glossary/#chew">Chew</a> as the source image</dd>
+            <dt>Related project</dt>
+            <dd>ChewGum Animation</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            ChewGumDitheringGun v0.0.1 is a dependency-free browser
+            <a href="/glossary/#dithering">dithering</a> microscope. It loads a local image, samples it
+            down to a square resolution, applies a palette and dithering rule,
+            and exports the interpreted result as a PNG.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Included" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt><code>ditherImageData(imageData, options)</code></dt>
+            <dd>Runs nearest-color, ordered Bayer, Floyd-Steinberg, or Atkinson dithering on <code>ImageData</code>-shaped input.</dd>
+            <dt><code>getPalette(name)</code></dt>
+            <dd>Returns named palettes: 1-bit monochrome, Game Boy 4-color, NES RGB 64-color, or RGB cube 216-color.</dd>
+            <dt><code>sampleCanvasToImageData(source, size)</code></dt>
+            <dd>Samples an image or canvas source into a fixed square resolution before dithering.</dd>
+            <dt><code>drawPixelated(canvas, imageData)</code></dt>
+            <dd>Draws the reduced output back to a larger canvas with crisp pixel edges.</dd>
+            <dt>Browser microscope</dt>
+            <dd>A local example page with image drop, Gum sample autoload, resolution/palette/algorithm controls, and PNG export.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="What Is Not Included" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>No upload service or storage.</li>
+            <li>No 3D model parser in v0.0.1.</li>
+            <li>No npm publication claim; this page only claims the GitHub repository and tag.</li>
+            <li>No exact console hardware emulation claim.</li>
+            <li>No reuse license for the Gum demo image beyond the demo scope described in the repo.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Exists" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The tool exists because <a href="/lab/toys/chew-dither-lab/">Chew Dither Lab</a> made the reusable part
+            obvious. The live toy uses a 3D Chew model as the source, but the
+            extractable contract is smaller: turn any source image into
+            constrained pixels, compare palette choices, and export the result.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Install And Use" data-window-mode="rich">
+        <div class="window-content">
+          <p>
+            This is dependency-free ESM with no build step. The public install
+            path for v0.0.1 is GitHub.
+          </p>
+          <pre><code>npm install github:chewgumlabs/ChewGumDitheringGun#v0.0.1</code></pre>
+          <pre><code>import {
+  ditherImageData,
+  getPalette
+} from '@chewgum/dithering-gun';</code></pre>
+          <p>
+            The package name appears in the source metadata, but the public
+            claim here is limited to the GitHub repository and tag.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Demo Asset Boundary" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The browser example includes a flat Gum image so the microscope
+            has something to show immediately. The code is MIT; the Gum image
+            is a demo asset for viewing, testing, local demo use, and
+            screenshots of the demo output. It is not licensed for reuse in
+            games, animation, tools, resale, asset packs, or extraction into
+            other projects.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Source Trail" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Repository: <a href="https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1">ChewGumDitheringGun v0.0.1</a>.</li>
+            <li>Source files: <a href="https://github.com/chewgumlabs/ChewGumDitheringGun/blob/v0.0.1/src/dither.js"><code>src/dither.js</code></a>, <a href="https://github.com/chewgumlabs/ChewGumDitheringGun/blob/v0.0.1/src/palettes.js"><code>src/palettes.js</code></a>, and <a href="https://github.com/chewgumlabs/ChewGumDitheringGun/blob/v0.0.1/src/canvas.js"><code>src/canvas.js</code></a>.</li>
+            <li>Browser microscope: <a href="https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1/examples/browser-microscope">examples/browser-microscope</a>.</li>
+            <li>Origin toy: <a href="/lab/toys/chew-dither-lab/">Chew Dither Lab</a>.</li>
+            <li>Sibling visual toy: <a href="/lab/toys/sine-dot-grid/">Sine Dot Grid</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#dithering">dithering</a></li>
+            <li><a href="/glossary/#palette-reduction">palette reduction</a></li>
+            <li><a href="/glossary/#error-diffusion">error diffusion</a></li>
+            <li><a href="/glossary/#sampling">sampling</a></li>
+            <li><a href="/glossary/#software-rendering">software rendering</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry / ChewGum Labs, "ChewGumDitheringGun v0.0.1,"
+            https://shanecurry.com/lab/tools/chewgum-dithering-gun/, published
+            2026-05-01.
+          </p>
+        </div>
+      </section>

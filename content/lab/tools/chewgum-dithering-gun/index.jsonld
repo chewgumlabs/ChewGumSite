@@ -1,0 +1,54 @@
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": ["Article", "SoftwareSourceCode"],
+  "@id": "https://shanecurry.com/lab/tools/chewgum-dithering-gun/#software",
+  "headline": "ChewGumDitheringGun v0.0.1",
+  "name": "ChewGumDitheringGun",
+  "description": "A small browser dithering microscope for dropping images under resolution, palette, and dithering constraints.",
+  "datePublished": "2026-05-01",
+  "dateModified": "2026-05-01",
+  "author": {
+    "@id": "https://shanecurry.com/about/#shane-curry"
+  },
+  "mainEntityOfPage": "https://shanecurry.com/lab/tools/chewgum-dithering-gun/",
+  "url": "https://shanecurry.com/lab/tools/chewgum-dithering-gun/",
+  "codeRepository": "https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1",
+  "programmingLanguage": "JavaScript",
+  "runtimePlatform": "Browser Canvas API",
+  "softwareVersion": "0.0.1",
+  "license": "https://github.com/chewgumlabs/ChewGumDitheringGun/blob/v0.0.1/LICENSE",
+  "isPartOf": {
+    "@type": "CollectionPage",
+    "url": "https://shanecurry.com/lab/tools/"
+  },
+  "about": [
+    "dithering",
+    "palette reduction",
+    "error diffusion",
+    "sampling",
+    "software rendering",
+    "browser canvas",
+    "public repo"
+  ],
+  "mentions": [
+    { "@id": "https://github.com/chewgumlabs/ChewGumDitheringGun/tree/v0.0.1" },
+    { "@id": "https://shanecurry.com/lab/toys/chew-dither-lab/" },
+    { "@id": "https://shanecurry.com/lab/toys/sine-dot-grid/" },
+    { "@id": "https://shanecurry.com/glossary/#dithering" },
+    { "@id": "https://shanecurry.com/glossary/#palette-reduction" },
+    { "@id": "https://shanecurry.com/glossary/#error-diffusion" }
+  ],
+  "keywords": [
+    "ChewGumDitheringGun",
+    "Chew Dither Lab",
+    "dithering",
+    "palette reduction",
+    "error diffusion",
+    "browser canvas",
+    "JavaScript image processing",
+    "pixel art",
+    "resolution constraints"
+  ]
+}
+    </script>

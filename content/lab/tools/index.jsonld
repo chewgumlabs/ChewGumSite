@@ -9,6 +9,7 @@
         "author": { "@id": "https://shanecurry.com/#person" },
         "isPartOf": "https://shanecurry.com/lab/",
         "hasPart": [
+          { "@id": "https://shanecurry.com/lab/tools/chewgum-dithering-gun/" },
           { "@id": "https://shanecurry.com/lab/tools/chewgum-dsp/" },
           { "@id": "https://shanecurry.com/lab/tools/chewgum-time-chime/" }
         ]

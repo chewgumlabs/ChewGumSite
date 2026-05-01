@@ -1,0 +1,6 @@
+title = "ChewGumDitheringGun v0.0.1"
+description = "A small browser dithering microscope for dropping images under resolution, palette, and dithering constraints."
+canonical = "https://shanecurry.com/lab/tools/chewgum-dithering-gun/"
+published = 2026-05-01
+kind = "tool-note"
+blurb = "a small browser dithering microscope for dropping images under resolution, palette, and dithering constraints."
