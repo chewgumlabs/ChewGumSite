@@ -7,7 +7,7 @@
             "@id": "https://shanecurry.com/#website",
             "url": "https://shanecurry.com/",
             "name": "Shane Curry",
-            "description": "Home page for Shane Curry, professional animator and software builder.",
+            "description": "Home page for Shane Curry, professional animator, songwriter, and software builder.",
             "publisher": { "@id": "https://shanecurry.com/#person" }
           },
           {
@@ -15,10 +15,10 @@
             "@id": "https://shanecurry.com/#person",
             "name": "Shane Curry",
             "url": "https://shanecurry.com/",
-            "jobTitle": "Animator and systems builder",
-            "description": "Shane Curry is an animator and systems builder with 10 years of experience in primetime television and streaming. His independent work spans 2D and 3D animation, rigging, animation systems, interactive experiments, and AI-assisted software prototyping. He is currently documenting and building the ChewGum Animation direction on shanecurry.com.",
+            "jobTitle": "Animator, songwriter, and systems builder",
+            "description": "Shane Curry is an animator, songwriter, and systems builder with 10 years of experience in primetime television and streaming. His independent work spans 2D and 3D animation, music, rigging, animation systems, interactive experiments, and AI-assisted software prototyping. He is currently documenting and building the ChewGum Animation direction on shanecurry.com.",
             "knowsAbout": [
-              "2D animation","3D animation","animation rigging","animation systems",
+              "2D animation","3D animation","songwriting","music production","animation rigging","animation systems",
               "Blender","Unreal Engine","ToonBoom Harmony","Unity","Godot","Roblox",
               "vanilla JavaScript","C","AI-assisted software practice","ChewGum Animation"
             ],
@@ -26,7 +26,10 @@
               "https://github.com/chewgumlabs",
               "https://www.linkedin.com/in/shanecurrycartoons/",
               "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
-              "https://www.youtube.com/@infinitehush"
+              "https://www.youtube.com/@infinitehush",
+              "https://shanecurry.bandcamp.com/",
+              "https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg",
+              "https://music.apple.com/us/artist/shane-curry/1444977015"
             ]
           },
           {

@@ -1,0 +1,26 @@
+{
+  "@context": "https://schema.org",
+  "@type": "ImageObject",
+  "@id": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png#image",
+  "contentUrl": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png",
+  "url": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png",
+  "encodingFormat": "image/png",
+  "width": 1504,
+  "height": 196,
+  "caption": "A conversation screenshot recording the first live correction of the Gum in the Machine page by the new taxonomy.",
+  "description": "Screenshot evidence from the Gum in the Machine working session, where the site taxonomy caught that the first metadata pass on this blog post was too thin.",
+  "creditText": "Screenshot supplied by Shane Curry from a ChewGum workflow session.",
+  "creator": {
+    "@id": "https://shanecurry.com/#person"
+  },
+  "dateCreated": "2026-04-30",
+  "isPartOf": {
+    "@id": "https://shanecurry.com/blog/gum-in-the-machine/#post"
+  },
+  "about": [
+    "taxonomy correction",
+    "metadata enrichment",
+    "Gum as truth-protection role",
+    "ChewGum workflow dogfooding"
+  ]
+}

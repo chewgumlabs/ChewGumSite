@@ -209,12 +209,28 @@ def _classify_page(frag_path: Path, frontmatter: dict) -> str:
         return "tool_index"
     if rel in {"content/lab/index.frag.html", "content/animation/index.frag.html"}:
         return "section_index"
+    if rel == "content/links/index.frag.html":
+        return "external_links"
     if rel == "content/about/entity-map/index.frag.html":
         return "identity_resolution"
     if rel == "content/about/credits/index.frag.html":
         return "professional_credits"
     if rel == "content/about/index.frag.html":
         return "stable_profile"
+    if kind == "music-index":
+        return "music_index"
+    if kind == "music-discography":
+        return "music_discography"
+    if kind == "music-streaming-links":
+        return "music_streaming_links"
+    if kind == "music-media-uses":
+        return "music_media_uses"
+    if kind == "music-media-use":
+        return "music_media_use"
+    if kind == "animation-cartoon-index":
+        return "animation_cartoon_index"
+    if kind == "animation-cartoon":
+        return "animation_cartoon"
     if rel == "content/glossary/index.frag.html":
         return "glossary"
     if rel.startswith("content/lab/toys/") and kind == "experiment":

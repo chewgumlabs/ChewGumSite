@@ -94,6 +94,9 @@ IDENTITY_PURPOSE_TERMS = (
     "external profile",
     "proof trail",
     "release identity",
+    "music profile",
+    "streaming profile",
+    "soundtrack credit",
 )
 IDENTITY_ANCHOR_TERMS = (
     "shane curry",
@@ -120,6 +123,9 @@ IDENTITY_ANCHOR_TERMS = (
     "public profile",
     "external profile",
     "release identity",
+    "music profile",
+    "streaming profile",
+    "soundtrack credit",
 )
 IDENTITY_LAB_ARTIFACT_DRIFT_TERMS = (
     "chewgumtimechime",
@@ -191,8 +197,22 @@ SOURCE_PAGE_ROLES = {
     },
     "animation_artifact": {
         "label": "Animation artifact",
-        "allowed_moves": ["render/source parameter enrichment", "artifact lineage notes"],
+        "allowed_moves": [
+            "embedded cartoon/video record enrichment",
+            "render/source parameter enrichment",
+            "artifact lineage notes",
+            "personal-cartoon metadata: narrative, software used, skills used, video host, audio boundary, proof trail",
+        ],
         "blocked_moves": ["audio-only drift unless the source supports it"],
+    },
+    "music_profile": {
+        "label": "Music profile",
+        "allowed_moves": [
+            "clarify album and streaming profile anchors",
+            "connect public soundtrack-use credits",
+            "tighten music/source trail metadata",
+        ],
+        "blocked_moves": ["animation/tool drift unless the source supports it"],
     },
     "essay_or_note": {
         "label": "Essay or note",
@@ -537,6 +557,10 @@ def _source_page_role(public_path: str, kind: str, title: str) -> dict:
         role_id = "stable_profile"
     elif path == "/glossary/":
         role_id = "glossary"
+    elif path.startswith("/music/"):
+        role_id = "music_profile"
+    elif path.startswith("/links/"):
+        role_id = "general"
     elif path.startswith("/lab/toys/"):
         role_id = "toy_artifact"
     elif path.startswith("/lab/tools/"):
@@ -1574,7 +1598,7 @@ def _public_urls_in_text(text: str) -> list[str]:
 
 def _relative_public_urls_in_text(text: str) -> list[str]:
     urls = []
-    for match in re.findall(r"""["'=(]\s*(/(?:about|animation|assets|blog|glossary|lab|spec)[^"')\s<>]*)""", text):
+    for match in re.findall(r"""["'=(]\s*(/(?:about|animation|assets|blog|glossary|lab|links|music|spec)[^"')\s<>]*)""", text):
         urls.append(_canonical_for_public_path(match))
     return urls
 

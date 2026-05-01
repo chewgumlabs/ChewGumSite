@@ -7,7 +7,7 @@
             "@id": "https://shanecurry.com/about/entity-map/#webpage",
             "url": "https://shanecurry.com/about/entity-map/",
             "name": "Entity Map",
-            "description": "Disambiguation page connecting Shane Curry, ChewGum Labs, ChewGum Animation, public proof trails, and Shane Curry's public profiles.",
+            "description": "Disambiguation page connecting Shane Curry, ChewGum Labs, ChewGum Animation, music profiles, public proof trails, and Shane Curry's public profiles.",
             "dateModified": "2026-04-30",
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
             "about": [
@@ -24,10 +24,15 @@
             "sameAs": [
               "https://www.linkedin.com/in/shanecurrycartoons/",
               "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
-              "https://www.youtube.com/@infinitehush"
+              "https://www.youtube.com/@infinitehush",
+              "https://shanecurry.bandcamp.com/",
+              "https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg",
+              "https://music.apple.com/us/artist/shane-curry/1444977015"
             ],
             "subjectOf": [
               { "@id": "https://shanecurry.com/about/credits/#webpage" },
+              { "@id": "https://shanecurry.com/music/#webpage" },
+              { "@type": "MusicAlbum", "name": "PSX GIRL + GAME BOY", "url": "https://shanecurry.bandcamp.com/album/psx-girl-game-boy" },
               { "@type": "VideoGame", "name": "My Valiant Purpose", "url": "https://store.steampowered.com/app/2704670/My_Valiant_Purpose/" },
               {
                 "@type": "VideoGame",

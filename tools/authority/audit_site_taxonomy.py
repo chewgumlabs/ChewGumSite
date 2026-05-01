@@ -261,7 +261,7 @@ def _signals(text: str, frag_path: Path, extra_head_path: Path, extra_body_path:
 
 def _expected_category(current: str, signals: list[str], frontmatter: dict) -> str:
     kind = str(frontmatter.get("kind") or "")
-    if current in {"home", "about", "glossary", "lab"}:
+    if current in {"home", "about", "glossary", "lab", "music", "links"}:
         return current
     if current == "tool":
         return "tool"
@@ -289,6 +289,10 @@ def _current_category_for_path(source_path: str) -> str:
         return "blog"
     if source_path.startswith("content/animation/"):
         return "animation"
+    if source_path.startswith("content/music/"):
+        return "music"
+    if source_path.startswith("content/links/"):
+        return "links"
     return "unknown"
 
 

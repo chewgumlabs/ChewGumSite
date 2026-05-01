@@ -434,6 +434,39 @@ blockquote {
 .ansi-window-body dt::after { content: ":"; color: var(--ega-white); }
 .ansi-window-body dd { margin: 0 0 16px 0; }
 .ansi-window-body canvas { display: block; max-width: 100%; height: auto; image-rendering: pixelated; }
+.ansi-window-body figure { margin: 16px 0 0; }
+.ansi-window-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+.ansi-window-body .evidence-image {
+  width: 100%;
+  border: 2px solid var(--ega-white);
+  background: var(--ega-black);
+}
+.ansi-window-body .video-embed {
+  width: 720px;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 2px solid var(--ega-white);
+  background: var(--ega-black);
+  overflow: hidden;
+}
+.ansi-window-body .video-embed iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.ansi-window-body .embed-note {
+  margin-top: 8px;
+}
+.ansi-window-body figcaption {
+  margin-top: 8px;
+  color: var(--ega-yellow);
+}
 .ansi-window-body button {
   font-family: "VGA", monospace;
   font-size: 16px;
@@ -564,6 +597,47 @@ blockquote {
 .meta-grid dt { color: var(--ega-yellow); }
 .meta-grid dt::after { content: ":"; color: var(--ega-white); }
 .meta-grid dd { margin: 0; color: var(--ega-white); }
+
+/* ============================================================
+   DISCOGRAPHY — compact album cards for the music lane.
+   ============================================================ */
+
+.discography-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+.discography-card {
+  border: 1px solid var(--ega-white);
+  background: var(--ega-blue);
+}
+.discography-card a {
+  display: grid;
+  gap: 4px;
+  min-height: 96px;
+  padding: 8px;
+  color: var(--ega-white);
+  text-decoration: none;
+}
+.discography-card a:hover {
+  background: var(--ega-yellow);
+  color: var(--ega-black);
+}
+.discography-card strong {
+  color: inherit;
+}
+.discography-year,
+.discography-source {
+  color: var(--ega-yellow);
+}
+.discography-card a:hover .discography-year,
+.discography-card a:hover .discography-source {
+  color: var(--ega-black);
+}
+.discography-source {
+  align-self: end;
+}
 
 /* ============================================================
    STATUS BAR — Borland bottom F-key strip, single row at 16px

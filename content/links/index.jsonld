@@ -1,0 +1,23 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/links/#webpage",
+        "url": "https://shanecurry.com/links/",
+        "name": "Links — Shane Curry",
+        "description": "External profile and public proof links for Shane Curry, collected behind a local site page.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "about": { "@id": "https://shanecurry.com/#person" },
+        "sameAs": [
+          "https://github.com/chewgumlabs",
+          "https://www.linkedin.com/in/shanecurrycartoons/",
+          "https://www.imdb.com/name/nm10274522/?ref_=ext_shr_lnk",
+          "https://www.youtube.com/@infinitehush",
+          "https://shanecurry.bandcamp.com/",
+          "https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg",
+          "https://music.apple.com/us/artist/shane-curry/1444977015"
+        ]
+      }
+    </script>

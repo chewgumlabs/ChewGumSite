@@ -22,6 +22,11 @@ Good packets are specific. They usually contain at least one of these:
 - A source-trail enrichment for an existing public page.
 - A repo-backed tool note for a public repository and tag.
 - A small index page that groups two or more existing public artifacts.
+- A music/discography anchor when public album, streaming, or soundtrack-use
+  URLs already exist.
+- An animation/cartoon enrichment when a watchable public animation has
+  narrative, software, skill, video-host, audio-boundary, and proof-trail
+  facts in the source.
 - A glossary improvement tied to a public page.
 - A held concept packet that names a good idea but refuses publication until
   the public source trail is strong enough.
@@ -71,11 +76,24 @@ Good public moves stay attached to first-order artifacts:
 
 - a toy someone can use
 - a repo someone can inspect
+- a music page that points to real album, streaming, or soundtrack-use anchors
+- an animation/cartoon page that points to real watchable animation and names
+  the production context, including whether audio is platform-bound
 - a source trail that clarifies an existing page
 - a glossary term that explains real public work
 - an index that helps navigate promoted artifacts
 
 Bad public moves create meta-pages about meta-pages. Avoid them.
+
+## Navigation Rule
+
+Top-level dropdowns on the public site should point to local pages or local
+fragments only. Do not propose a menu item that jumps directly to an external
+site. If an external destination matters enough to be in navigation, propose or
+use a local context page first, such as `/links/`, `/music/streaming-links/`, or
+`/music/uses-in-media/migration/`. For watchable animation, prefer
+`/animation/cartoons/` or a specific `/animation/cartoons/<slug>/` page before
+falling back to `/links/`.
 
 ## Promotion Modes
 
@@ -111,8 +129,10 @@ because the source mentions artifacts.
 
 For example, on a toy page with `pass_intent=identity_resolution`, a useful
 move may connect the toy to Shane Curry, ChewGum Labs, ChewGum Animation, or
-an external identity anchor. A parameter/source-trail enrichment is not useful
-unless it directly resolves identity.
+an external identity anchor. Music and streaming profiles are identity anchors
+only when they help resolve Shane Curry as the artist or soundtrack contributor.
+A parameter/source-trail enrichment is not useful unless it directly resolves
+identity.
 
 When `pass_intent` is `source_native`, work inside the page's own role. If the
 source makes you want a different lane, use `hold` and explain the gap rather
@@ -127,6 +147,33 @@ publication, external sources, or category pages.
 
 If a URL looks natural but is not in the allowed list, do not use it. The
 wrapper will assign deterministic public targets for new-page candidates.
+
+## Animation and Cartoon Rules
+
+Animation pages are for literal animation and watchable cartoon/video records,
+not browser toys.
+
+Good animation/cartoon moves:
+
+- Use `/animation/cartoons/` for local cartoon/video indexes.
+- Use `/animation/cartoons/<slug>/` for an individual watchable cartoon when
+  the video URL is in the allowed evidence list.
+- Embed or link the public video host from a local page.
+- Limit claims to public facts: title, host, channel/author surface, year/date
+  if explicitly visible, and exact source URL.
+- Keep software-used, skills-used, and audio-rights metadata out of the public
+  page unless a supplied public source proves it or the human explicitly
+  supplies it as a production note. When the human supplies it, label the
+  production details as author-supplied rather than pretending the video host
+  proves them.
+
+Bad animation/cartoon moves:
+
+- Route Animation menu items through `/links/` when an animation-owned page
+  exists.
+- Treat an interactive browser artifact as Animation just because it moves.
+- Infer software, rigging, hand-drawn status, voice, music, or audio rights
+  from vibes.
 
 ## Toy Rules
 

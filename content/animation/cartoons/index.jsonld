@@ -1,0 +1,25 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shanecurry.com/animation/cartoons/#webpage",
+            "url": "https://shanecurry.com/animation/cartoons/",
+            "name": "Cartoons",
+            "description": "Local index for Shane Curry's public cartoon and animation-video entries.",
+            "datePublished": "2026-04-30",
+            "dateModified": "2026-04-30",
+            "author": { "@id": "https://shanecurry.com/#person" },
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "about": [
+              { "@id": "https://shanecurry.com/#person" },
+              { "@id": "https://shanecurry.com/#chewgum-animation" }
+            ],
+            "hasPart": [
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#video" }
+            ]
+          }
+        ]
+      }
+    </script>

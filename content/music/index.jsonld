@@ -1,0 +1,19 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/music/#webpage",
+        "url": "https://shanecurry.com/music/",
+        "name": "Music — Shane Curry",
+        "description": "Music section for Shane Curry's albums, streaming profiles, and soundtrack-use anchors.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "about": { "@id": "https://shanecurry.com/#person" },
+        "hasPart": [
+          { "@id": "https://shanecurry.com/music/discography/#webpage" },
+          { "@id": "https://shanecurry.com/music/uses-in-media/#webpage" },
+          { "@id": "https://shanecurry.com/music/streaming-links/#webpage" }
+        ]
+      }
+    </script>

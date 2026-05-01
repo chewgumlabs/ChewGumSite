@@ -1,0 +1,29 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "CollectionPage",
+            "@id": "https://shanecurry.com/music/discography/#webpage",
+            "url": "https://shanecurry.com/music/discography/",
+            "name": "Discography — Shane Curry",
+            "description": "Album chronology and public album anchors for Shane Curry's music.",
+            "datePublished": "2026-04-30",
+            "dateModified": "2026-04-30",
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "about": { "@id": "https://shanecurry.com/#person" },
+            "hasPart": [
+              { "@type": "MusicAlbum", "name": "There's Always Something Wrong With Everything", "datePublished": "2009", "url": "https://shanecurry.bandcamp.com/album/theres-always-something-wrong-with-everything" },
+              { "@type": "MusicAlbum", "name": "The Lost Album", "temporalCoverage": "2010/2016", "url": "https://music.apple.com/us/album/the-lost-album/1530222155" },
+              { "@type": "MusicAlbum", "name": "No One Spooks The Fart Witch", "datePublished": "2018", "url": "https://music.apple.com/us/album/no-one-spooks-the-fart-witch/1477837472" },
+              { "@type": "MusicAlbum", "name": "Hearing Voices", "datePublished": "2019", "url": "https://music.apple.com/us/album/hearing-voices/1479787659" },
+              { "@type": "MusicAlbum", "name": "Kiss Me Like A Little Yellow Bird", "datePublished": "2020", "url": "https://shanecurry.bandcamp.com/album/kiss-me-like-a-little-yellow-bird" },
+              { "@type": "MusicAlbum", "name": "In My Head We're Holding Hands", "datePublished": "2020", "url": "https://music.apple.com/us/album/in-my-head-were-holding-hands/1551049237" },
+              { "@type": "MusicAlbum", "name": "The Wizard Saga", "datePublished": "2021", "url": "https://music.apple.com/us/album/season-1-the-wizard-saga/1578981564" },
+              { "@type": "MusicAlbum", "name": "PSX GIRL + GAME BOY", "datePublished": "2022-06-09", "url": "https://shanecurry.bandcamp.com/album/psx-girl-game-boy" },
+              { "@type": "MusicAlbum", "name": "CHEW GUM", "datePublished": "2023", "url": "https://music.apple.com/us/album/chew-gum-ep/1687384312" }
+            ]
+          }
+        ]
+      }
+    </script>

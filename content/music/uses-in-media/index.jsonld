@@ -1,0 +1,15 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/music/uses-in-media/#webpage",
+        "url": "https://shanecurry.com/music/uses-in-media/",
+        "name": "Uses In Media — Shane Curry",
+        "description": "External projects that publicly credit Shane Curry's music.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "about": { "@id": "https://shanecurry.com/#person" },
+        "hasPart": { "@id": "https://shanecurry.com/music/uses-in-media/migration/#webpage" }
+      }
+    </script>

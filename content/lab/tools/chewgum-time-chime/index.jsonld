@@ -2,6 +2,7 @@
 {
   "@context": "https://schema.org",
   "@type": ["Article", "SoftwareSourceCode"],
+  "@id": "https://shanecurry.com/lab/tools/chewgum-time-chime/#software",
   "headline": "ChewGumTimeChime v0.1.0",
   "name": "ChewGumTimeChime",
   "description": "A small public browser harness for comparing stroke smoothing algorithms through timed chimes, extracted from the Stroke Chime live toy.",
@@ -33,6 +34,10 @@
   "mentions": [
     { "@id": "https://github.com/chewgumlabs/ChewGumTimeChime/tree/v0.1.0" },
     { "@id": "https://shanecurry.com/lab/toys/chewgum-time-chime/" },
+    { "@id": "https://shanecurry.com/music/" },
+    { "@id": "https://shanecurry.com/music/uses-in-media/migration/" },
+    { "@id": "https://shellylynnx.itch.io/migration" },
+    { "@id": "https://shellylynnx.com/" },
     { "@id": "https://shanecurry.com/lab/toys/timing-vs-spacing/" },
     { "@id": "https://shanecurry.com/lab/toys/triangle-engines/" },
     { "@id": "https://shanecurry.com/glossary/#interpretation-context" }
@@ -44,6 +49,8 @@
     "smoothing algorithms",
     "timed chimes",
     "drawing sonification",
+    "Migration rhythm game",
+    "external implementation",
     "Web Audio API",
     "JavaScript audio library",
     "interpretation context"

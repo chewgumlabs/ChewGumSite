@@ -7,13 +7,26 @@
             "@id": "https://shanecurry.com/animation/#webpage",
             "url": "https://shanecurry.com/animation/",
             "name": "Animation",
-            "description": "Animation showcase page for Shane Curry's older animation work, credits-adjacent material, and Chew/Gum series links.",
+            "description": "Animation showcase page for Shane Curry's personal cartoons, embedded video records, older animation work, credits-adjacent material, and Chew/Gum series links.",
             "author": { "@id": "https://shanecurry.com/#person" },
             "isPartOf": { "@id": "https://shanecurry.com/#website" },
             "mainEntity": { "@id": "https://shanecurry.com/#chewgum-animation" },
             "about": [
               { "@id": "https://shanecurry.com/#person" },
               { "@id": "https://shanecurry.com/#chewgum-animation" }
+            ],
+            "hasPart": [
+              { "@id": "https://shanecurry.com/animation/cartoons/#webpage" }
+            ],
+            "keywords": [
+              "personal cartoons",
+              "independent animation",
+              "hand-drawn animation",
+              "animation rigging",
+              "modeling",
+              "texturing",
+              "animation timing",
+              "Chew/Gum series"
             ]
           },
           {

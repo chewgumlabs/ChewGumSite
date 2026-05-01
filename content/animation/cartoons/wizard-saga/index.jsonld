@@ -1,0 +1,46 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#webpage",
+            "url": "https://shanecurry.com/animation/cartoons/wizard-saga/",
+            "name": "The Wizard Saga — Chew Gum",
+            "description": "Embedded local animation record for the YouTube-hosted CHEW GUM Wizard Saga cartoon compilation, with Shane Curry-supplied production notes.",
+            "datePublished": "2026-04-30",
+            "dateModified": "2026-04-30",
+            "author": { "@id": "https://shanecurry.com/#person" },
+            "isPartOf": { "@id": "https://shanecurry.com/#website" },
+            "about": [
+              { "@id": "https://shanecurry.com/#chewgum-animation" },
+              { "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#video" }
+            ]
+          },
+          {
+            "@type": "VideoObject",
+            "@id": "https://shanecurry.com/animation/cartoons/wizard-saga/#video",
+            "name": "CHEW GUM | THE WIZARD SAGA (ALL SIX EPISODES) 2021",
+            "url": "https://youtu.be/Qpg4I8zn0DA",
+            "embedUrl": "https://www.youtube.com/embed/Qpg4I8zn0DA",
+            "thumbnailUrl": "https://i.ytimg.com/vi/Qpg4I8zn0DA/hqdefault.jpg",
+            "creator": { "@id": "https://shanecurry.com/#person" },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Infinite Hush",
+              "url": "https://www.youtube.com/@infinitehush"
+            },
+            "description": "YouTube-hosted Chew Gum cartoon compilation. Shane Curry-supplied production notes state that the songs, recordings, character performances, Blender design/modeling/texturing/rigging, and Unreal Engine animation/rendering were by Shane Curry; background assets were purchased from the Epic Store; no AI was used in the creation of the series.",
+            "keywords": [
+              "Chew Gum",
+              "The Wizard Saga",
+              "Blender",
+              "Unreal Engine",
+              "independent animation",
+              "no AI"
+            ],
+            "isPartOf": { "@id": "https://shanecurry.com/animation/cartoons/#webpage" }
+          }
+        ]
+      }
+    </script>

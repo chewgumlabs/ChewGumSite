@@ -1,27 +1,90 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        "headline": "Gum in the Machine",
-        "description": "A note on introducing Gum as a truth-protection role inside the Chew/Gum workflow.",
-        "datePublished": "2026-04-30",
-        "dateModified": "2026-04-30",
-        "author": {
-          "@id": "https://shanecurry.com/#person"
-        },
-        "mainEntityOfPage": "https://shanecurry.com/blog/gum-in-the-machine/",
-        "url": "https://shanecurry.com/blog/gum-in-the-machine/",
-        "isPartOf": {
-          "@type": "Blog",
-          "url": "https://shanecurry.com/blog/"
-        },
-        "keywords": [
-          "Gum",
-          "ChewGum workflow",
-          "Qwen 2.5",
-          "memory index",
-          "truth protection",
-          "local AI"
+        "@graph": [
+          {
+            "@type": "BlogPosting",
+            "@id": "https://shanecurry.com/blog/gum-in-the-machine/#post",
+            "headline": "Gum in the Machine",
+            "description": "A note on introducing Gum as a truth-protection role inside the Chew/Gum workflow.",
+            "datePublished": "2026-04-30",
+            "dateModified": "2026-04-30",
+            "author": {
+              "@id": "https://shanecurry.com/#person"
+            },
+            "mainEntityOfPage": "https://shanecurry.com/blog/gum-in-the-machine/",
+            "url": "https://shanecurry.com/blog/gum-in-the-machine/",
+            "image": {
+              "@id": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png#image"
+            },
+            "associatedMedia": {
+              "@id": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png#image"
+            },
+            "isPartOf": {
+              "@type": "Blog",
+              "url": "https://shanecurry.com/blog/"
+            },
+            "keywords": [
+              "Gum",
+              "ChewGum workflow",
+              "Qwen 2.5",
+              "memory index",
+              "truth protection",
+              "local AI"
+            ],
+            "about": [
+              "truth protection in AI-assisted workflow",
+              "memory index design",
+              "local Qwen 2.5 verification passes",
+              "Chew and Gum role separation",
+              "dogfooding creative software process"
+            ],
+            "mentions": [
+              {
+                "@id": "https://shanecurry.com/glossary/#chew"
+              },
+              {
+                "@id": "https://shanecurry.com/glossary/#gum"
+              },
+              {
+                "@id": "https://shanecurry.com/glossary/#contract-first"
+              },
+              {
+                "@id": "https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/"
+              },
+              {
+                "@id": "https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/"
+              },
+              {
+                "@id": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png#image"
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "@id": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png#image",
+            "contentUrl": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png",
+            "url": "https://shanecurry.com/assets/gum-in-the-machine/taxonomy-caught-red-handed.png",
+            "encodingFormat": "image/png",
+            "width": 1504,
+            "height": 196,
+            "caption": "A conversation screenshot recording the first live correction of the Gum in the Machine page by the new taxonomy.",
+            "description": "Screenshot evidence from the Gum in the Machine working session, where the site taxonomy caught that the first metadata pass on this blog post was too thin.",
+            "creditText": "Screenshot supplied by Shane Curry from a ChewGum workflow session.",
+            "creator": {
+              "@id": "https://shanecurry.com/#person"
+            },
+            "dateCreated": "2026-04-30",
+            "isPartOf": {
+              "@id": "https://shanecurry.com/blog/gum-in-the-machine/#post"
+            },
+            "about": [
+              "taxonomy correction",
+              "metadata enrichment",
+              "Gum as truth-protection role",
+              "ChewGum workflow dogfooding"
+            ]
+          }
         ]
       }
     </script>

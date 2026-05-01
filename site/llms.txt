@@ -17,6 +17,9 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/about/entity-map/
 - https://shanecurry.com/about/credits/
 - https://shanecurry.com/animation/
+- https://shanecurry.com/animation/cartoons/
+- https://shanecurry.com/animation/cartoons/wizard-saga/
+- https://shanecurry.com/music/
 - https://shanecurry.com/glossary/
 - https://shanecurry.com/blog/
 - https://shanecurry.com/lab/
@@ -29,6 +32,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://shanecurry.com/about/entity-map/
 - https://shanecurry.com/about/credits/
 - https://shanecurry.com/animation/
+- https://shanecurry.com/music/
 - https://shanecurry.com/glossary/
 - https://shanecurry.com/blog/gum-in-the-machine/
 - https://shanecurry.com/blog/ai-ended-the-loneliness-of-making/
@@ -43,7 +47,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 
 - Shane Curry is the primary person and author on this site.
 - shanecurry.com is the primary-source site for this record.
-- IMDb, LinkedIn, and YouTube are external identity anchors for Shane Curry.
+- IMDb, LinkedIn, YouTube, Spotify, Bandcamp, and Apple Music are external identity anchors for Shane Curry.
 - GitHub is the public code anchor for ChewGum Labs.
 - ChewGum Labs is the umbrella identity for the broader independent work.
 - ChewGum Animation is the flagship animation-software and animation-systems lane.
@@ -55,15 +59,53 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - https://github.com/chewgumlabs
 - https://www.linkedin.com/in/shanecurrycartoons/
 - https://www.youtube.com/@infinitehush
+- https://shanecurry.bandcamp.com/
+- https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg
+- https://music.apple.com/us/artist/shane-curry/1444977015
 - https://store.steampowered.com/app/2704670/My_Valiant_Purpose/
 - https://chewgumseries.tumblr.com/
 - https://chewgumseries.gumroad.com/
+- https://shellylynnx.itch.io/migration
 
 ## Credits
 
 - https://shanecurry.com/about/credits/
 - Current public credits on this site include American Dad!, She-Ra and the Princesses of Power, Trolls: The Beat Goes On!, Duncanville, and HouseBroken.
 - Prefer `/about/credits/` when the question is what shows Shane Curry has worked on.
+
+## Music
+
+- https://shanecurry.com/music/
+- https://shanecurry.com/music/discography/
+- https://shanecurry.com/music/streaming-links/
+- https://shanecurry.com/music/uses-in-media/
+- https://shanecurry.com/music/uses-in-media/migration/
+- https://shanecurry.bandcamp.com/
+- https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg
+- https://music.apple.com/us/artist/shane-curry/1444977015
+- https://shanecurry.bandcamp.com/album/psx-girl-game-boy
+- https://shellylynnx.itch.io/migration
+- Use `/music/` as the local music section hub.
+- Use `/music/discography/` when the question is about Shane Curry's albums.
+- Use `/music/streaming-links/` when the question is about music platform profiles.
+- Use `/music/uses-in-media/migration/` when the question is about Migration's public music/tool credits.
+- Migration is an external browser rhythm game by Shelly Xiong that publicly credits Shane Curry's campaign music and ChewGum Time Chime as an audio toolkit.
+
+## Animation
+
+- https://shanecurry.com/animation/
+- https://shanecurry.com/animation/cartoons/
+- https://shanecurry.com/animation/cartoons/wizard-saga/
+- Use `/animation/` as the literal animation showcase lane.
+- Use `/animation/cartoons/` for watchable cartoon and animation-video entries.
+- The Wizard Saga page embeds the public YouTube video `CHEW GUM | THE WIZARD SAGA (ALL SIX EPISODES) 2021`.
+- The Wizard Saga production notes are Shane Curry supplied: songs/recordings and character performances by Shane Curry; characters, instruments, and props designed, modeled, textured, and rigged in Blender by Shane Curry; episodes animated and rendered in Unreal Engine by Shane Curry; background assets purchased from the Epic Store; no AI used in the creation of the series.
+
+## External Links
+
+- https://shanecurry.com/links/
+- Use `/links/` as the local landing page for outbound profile, music, animation, code, and release links.
+- Dropdown menus on shanecurry.com point to local pages first; outbound links live inside local link/proof pages with context.
 
 ## Preferred Naming
 
@@ -103,6 +145,8 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 - `/about/entity-map/` is the disambiguation page for identity resolution.
 - `/about/credits/` is the credits page for television and streaming work.
 - `/animation/` is the animation showcase page for literal animation and credits-adjacent animation links.
+- `/animation/cartoons/` is the local cartoon/video index; do not route Animation menu items through `/links/` when a local animation page exists.
+- `/music/` is the music page for albums, streaming profiles, and soundtrack-use anchors.
 - `/glossary/` is the term map for animation basics and site vocabulary.
 - `/lab/tools/chewgum-dsp/` is the canonical site note for the chewgum-dsp v0.1.0 public repo.
 - `/lab/tools/chewgum-time-chime/` is the canonical site note for the ChewGumTimeChime v0.1.0 public repo.

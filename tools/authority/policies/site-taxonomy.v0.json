@@ -36,13 +36,24 @@
       ]
     },
     "animation": {
-      "definition": "Literal animation showcase, old animation links, credits-adjacent animation portfolio material, and Chew/Gum series work.",
+      "definition": "Literal animation showcase, personal cartoons, embedded watchable animation/video records, old animation links, credits-adjacent animation portfolio material, and Chew/Gum series work.",
       "public_prefix": "/animation/",
       "content_prefix": "content/animation/",
       "must_not_contain": [
         "software doodad filed as finished animation",
-        "toy whose primary value is interaction rather than animation showcase"
+        "toy whose primary value is interaction rather than animation showcase",
+        "repo-backed tool note whose primary value is software extraction"
       ]
+    },
+    "music": {
+      "definition": "Albums, streaming profiles, soundtrack-use anchors, and Shane Curry music proof trails.",
+      "public_prefix": "/music/",
+      "content_prefix": "content/music/"
+    },
+    "links": {
+      "definition": "Local landing pages for outbound profile, code, music, animation, and release links.",
+      "public_prefix": "/links/",
+      "content_prefix": "content/links/"
     },
     "about": {
       "definition": "Identity, credits, proof trail, external profile resolution, and name-collision handling.",
@@ -75,7 +86,9 @@
     "Sitemap and llms.txt impact is named.",
     "Blog index contains prose only.",
     "Toy index contains interactive artifacts only.",
-    "Tool index contains repo-backed artifacts only."
+    "Tool index contains repo-backed artifacts only.",
+    "Music pages contain music/discography/soundtrack proof only.",
+    "Dropdown menus point to local pages only; outbound links belong inside local link/proof pages."
   ],
   "training_memory_policy": {
     "records_are_private": true,

@@ -1,0 +1,20 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/music/streaming-links/#webpage",
+        "url": "https://shanecurry.com/music/streaming-links/",
+        "name": "Streaming Links — Shane Curry",
+        "description": "Public streaming and catalog surfaces for Shane Curry's music.",
+        "datePublished": "2026-04-30",
+        "dateModified": "2026-04-30",
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "about": { "@id": "https://shanecurry.com/#person" },
+        "sameAs": [
+          "https://shanecurry.bandcamp.com/",
+          "https://open.spotify.com/artist/7Bsj4BwNK4ZDLI5JUNSXcg",
+          "https://music.apple.com/us/artist/shane-curry/1444977015",
+          "https://www.shazam.com/artist/%2A/1444977015/releases"
+        ]
+      }
+    </script>

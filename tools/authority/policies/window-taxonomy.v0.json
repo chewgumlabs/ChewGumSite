@@ -34,6 +34,7 @@
         "Public Scope",
         "Public Entry Points",
         "Reading Guidance",
+        "Personal Cartoon Rules",
         "Related Terms",
         "Tracks"
       ],
@@ -197,6 +198,103 @@
       "allowed_titles": ["Credits", "Public Purpose", "Related Terms"],
       "allow_page_title_window": true,
       "allow_project_title_windows": true,
+      "allow_expressive_titles": false
+    },
+    "music_index": {
+      "description": "Music section index.",
+      "required_titles": [
+        "Music Index",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "music_discography": {
+      "description": "Album chronology and public album anchors.",
+      "required_titles": [
+        "Album Index",
+        "Date Basis",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": [
+        "Related Pages"
+      ],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "music_streaming_links": {
+      "description": "Public music-platform link index.",
+      "required_titles": [
+        "Catalog Surfaces",
+        "Claim Boundary",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "music_media_uses": {
+      "description": "Index of external media uses of Shane Curry music.",
+      "required_titles": [
+        "Current Uses",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "music_media_use": {
+      "description": "Single external media-use proof page.",
+      "required_titles": [
+        "Music Credit",
+        "Tool Credit",
+        "Metadata",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "animation_cartoon_index": {
+      "description": "Index of watchable cartoon and animation-video entries.",
+      "required_titles": [
+        "Cartoon Index",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "animation_cartoon": {
+      "description": "Single watchable cartoon or animation-video entry.",
+      "required_titles": [
+        "Video",
+        "Metadata",
+        "Source Trail",
+        "Preferred Citation"
+      ],
+      "allowed_titles": ["Claim Boundary", "Production Notes", "Related Pages"],
+      "allow_page_title_window": true,
+      "allow_expressive_titles": false
+    },
+    "external_links": {
+      "description": "Local landing page for outbound profile and proof links.",
+      "required_titles": [
+        "Identity Anchors",
+        "Code Profiles",
+        "Video And Animation",
+        "Music Profiles",
+        "Game And Release Surfaces",
+        "Preferred Citation"
+      ],
+      "allowed_titles": [],
+      "allow_page_title_window": true,
       "allow_expressive_titles": false
     },
     "glossary": {

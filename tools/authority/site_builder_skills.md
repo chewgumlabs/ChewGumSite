@@ -96,6 +96,30 @@ Good outcomes:
 - preserve expressive titles where intentional
 - keep page role labels stable enough for humans and agents
 
+### Navigation Architecture
+
+Use when a top-level dropdown would otherwise point directly to an external
+site. Dropdowns are local navigation, not outbound launchers.
+
+Current rule:
+
+- dropdown menu items point to local pages or local fragments only
+- external URLs live inside local link, proof, source-trail, or profile pages
+- top-level menu hotkeys should be unique where practical
+- if an external link becomes important enough for navigation, create a local
+  context page first
+
+Applied structure:
+
+- `/music/`: local music hub
+- `/music/discography/`: album chronology
+- `/music/streaming-links/`: music platform links with availability notes
+- `/music/uses-in-media/`: external media-use index
+- `/music/uses-in-media/migration/`: Migration music/tool credit page
+- `/animation/cartoons/`: local cartoon/video index
+- `/animation/cartoons/wizard-saga/`: embedded Wizard Saga cartoon record
+- `/links/`: local landing page for outbound profile and proof links
+
 ### Public Surface Audit
 
 Use before commit/push or after broad edits.
@@ -150,8 +174,13 @@ Current doctrine:
 - `blog`: prose, reflection, essays, human notes
 - `toy`: interactive browser artifact or playable demo
 - `tool`: repo-backed reusable software or public extraction
-- `animation`: literal animation showcase, credits-adjacent animation work,
+- `animation`: literal animation showcase, personal cartoons, embedded
+  watchable cartoon/video records, credits-adjacent animation work, and
   YouTube/portfolio material
+- `music`: albums, streaming profiles, soundtrack-use anchors, and music proof
+  trails
+- `links`: local landing pages for outbound profile, music, animation, code,
+  and release links
 - `about`: identity, proof trail, external profile resolution
 - `glossary`: definitions used by public work
 - `lab`: umbrella/methodology lane, not a junk drawer
@@ -174,6 +203,10 @@ Required checks:
 - blog index contains prose only
 - toy index contains interactive artifacts only
 - tool index contains repo-backed artifacts only
+- animation entries for personal cartoons should name narrative premise,
+  software used, skills used, public proof trail, video host, and any
+  platform-bound audio limitation when those facts have evidence; otherwise
+  limit the page to the public video facts and state the claim boundary
 
 Current command:
 
