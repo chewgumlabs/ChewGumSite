@@ -1,7 +1,7 @@
 {
   "$schema": "../schemas/window-taxonomy.v0.json",
   "schema_version": "window-taxonomy.v0",
-  "updated": "2026-04-30",
+  "updated": "2026-05-01",
   "description": "Tracked public-site window taxonomy. This policy defines canonical window titles, page-role expectations, and advisory rename aliases for authority tooling.",
   "global_titles": [
     "Metadata",
@@ -335,7 +335,9 @@
         "ChewGum Lab Vocabulary",
         "Continuation Terms",
         "Motion Terms",
-        "Structure Terms"
+        "Procedural Terms",
+        "Structure Terms",
+        "Technical Terms"
       ],
       "allow_page_title_window": false,
       "allow_expressive_titles": false

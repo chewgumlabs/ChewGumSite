@@ -107,6 +107,24 @@
         },
         {
           "@type": "DefinedTerm",
+          "name": "Animation Fundamentals",
+          "description": "Animation fundamentals are durable motion and staging ideas that help an audience read action, character intent, rhythm, and visual emphasis.",
+          "url": "https://shanecurry.com/glossary/#animation-fundamentals",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Motion Readability",
+          "description": "Motion readability is how clearly a viewer can understand what changed, why it changed, and where to look while the action is happening.",
+          "url": "https://shanecurry.com/glossary/#motion-readability",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
           "name": "Follow Through",
           "description": "Follow through is the continuation of motion after the main body has stopped or changed direction.",
           "url": "https://shanecurry.com/glossary/#follow-through",
@@ -119,6 +137,150 @@
           "name": "Overlap",
           "description": "Overlap is the offset timing between connected parts so they do not all start and stop at once.",
           "url": "https://shanecurry.com/glossary/#overlap",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Procedural Animation",
+          "description": "Procedural animation is motion generated or modified by rules, formulas, or code rather than fixed keyframes alone.",
+          "url": "https://shanecurry.com/glossary/#procedural-animation",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Displacement Field",
+          "description": "A displacement field is a set of values across a surface that tells sampled points how far, or in what direction, to move.",
+          "url": "https://shanecurry.com/glossary/#displacement-field",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Sampling",
+          "description": "Sampling is the act of reading a continuous rule, signal, or path at discrete points so it can be drawn, animated, tested, or heard.",
+          "url": "https://shanecurry.com/glossary/#sampling",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Sine Wave",
+          "description": "A sine wave is a smooth repeating wave that oscillates between high and low values and is useful for cyclic motion, sound, and displacement.",
+          "url": "https://shanecurry.com/glossary/#sine-wave",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Stroke Smoothing",
+          "description": "Stroke smoothing is the process of turning noisy pointer samples into a cleaner path while preserving enough timing and shape to feel hand-drawn.",
+          "url": "https://shanecurry.com/glossary/#stroke-smoothing",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Real-Time Audio",
+          "description": "Real-time audio is sound generated or controlled while an interaction is happening, instead of being rendered ahead of time as a fixed file.",
+          "url": "https://shanecurry.com/glossary/#real-time-audio",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Software Rendering",
+          "description": "Software rendering draws graphics on the CPU or ordinary program code path rather than relying primarily on a hardware graphics pipeline.",
+          "url": "https://shanecurry.com/glossary/#software-rendering",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Raymarching",
+          "description": "Raymarching is a rendering technique that steps along a ray through a scene until it finds a surface or reaches a limit.",
+          "url": "https://shanecurry.com/glossary/#raymarching",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "DDA Raycaster",
+          "description": "A DDA raycaster steps through a grid one cell boundary at a time to find wall hits, a classic way to render simple first-person rooms.",
+          "url": "https://shanecurry.com/glossary/#dda-raycaster",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Oscilloscope Effect",
+          "description": "An oscilloscope effect renders a scene as bright traced lines, borrowing the look of signal display rather than shaded surfaces.",
+          "url": "https://shanecurry.com/glossary/#oscilloscope-effect",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Web Audio",
+          "description": "Web Audio is the browser API used to synthesize, schedule, route, and process audio in interactive web pages.",
+          "url": "https://shanecurry.com/glossary/#web-audio",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Native Triangle Oscillator",
+          "description": "A native triangle oscillator is the browser's built-in triangle oscillator type, useful as a baseline tone source in Web Audio comparisons.",
+          "url": "https://shanecurry.com/glossary/#native-triangle-oscillator",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Triangle Wave",
+          "description": "A triangle wave is a periodic waveform with linear rises and falls, often softer than a square wave and brighter than a sine wave.",
+          "url": "https://shanecurry.com/glossary/#triangle-wave",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Periodic Wave",
+          "description": "A PeriodicWave is a Web Audio waveform built from harmonic data so custom oscillator shapes can be played by the browser.",
+          "url": "https://shanecurry.com/glossary/#periodic-wave",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "NES Audio",
+          "description": "NES audio refers to the constrained sound-generation style of the Nintendo Entertainment System, including its distinctive triangle channel.",
+          "url": "https://shanecurry.com/glossary/#nes-audio",
+          "inDefinedTermSet": {
+            "@id": "https://shanecurry.com/glossary/#termset"
+          }
+        },
+        {
+          "@type": "DefinedTerm",
+          "name": "Audio Synthesis",
+          "description": "Audio synthesis is the generation of sound from rules, waveforms, samples, or signal-processing graphs instead of playing only recorded audio.",
+          "url": "https://shanecurry.com/glossary/#audio-synthesis",
           "inDefinedTermSet": {
             "@id": "https://shanecurry.com/glossary/#termset"
           }
