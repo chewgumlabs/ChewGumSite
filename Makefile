@@ -9,7 +9,7 @@
 PYTHON ?= /opt/homebrew/bin/python3
 PORT   ?= 8765
 
-.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-window-audit authority-taxonomy authority-registry authority-review authority-propose authority-trace authority-trace-review authority-memory-index authority-editor-pass authority-skills help
+.PHONY: build serve watch clean authority-smoke authority-emit authority-validate authority-audit authority-window-audit authority-taxonomy authority-registry authority-review authority-propose authority-trace authority-trace-review authority-memory-index authority-editor-pass authority-skills digging-index help
 
 help:
 	@echo "make build    regenerate site/ from content/"
@@ -45,6 +45,8 @@ help:
 	@echo "              run a private llama.cpp/Qwen editor pass over a draft fragment"
 	@echo "make authority-skills"
 	@echo "              print tracked Chew/Gum site-building capability notes"
+	@echo "make digging-index"
+	@echo "              privately index old pile modules/assets into _Internal/digging/"
 
 build:
 	@$(PYTHON) tools/build.py
@@ -118,3 +120,6 @@ authority-editor-pass:
 
 authority-skills:
 	@sed -n '1,260p' tools/authority/site_builder_skills.md
+
+digging-index:
+	@$(PYTHON) tools/digging/index_pile_contracts.py
