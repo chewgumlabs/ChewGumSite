@@ -137,6 +137,7 @@ One of the recurring themes here is that AI can feel like camaraderie and loneli
 
 ## Lab / Tools
 
+- https://shanecurry.com/lab/tools/chewgum-dithering-gun/
 - https://shanecurry.com/lab/tools/chewgum-time-chime/
 - https://shanecurry.com/lab/tools/chewgum-dsp/
 

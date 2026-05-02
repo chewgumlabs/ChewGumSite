@@ -2,10 +2,15 @@
       {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
+        "@id": "https://shanecurry.com/lab/#webpage",
         "url": "https://shanecurry.com/lab/",
         "name": "Lab",
         "description": "Public lab experiments, interactive toys, and repo-backed tool notes by Shane Curry.",
         "author": { "@id": "https://shanecurry.com/#person" },
-        "isPartOf": { "@id": "https://shanecurry.com/#website" }
+        "isPartOf": { "@id": "https://shanecurry.com/#website" },
+        "hasPart": [
+          { "@id": "https://shanecurry.com/lab/toys/#webpage" },
+          { "@id": "https://shanecurry.com/lab/tools/#webpage" }
+        ]
       }
     </script>
