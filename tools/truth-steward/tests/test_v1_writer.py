@@ -16,15 +16,15 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve()
-AUTHORITY_DIR = HERE.parent.parent
-if str(AUTHORITY_DIR) not in sys.path:
-    sys.path.insert(0, str(AUTHORITY_DIR))
+TRUTH_STEWARD_DIR = HERE.parent.parent
+if str(TRUTH_STEWARD_DIR) not in sys.path:
+    sys.path.insert(0, str(TRUTH_STEWARD_DIR))
 
 import v1_writer  # noqa: E402
 
 
 SCHEMA_PATH = (
-    AUTHORITY_DIR.parent.parent.parent / "_swarmlab" / "design" / "swarmlab-attempt-summary.v1.schema.json"
+    TRUTH_STEWARD_DIR.parent.parent.parent / "_swarmlab" / "design" / "swarmlab-attempt-summary.v1.schema.json"
 )
 
 

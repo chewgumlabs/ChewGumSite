@@ -15,13 +15,13 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve()
-AUTHORITY_DIR = HERE.parent.parent
-SITE_REPO = AUTHORITY_DIR.parent.parent
-SMOKE_SCRIPT = AUTHORITY_DIR / "run_truth_steward_smoke.py"
+TRUTH_STEWARD_DIR = HERE.parent.parent
+SITE_REPO = TRUTH_STEWARD_DIR.parent.parent
+SMOKE_SCRIPT = TRUTH_STEWARD_DIR / "run_truth_steward_smoke.py"
 SMOKE_RUNS_ROOT = SITE_REPO / "_Internal" / "truth-steward-smoke-runs"
 
-if str(AUTHORITY_DIR) not in sys.path:
-    sys.path.insert(0, str(AUTHORITY_DIR))
+if str(TRUTH_STEWARD_DIR) not in sys.path:
+    sys.path.insert(0, str(TRUTH_STEWARD_DIR))
 
 import v1_writer  # noqa: E402
 

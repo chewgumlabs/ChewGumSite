@@ -17,8 +17,8 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve()
-AUTHORITY_DIR = HERE.parent.parent
-sys.path.insert(0, str(AUTHORITY_DIR))
+TRUTH_STEWARD_DIR = HERE.parent.parent
+sys.path.insert(0, str(TRUTH_STEWARD_DIR))
 
 import v1_writer  # noqa: E402
 
