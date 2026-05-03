@@ -320,7 +320,7 @@ def build_truth_steward_summary(
     truth_steward_training_state: str = "",
     truth_steward_training_reason: str = "",
 ) -> dict[str, Any]:
-    """Construct an truth-steward-variant v1 record.
+    """Construct a truth-steward-variant v1 record.
 
     stage must be in VALID_TRUTH_STEWARD_STAGES (closed set). attempt_id must be
     non-empty (call deterministic_attempt_id on the run dir if you have no
@@ -401,7 +401,7 @@ def write_truth_steward_summary(
     attempt_id: str | None = None,
     **fields: Any,
 ) -> dict[str, Any]:
-    """Build an truth-steward-variant v1 record and write it to <run_dir>/summary.json.
+    """Build a truth-steward-variant v1 record and write it to <run_dir>/summary.json.
 
     attempt_id defaults to deterministic_attempt_id(run_dir) when omitted.
     The record is validated against the JSON Schema BEFORE write — invalid input
