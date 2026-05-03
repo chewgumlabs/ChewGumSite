@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Index reviewed private authority traces into a training-memory view.
+"""Index reviewed private truth-steward traces into a training-memory view.
 
 Reads private trace reviews and writes:
 
-  _Internal/authority-memory/
+  _Internal/truth-steward-memory/
     memory-index.json
     memory-index.md
     reviewed-training-records.jsonl
@@ -37,9 +37,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_TRACE_ROOT = INTERNAL_ROOT / "authority-traces"
-DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "authority-trace-reviews"
-DEFAULT_OUTPUT_ROOT = INTERNAL_ROOT / "authority-memory"
+DEFAULT_TRACE_ROOT = INTERNAL_ROOT / "truth-steward-traces"
+DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "truth-steward-trace-reviews"
+DEFAULT_OUTPUT_ROOT = INTERNAL_ROOT / "truth-steward-memory"
 
 
 def main() -> int:
@@ -69,15 +69,15 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--trace-root",
-        help="private trace root under _Internal/ (default: _Internal/authority-traces)",
+        help="private trace root under _Internal/ (default: _Internal/truth-steward-traces)",
     )
     parser.add_argument(
         "--review-root",
-        help="private trace review root under _Internal/ (default: _Internal/authority-trace-reviews)",
+        help="private trace review root under _Internal/ (default: _Internal/truth-steward-trace-reviews)",
     )
     parser.add_argument(
         "--output-root",
-        help="private memory output root under _Internal/ (default: _Internal/authority-memory)",
+        help="private memory output root under _Internal/ (default: _Internal/truth-steward-memory)",
     )
     parser.add_argument(
         "--self-test",
@@ -112,7 +112,7 @@ def _build_index(trace_root: Path, review_root: Path) -> tuple[dict, list[dict]]
 
     for trace_dir in trace_dirs:
         trace = _read_json(trace_dir / "trace.json")
-        trace_id = trace.get("trace_id") or f"authority-trace:{trace_dir.name}"
+        trace_id = trace.get("trace_id") or f"truth-steward-trace:{trace_dir.name}"
         review_dir = review_dirs.get(trace_dir.name)
         review_summary = _read_json(review_dir / "review-summary.json") if review_dir else {}
         trace_records = _read_jsonl(review_dir / "reviewed-training-records.jsonl") if review_dir else []
@@ -153,7 +153,7 @@ def _build_index(trace_root: Path, review_root: Path) -> tuple[dict, list[dict]]
         sources[str(source.get("canonical_url") or source.get("path") or "unknown")] += 1
 
     index = {
-        "schema_version": "authority-memory-index.v0",
+        "schema_version": "truth-steward-memory-index.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "trace_root": _rel(trace_root),
         "review_root": _rel(review_root),
@@ -226,7 +226,7 @@ def _write_outputs(output_root: Path, index: dict, records: list[dict]) -> None:
 def _render_markdown(index: dict) -> str:
     summary = index["summary"]
     lines = [
-        "# Authority Memory Index",
+        "# Truth-Steward Memory Index",
         "",
         f"Generated: {index['generated_at']}",
         "",
@@ -275,15 +275,15 @@ def _render_markdown(index: dict) -> str:
 
 
 def _run_self_test() -> int:
-    root = INTERNAL_ROOT / "authority-smoke-memory"
+    root = INTERNAL_ROOT / "truth-steward-smoke-memory"
     trace_root = root / "traces"
     review_root = root / "reviews"
     output_root = root / "memory"
     _reset_private_root(root)
 
-    _write_trace_fixture(trace_root / "reviewed-a", "authority-trace:reviewed-a", "Reviewed A")
-    _write_trace_fixture(trace_root / "unreviewed-b", "authority-trace:unreviewed-b", "Unreviewed B")
-    _write_review_fixture(review_root / "reviewed-a", "authority-trace:reviewed-a")
+    _write_trace_fixture(trace_root / "reviewed-a", "truth-steward-trace:reviewed-a", "Reviewed A")
+    _write_trace_fixture(trace_root / "unreviewed-b", "truth-steward-trace:unreviewed-b", "Unreviewed B")
+    _write_review_fixture(review_root / "reviewed-a", "truth-steward-trace:reviewed-a")
 
     index, records = _build_index(trace_root, review_root)
     _write_outputs(output_root, index, records)
@@ -307,14 +307,14 @@ def _run_self_test() -> int:
         if not (output_root / name).is_file():
             print(f"FAIL missing memory output {name}")
             return 1
-    print("authority memory index self-test passed")
+    print("truth-steward memory index self-test passed")
     return 0
 
 
 def _write_trace_fixture(path: Path, trace_id: str, title: str) -> None:
     path.mkdir(parents=True, exist_ok=True)
     trace = {
-        "schema_version": "authority-workflow-trace.v0",
+        "schema_version": "truth-steward-workflow-trace.v0",
         "trace_id": trace_id,
         "source": {
             "path": f"content/blog/{title.lower().replace(' ', '-')}/post.frag.html",
@@ -329,7 +329,7 @@ def _write_trace_fixture(path: Path, trace_id: str, title: str) -> None:
 def _write_review_fixture(path: Path, trace_id: str) -> None:
     path.mkdir(parents=True, exist_ok=True)
     summary = {
-        "schema_version": "authority-trace-review.v0",
+        "schema_version": "truth-steward-trace-review.v0",
         "trace_id": trace_id,
         "labels_supplied": True,
         "summary": {
@@ -346,10 +346,10 @@ def _write_review_fixture(path: Path, trace_id: str) -> None:
     }
     records = [
         {
-            "schema_version": "authority-training-record.v0",
+            "schema_version": "truth-steward-training-record.v0",
             "record_id": f"{trace_id}:candidate-01-gum_bind",
             "trace_id": trace_id,
-            "task": "authority_packet_quality_label",
+            "task": "truth_steward_packet_quality_label",
             "source": {"canonical_url": "https://shanecurry.com/blog/reviewed-a/"},
             "human_label": {
                 "status": "approved_for_training",
@@ -358,10 +358,10 @@ def _write_review_fixture(path: Path, trace_id: str) -> None:
             },
         },
         {
-            "schema_version": "authority-training-record.v0",
+            "schema_version": "truth-steward-training-record.v0",
             "record_id": f"{trace_id}:candidate-02-gum_bind",
             "trace_id": trace_id,
-            "task": "authority_packet_quality_label",
+            "task": "truth_steward_packet_quality_label",
             "source": {"canonical_url": "https://shanecurry.com/blog/reviewed-a/"},
             "human_label": {
                 "status": "needs_revision",

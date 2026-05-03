@@ -4,11 +4,11 @@
 Read scope:
   - content/**/*.frag.html
   - content/**/*.toml
-  - tools/authority/policies/window-taxonomy.v0.json
+  - tools/truth-steward/policies/window-taxonomy.v0.json
 
 Write scope:
-  - _Internal/authority-audits/<YYYY-MM-DD>/window-audit.md
-  - _Internal/authority-audits/<YYYY-MM-DD>/window-audit.json
+  - _Internal/truth-steward-audits/<YYYY-MM-DD>/window-audit.md
+  - _Internal/truth-steward-audits/<YYYY-MM-DD>/window-audit.json
 
 This audit is advisory. It reports title drift and missing expected windows,
 but it never edits public content and it does not block builds.
@@ -39,8 +39,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 CONTENT = REPO / "content"
-POLICY = REPO / "tools" / "authority" / "policies" / "window-taxonomy.v0.json"
-REPORT_ROOT = REPO / "_Internal" / "authority-audits"
+POLICY = REPO / "tools" / "truth-steward" / "policies" / "window-taxonomy.v0.json"
+REPORT_ROOT = REPO / "_Internal" / "truth-steward-audits"
 WINDOW_PATTERN = re.compile(r'<section\s+class="window"[^>]*data-title="([^"]+)"')
 
 

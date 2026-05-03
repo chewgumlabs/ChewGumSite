@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Render a human-readable private authority review memo.
+"""Render a human-readable private truth-steward review memo.
 
-Reads the private authority registry and writes:
+Reads the private truth-steward registry and writes:
 
-  _Internal/authority-review/<YYYY-MM-DD>/review.md
+  _Internal/truth-steward-review/<YYYY-MM-DD>/review.md
 
 The review memo is an editorial planning surface. It never edits content/,
 site/sitemap.xml, site/llms.txt, or _swarmlab/.
@@ -29,8 +29,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_REGISTRY = INTERNAL_ROOT / "authority-registry" / "registry.json"
-DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "authority-review"
+DEFAULT_REGISTRY = INTERNAL_ROOT / "truth-steward-registry" / "registry.json"
+DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "truth-steward-review"
 
 
 def main() -> int:
@@ -63,11 +63,11 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--registry",
-        help="private registry JSON path (default: _Internal/authority-registry/registry.json)",
+        help="private registry JSON path (default: _Internal/truth-steward-registry/registry.json)",
     )
     parser.add_argument(
         "--review-root",
-        help="private review output root under _Internal/ (default: _Internal/authority-review)",
+        help="private review output root under _Internal/ (default: _Internal/truth-steward-review)",
     )
     parser.add_argument("--date", help="review date directory, YYYY-MM-DD")
     return parser.parse_args()
@@ -116,7 +116,7 @@ def _render_review(registry: dict, registry_path: Path, review_date: str) -> str
     warnings = [entry for entry in entries if _warning_count(entry) > 0]
 
     lines = [
-        "# Authority Review Memo",
+        "# Truth-Steward Review Memo",
         "",
         f"Date: {review_date}",
         f"Registry: `{_rel(registry_path)}`",

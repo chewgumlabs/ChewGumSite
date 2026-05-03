@@ -8,17 +8,18 @@ legacy_thoughts/
 site/index.html
 site/**/index.html
 
-# Python bytecode cache from tools/build.py
+# Python bytecode cache from tools/build.py and tools/truth-steward/.
 tools/__pycache__/
+tools/**/__pycache__/
 
 # Claude Code scratch area: worktrees, session state, plan files,
 # smoke-test scripts. Never meant for GitHub; may contain fragments
 # of unrelated work-in-progress.
 .claude/
 
-# Authority-draft staging area. Drafts emitted by tools/authority/ are
+# Truth-Steward draft staging area. Drafts emitted by tools/truth-steward/ are
 # private working artifacts (scaffolds, validation reports, promotion
 # notes). Promotion happens by hand-moving files into content/.
-# tools/authority/fixtures/ stays tracked so the smoke tests are
+# tools/truth-steward/fixtures/ stays tracked so the smoke tests are
 # reproducible.
 _Internal/

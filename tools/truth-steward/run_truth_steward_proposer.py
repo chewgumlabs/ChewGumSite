@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Ask the local Qwen/llama.cpp server to propose private authority packets.
+"""Ask the local Qwen/llama.cpp server to propose private truth-steward packets.
 
 The proposer reads one explicit source file and writes only:
 
-  _Internal/authority-proposals/<YYYY-MM-DD>-<slug>/
+  _Internal/truth-steward-proposals/<YYYY-MM-DD>-<slug>/
     prompt.json
     model-output.json
     candidate-packets/*.packet.json
@@ -42,23 +42,24 @@ from urllib import error as url_error
 from urllib import request as url_request
 from urllib.parse import urlparse
 
-from validate_authority_draft import (
+from validate_truth_steward_draft import (
     PRIVATE_PATH_PATTERNS,
     URL_PATTERN,
     URL_TRAILING_PUNCTUATION,
     _is_public_url,
 )
+import v1_writer
 
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_OUTPUT_ROOT = INTERNAL_ROOT / "authority-proposals"
-DEFAULT_REGISTRY = INTERNAL_ROOT / "authority-registry" / "registry.json"
-EMIT = Path(__file__).with_name("emit_authority_draft.py")
+DEFAULT_OUTPUT_ROOT = INTERNAL_ROOT / "truth-steward-proposals"
+DEFAULT_REGISTRY = INTERNAL_ROOT / "truth-steward-registry" / "registry.json"
+EMIT = Path(__file__).with_name("emit_truth_steward_draft.py")
 
 DEFAULT_ENDPOINT = "http://127.0.0.1:8080/v1/chat/completions"
-DEFAULT_MODEL = "coder-comments"
-QWEN_BIBLE = Path(__file__).with_name("qwen_authority_bible.md")
+DEFAULT_MODEL = "ChewDrill"
+QWEN_BIBLE = Path(__file__).with_name("qwen_truth_steward_bible.md")
 EVIDENCE_POLICY = Path(__file__).parent / "policies" / "pass-evidence-policy.v0.json"
 SITE_HOST = "shanecurry.com"
 ALLOWED_OUTPUTS = {"toy", "index", "note", "hold", "reject"}
@@ -305,6 +306,8 @@ def main() -> int:
     raw_response = {}
     parsed_output = None
     parse_error = ""
+    timed_out = False
+    started_at = dt.datetime.now()
     try:
         raw_response = _call_llama_server(
             endpoint=args.endpoint,
@@ -318,6 +321,9 @@ def main() -> int:
     except Exception as exc:  # noqa: BLE001 - report must capture local server failures.
         model_error = str(exc)
         parse_error = "model call failed"
+        if "timed out" in str(exc).lower():
+            timed_out = True
+    ended_at = dt.datetime.now()
 
     candidates = _extract_candidates(parsed_output)
     normalized: list[dict] = []
@@ -365,7 +371,7 @@ def main() -> int:
         )
 
     model_output = {
-        "schema_version": "authority-proposal-output.v0",
+        "schema_version": "truth-steward-proposal-output.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "source": source_context,
         "backend": "llama.cpp llama-server",
@@ -388,6 +394,66 @@ def main() -> int:
 
     blocked = _blocked_count(packet_results)
     repair_blocked = _blocked_count(repair_results)
+    clean_packets = max(0, len(packet_results) - blocked)
+    repair_clean = max(0, len(repair_results) - repair_blocked)
+    no_candidates = not packet_results
+
+    if model_error or no_candidates:
+        ok = False
+    elif args.strict and (blocked or repair_blocked):
+        ok = False
+    else:
+        ok = True
+
+    if model_error:
+        training_state, training_reason = "rejected", "model call failed"
+    elif no_candidates:
+        training_state, training_reason = "no_candidates", "model produced zero candidate packets"
+    elif args.strict and (blocked or repair_blocked):
+        training_state, training_reason = "rejected", "strict mode: blocked candidates present"
+    elif clean_packets > 0:
+        training_state, training_reason = "trainable", "at least one validator-clean candidate"
+    else:
+        training_state, training_reason = "needs_repair", "all candidates blocked but strict not set"
+
+    sources = [
+        {"path": str(source), "schema": "site-fragment"},
+        {"path": str(proposal_dir / "prompt.json"), "schema": "truth-steward-proposal-prompt.v0"},
+        {"path": str(proposal_dir / "model-output.json"), "schema": "truth-steward-proposal-output.v0"},
+        {"path": str(QWEN_BIBLE), "schema": "truth-steward-doctrine"},
+        {"path": str(EVIDENCE_POLICY), "schema": "pass-evidence-policy.v0"},
+    ]
+
+    duration_ms = int((ended_at - started_at).total_seconds() * 1000)
+    prompt_bytes = (proposal_dir / "prompt.json").stat().st_size
+    response_bytes = (proposal_dir / "model-output.json").stat().st_size
+
+    v1_writer.write_truth_steward_summary(
+        run_dir=proposal_dir,
+        stage="truth-steward-proposal",
+        ok=ok,
+        model_alias=args.model,
+        url=args.endpoint,
+        started_at=started_at.isoformat(timespec="seconds"),
+        ended_at=ended_at.isoformat(timespec="seconds"),
+        duration_ms=duration_ms,
+        prompt_bytes=prompt_bytes,
+        response_bytes=response_bytes,
+        sources=sources,
+        validation_ok=None,
+        error=model_error,
+        parse_error=parse_error if not model_error else "",
+        timed_out=timed_out,
+        truth_steward_candidates=len(packet_results),
+        truth_steward_blocked_candidates=blocked,
+        truth_steward_repairs=len(repair_results),
+        truth_steward_blocked_repairs=repair_blocked,
+        truth_steward_clean_packets=clean_packets + repair_clean,
+        truth_steward_loop_events=len(packet_results) + len(repair_results),
+        truth_steward_training_state=training_state,
+        truth_steward_training_reason=training_reason,
+    )
+
     print(f"proposal: {proposal_dir}")
     print(f"source: {_rel(source)}")
     print(f"candidate_packets: {len(packet_results)}")
@@ -396,6 +462,7 @@ def main() -> int:
         print(f"repair_candidate_packets: {len(repair_results)}")
         print(f"blocked_repair_candidates: {repair_blocked}")
     print(f"see: {proposal_dir / 'proposal-report.md'}")
+    print(f"summary: {proposal_dir / 'summary.json'}")
     if model_error or not packet_results:
         return 1
     if args.strict and (blocked or repair_blocked):
@@ -434,7 +501,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument("--slug", help="override proposal directory slug")
     parser.add_argument(
         "--output-root",
-        help="private output root under _Internal/ (default: _Internal/authority-proposals)",
+        help="private output root under _Internal/ (default: _Internal/truth-steward-proposals)",
     )
     parser.add_argument(
         "--registry",
@@ -847,7 +914,7 @@ def _prompt_document(
         "visible_text_excerpt": _visible_text(source_context["text"])[:PROMPT_TEXT_LIMIT],
     }
     system = (
-        "You propose private authority packets for shanecurry.com. "
+        "You propose private truth-steward packets for shanecurry.com. "
         "You are not publishing. Output only JSON. "
         "Use only facts supported by the supplied source and public URLs. "
         "Never include local filesystem paths, internal run directories, _Internal, _Company, or _swarmlab references. "
@@ -855,7 +922,7 @@ def _prompt_document(
         "Prefer small, truthful packets."
     )
     user = {
-        "task": f"Propose up to {limit} private authority packet candidates for the {prompt_source['pass_intent']['id']} pass.",
+        "task": f"Propose up to {limit} private truth-steward packet candidates for the {prompt_source['pass_intent']['id']} pass.",
         "response_shape": {
             "packets": [schema_hint],
             "notes": ["short private rationale; no public copy"]
@@ -865,7 +932,7 @@ def _prompt_document(
         "evidence_policy": _evidence_policy_prompt_summary(source_context),
         "known_public_surfaces_from_registry": registry_context[:8],
         "allowed_public_evidence_urls": allowed_evidence_urls[:40],
-        "qwen_authority_bible": _qwen_bible(),
+        "qwen_truth_steward_bible": _qwen_bible(),
         "target_url_policy": {
             "enrich_existing": "target_public_path is forced to source.public_path",
             "new_page": "target_public_path is deterministically assigned from recommended_output and title; do not invent a URL",
@@ -902,7 +969,7 @@ def _prompt_document(
         ],
     }
     return {
-        "schema_version": "authority-proposal-prompt.v0",
+        "schema_version": "truth-steward-proposal-prompt.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "backend": "llama.cpp llama-server",
         "endpoint": endpoint,
@@ -1320,14 +1387,14 @@ def _repair_prompt_document(
         "emit_stderr": (failed_result.get("emit_check") or {}).get("stderr", "")[-1200:],
     }
     system = (
-        "You repair private authority packet candidates for shanecurry.com. "
+        "You repair private truth-steward packet candidates for shanecurry.com. "
         "Output only JSON. Repair the supplied packet; do not create unrelated ideas. "
         "Use only facts and URLs from the supplied source and allowed evidence list. "
         "Never include local filesystem paths, internal run directories, _Internal, _Company, or _swarmlab references. "
         "If the blocker cannot be repaired truthfully, return recommended_output='hold' with a hold_reason."
     )
     user = {
-        "task": "Repair this blocked private authority packet candidate.",
+        "task": "Repair this blocked private truth-steward packet candidate.",
         "response_shape": {
             "packet": {
                 "canonical_title": failed_packet.get("canonical_title") or "Title",
@@ -1368,7 +1435,7 @@ def _repair_prompt_document(
         "evidence_policy": _evidence_policy_prompt_summary(source_context),
         "known_promoted_public_surfaces": registry_context[:8],
         "allowed_public_evidence_urls": allowed_evidence_urls[:40],
-        "qwen_authority_bible": _qwen_bible(),
+        "qwen_truth_steward_bible": _qwen_bible(),
         "repair_rules": [
             "Fix every listed blocker directly.",
             "Do not remove truth just to pass validation; use hold if a truthful repair is not possible.",
@@ -1384,7 +1451,7 @@ def _repair_prompt_document(
         ],
     }
     return {
-        "schema_version": "authority-proposal-repair-prompt.v0",
+        "schema_version": "truth-steward-proposal-repair-prompt.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "backend": "llama.cpp llama-server",
         "endpoint": endpoint,
@@ -1641,7 +1708,7 @@ def _url_key(url: str) -> str:
 
 
 def _url_reachability_failure(url: str, timeout: int) -> str:
-    request = url_request.Request(url, method="HEAD", headers={"User-Agent": "ChewGumAuthorityProposer/0.1"})
+    request = url_request.Request(url, method="HEAD", headers={"User-Agent": "ChewGumTruthStewardProposer/0.1"})
     try:
         with url_request.urlopen(request, timeout=timeout) as response:
             if 200 <= response.status < 400:
@@ -1657,7 +1724,7 @@ def _url_reachability_failure(url: str, timeout: int) -> str:
 
 
 def _url_get_reachability_failure(url: str, timeout: int) -> str:
-    request = url_request.Request(url, method="GET", headers={"User-Agent": "ChewGumAuthorityProposer/0.1"})
+    request = url_request.Request(url, method="GET", headers={"User-Agent": "ChewGumTruthStewardProposer/0.1"})
     try:
         with url_request.urlopen(request, timeout=timeout) as response:
             if 200 <= response.status < 400:
@@ -1706,7 +1773,7 @@ def _render_report(prompt_doc: dict, model_output: dict) -> str:
     candidates = model_output["candidate_packets"]
     repairs = model_output.get("repair_candidate_packets") or []
     lines = [
-        "# Authority Proposal Report",
+        "# Truth-Steward Proposal Report",
         "",
         f"Generated: {model_output['generated_at']}",
         f"Source: `{source['path']}`",
@@ -1809,9 +1876,9 @@ def _render_report(prompt_doc: dict, model_output: dict) -> str:
             "Choose one candidate or repaired packet, inspect it, then run:",
             "",
             "```sh",
-            "make authority-emit PACKET=_Internal/authority-proposals/YYYY-MM-DD-slug/{candidate-packets|repaired-packets}/NN-name.packet.json",
-            "make authority-registry",
-            "make authority-review",
+            "make truth-steward-emit PACKET=_Internal/truth-steward-proposals/YYYY-MM-DD-slug/{candidate-packets|repaired-packets}/NN-name.packet.json",
+            "make truth-steward-registry",
+            "make truth-steward-review",
             "```",
             "",
             "Do not publish from this report automatically.",
@@ -1867,7 +1934,7 @@ def _run_self_test() -> int:
             },
         ]
     }
-    tmp_registry = INTERNAL_ROOT / "authority-smoke-drafts" / "proposer-registry-fixture.json"
+    tmp_registry = INTERNAL_ROOT / "truth-steward-smoke-drafts" / "proposer-registry-fixture.json"
     tmp_registry.parent.mkdir(parents=True, exist_ok=True)
     tmp_registry.write_text(_json(registry_fixture))
     registry_items = _registry_context(str(tmp_registry))
@@ -1891,7 +1958,7 @@ def _run_self_test() -> int:
         1,
     )
     if packet.get("status") or packet.get("promotion_commit"):
-        print("FAIL normalize strips authority fields")
+        print("FAIL normalize strips truth-steward fields")
         return 1
     if packet["promotion_mode"] != "enrich_existing":
         print("FAIL source-target default promotion_mode")
@@ -1959,8 +2026,8 @@ def _run_self_test() -> int:
         limit=2,
     )
     prompt_payload = json.loads(prompt_doc["messages"][1]["content"])
-    if "qwen_authority_bible" not in prompt_payload:
-        print("FAIL prompt missing qwen authority bible field")
+    if "qwen_truth_steward_bible" not in prompt_payload:
+        print("FAIL prompt missing qwen truth-steward bible field")
         return 1
     repair_prompt = _repair_prompt_document(
         source_context=source,
@@ -2318,7 +2385,7 @@ def _run_self_test() -> int:
         print("FAIL candidate and repair draft-check slugs collide")
         print(first_check_slug, repair_check_slug)
         return 1
-    print("authority proposer self-test passed")
+    print("truth-steward proposer self-test passed")
     return 0
 
 

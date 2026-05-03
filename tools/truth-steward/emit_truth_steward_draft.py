@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""emit_authority_draft.py — adapter that turns an authority packet into a
+"""emit_truth_steward_draft.py — adapter that turns a truth-steward packet into a
 private site-side draft directory.
 
-Reads a JSON packet (the staging authority-promotion shape borrowed from
+Reads a JSON packet (the staging truth-steward-promotion shape borrowed from
 SwarmLab, in JSON form) and emits a draft directory under
-_Internal/authority-drafts/<YYYY-MM-DD>-<slug>/. Then runs the validator.
+_Internal/truth-steward-drafts/<YYYY-MM-DD>-<slug>/. Then runs the validator.
 
 Hard rules:
-  - never writes outside a private _Internal/ authority draft root
+  - never writes outside a private _Internal/ truth-steward draft root
   - never edits content/, site/sitemap.xml, or site/llms.txt
   - never auto-publishes
   - emits scaffolds only; the live demo (post.extra-body.html) and any
@@ -38,8 +38,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_DRAFTS_ROOT = INTERNAL_ROOT / "authority-drafts"
-VALIDATOR = Path(__file__).with_name("validate_authority_draft.py")
+DEFAULT_DRAFTS_ROOT = INTERNAL_ROOT / "truth-steward-drafts"
+VALIDATOR = Path(__file__).with_name("validate_truth_steward_draft.py")
 
 KIND_TO_TOML_KIND = {
     "toy": "toy-note",
@@ -158,13 +158,13 @@ def main() -> int:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("packet", help="path to authority packet JSON file")
+    parser.add_argument("packet", help="path to truth-steward packet JSON file")
     parser.add_argument("--slug", help="override draft slug")
     parser.add_argument(
         "--draft-root",
         help=(
             "private output root under _Internal/ "
-            "(default: _Internal/authority-drafts)"
+            "(default: _Internal/truth-steward-drafts)"
         ),
     )
     parser.add_argument(

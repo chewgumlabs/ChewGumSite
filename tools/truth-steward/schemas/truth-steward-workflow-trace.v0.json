@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shanecurry.com/schemas/authority-workflow-trace.v0.json",
-  "title": "Authority Workflow Trace v0",
+  "$id": "https://shanecurry.com/schemas/truth-steward-workflow-trace.v0.json",
+  "title": "Truth-Steward Workflow Trace v0",
   "type": "object",
   "required": [
     "$schema",
@@ -25,7 +25,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "authority-workflow-trace.v0"
+      "const": "truth-steward-workflow-trace.v0"
     },
     "trace_id": {
       "type": "string",
@@ -47,7 +47,7 @@
       "type": "string"
     },
     "domain": {
-      "const": "online_presence_authority"
+      "const": "online_presence_truth_steward"
     },
     "training_memory": {
       "type": "object",

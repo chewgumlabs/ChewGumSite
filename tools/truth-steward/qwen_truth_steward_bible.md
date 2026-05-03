@@ -1,11 +1,11 @@
-# Qwen Authority Proposer Bible
+# Qwen Truth-Steward Proposer Bible
 
 Private prompt doctrine for local Qwen proposal runs. This file is guidance
-for proposing authority packets only. It is not public copy.
+for proposing truth-steward packets only. It is not public copy.
 
 ## Job
 
-Propose private authority packets that a human may later review. Do not write
+Propose private truth-steward packets that a human may later review. Do not write
 public pages. Do not publish. Do not mark anything promoted.
 
 A useful proposal should answer:
@@ -64,7 +64,7 @@ on the existing page or as a held note, not as a new `/lab/toys/.../` URL.
 
 ## Recursion Guard
 
-Do not propose public pages about the authority pipeline itself, proposal
+Do not propose public pages about the truth-steward pipeline itself, proposal
 reports, training traces, prompt bibles, editor passes, validator internals,
 or "how this page was made" unless a human explicitly supplies an approved
 public process source.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the authority draft adapter fixture matrix.
+"""Run the truth-steward draft adapter fixture matrix.
 
 This runner is intentionally small and deterministic: known-good fixtures
 must pass, known-bad fixtures must block, hold overrides must not leave
@@ -19,18 +19,22 @@ from pathlib import Path
 
 
 REPO = Path(__file__).resolve().parents[2]
-EMIT = REPO / "tools" / "authority" / "emit_authority_draft.py"
-REGISTRY = REPO / "tools" / "authority" / "index_authority_registry.py"
-EDITOR_PASS = REPO / "tools" / "authority" / "run_authority_editor_pass.py"
-PROPOSER = REPO / "tools" / "authority" / "run_authority_proposer.py"
-TRACE_EXPORTER = REPO / "tools" / "authority" / "export_authority_trace.py"
-TRACE_REVIEWER = REPO / "tools" / "authority" / "review_authority_trace.py"
-MEMORY_INDEXER = REPO / "tools" / "authority" / "index_authority_memory.py"
-WINDOW_AUDIT = REPO / "tools" / "authority" / "audit_window_taxonomy.py"
-FIXTURES = REPO / "tools" / "authority" / "fixtures"
+EMIT = REPO / "tools" / "truth-steward" / "emit_truth_steward_draft.py"
+REGISTRY = REPO / "tools" / "truth-steward" / "index_truth_steward_registry.py"
+EDITOR_PASS = REPO / "tools" / "truth-steward" / "run_truth_steward_editor_pass.py"
+PROPOSER = REPO / "tools" / "truth-steward" / "run_truth_steward_proposer.py"
+TRACE_EXPORTER = REPO / "tools" / "truth-steward" / "export_truth_steward_trace.py"
+TRACE_REVIEWER = REPO / "tools" / "truth-steward" / "review_truth_steward_trace.py"
+MEMORY_INDEXER = REPO / "tools" / "truth-steward" / "index_truth_steward_memory.py"
+WINDOW_AUDIT = REPO / "tools" / "truth-steward" / "audit_window_taxonomy.py"
+FIXTURES = REPO / "tools" / "truth-steward" / "fixtures"
 INTERNAL_ROOT = REPO / "_Internal"
-SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "authority-smoke-drafts"
-SMOKE_REGISTRY_ROOT = INTERNAL_ROOT / "authority-smoke-registry"
+SMOKE_DRAFTS_ROOT = INTERNAL_ROOT / "truth-steward-smoke-drafts"
+SMOKE_REGISTRY_ROOT = INTERNAL_ROOT / "truth-steward-smoke-registry"
+SMOKE_RUNS_ROOT = INTERNAL_ROOT / "truth-steward-smoke-runs"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import v1_writer  # noqa: E402
 
 
 @dataclass(frozen=True)
@@ -70,9 +74,32 @@ def main() -> int:
     failures: list[str] = []
     _reset_private_root(SMOKE_DRAFTS_ROOT)
     _reset_private_root(SMOKE_REGISTRY_ROOT)
+    today = dt.date.today().isoformat()
+    run_root = SMOKE_RUNS_ROOT / today
+    _reset_private_root(SMOKE_RUNS_ROOT)
+    run_root.mkdir(parents=True, exist_ok=True)
+
+    def record(label: str, ok: bool, detail: str, sources: list[dict]) -> None:
+        case_dir = run_root / _slugify_case(label)
+        case_dir.mkdir(parents=True, exist_ok=True)
+        v1_writer.write_truth_steward_summary(
+            run_dir=case_dir,
+            stage="truth-steward-smoke",
+            ok=ok,
+            sources=sources,
+            validation_ok=ok,
+            validation_errors=([] if ok else [_one_line(detail) or "fixture failed"]),
+            note=label,
+            truth_steward_training_state=("accepted" if ok else "rejected"),
+            truth_steward_training_reason=label,
+        )
 
     for case in CASES:
         ok, detail = _run_case(case)
+        record(case.name, ok, detail, [
+            {"path": str(FIXTURES / case.packet), "schema": "truth-steward-packet"},
+            {"path": str(EMIT), "schema": "truth-steward-emit-script"},
+        ])
         if ok:
             print(f"PASS {case.name}")
         else:
@@ -80,112 +107,95 @@ def main() -> int:
             print(detail.rstrip())
             failures.append(case.name)
 
-    ok, detail = _check_hold_has_no_public_candidate_files("triangle-engines")
-    if ok:
-        print("PASS hold override has no public candidate files")
-    else:
-        print("FAIL hold override has no public candidate files")
-        print(detail.rstrip())
-        failures.append("hold override has no public candidate files")
+    extra_checks = (
+        ("hold override has no public candidate files",
+         lambda: _check_hold_has_no_public_candidate_files("triangle-engines"),
+         [{"path": str(EMIT), "schema": "truth-steward-emit-script"}]),
+        ("note scaffold has no Live Toy placeholder",
+         _check_note_scaffold_has_no_live_toy_placeholder,
+         [{"path": str(EMIT), "schema": "truth-steward-emit-script"}]),
+        ("stale passing validation is revalidated",
+         _check_stale_validation_is_revalidated,
+         [{"path": str(REGISTRY), "schema": "truth-steward-registry-script"}]),
+        ("fixture drafts are excluded from default registry",
+         _check_registry_excludes_fixture_drafts,
+         [{"path": str(REGISTRY), "schema": "truth-steward-registry-script"}]),
+        ("Dead Beat enrichment emits merge artifacts",
+         _check_dead_beat_enrichment_artifacts,
+         [{"path": str(EMIT), "schema": "truth-steward-emit-script"}]),
+        ("editor pass preserves HTML structure",
+         _check_editor_html_structure_regressions,
+         [{"path": str(EDITOR_PASS), "schema": "truth-steward-editor-script"}]),
+        ("proposer keeps packets private and human-gated",
+         _check_proposer_regressions,
+         [{"path": str(PROPOSER), "schema": "truth-steward-proposer-script"}]),
+        ("trace exporter captures Chew/Gum training memory",
+         _check_trace_exporter_regressions,
+         [{"path": str(TRACE_EXPORTER), "schema": "truth-steward-trace-exporter-script"}]),
+        ("trace review gates training memory behind human labels",
+         _check_trace_review_regressions,
+         [{"path": str(TRACE_REVIEWER), "schema": "truth-steward-trace-reviewer-script"}]),
+        ("memory index aggregates reviewed trace records",
+         _check_memory_index_regressions,
+         [{"path": str(MEMORY_INDEXER), "schema": "truth-steward-memory-indexer-script"}]),
+        ("window taxonomy policy self-test",
+         _check_window_taxonomy_regressions,
+         [{"path": str(WINDOW_AUDIT), "schema": "truth-steward-window-audit-script"}]),
+        ("_Internal/ is not tracked",
+         _check_internal_untracked,
+         [{"path": str(INTERNAL_ROOT), "schema": "truth-steward-internal-root"}]),
+    )
+    for label, check, sources in extra_checks:
+        ok, detail = check()
+        record(label, ok, detail, sources)
+        if ok:
+            print(f"PASS {label}")
+        else:
+            print(f"FAIL {label}")
+            print(detail.rstrip())
+            failures.append(label)
 
-    ok, detail = _check_note_scaffold_has_no_live_toy_placeholder()
-    if ok:
-        print("PASS note scaffold has no Live Toy placeholder")
-    else:
-        print("FAIL note scaffold has no Live Toy placeholder")
-        print(detail.rstrip())
-        failures.append("note scaffold has no Live Toy placeholder")
-
-    ok, detail = _check_stale_validation_is_revalidated()
-    if ok:
-        print("PASS stale passing validation is revalidated")
-    else:
-        print("FAIL stale passing validation is revalidated")
-        print(detail.rstrip())
-        failures.append("stale passing validation is revalidated")
-
-    ok, detail = _check_registry_excludes_fixture_drafts()
-    if ok:
-        print("PASS fixture drafts are excluded from default registry")
-    else:
-        print("FAIL fixture drafts are excluded from default registry")
-        print(detail.rstrip())
-        failures.append("fixture drafts are excluded from default registry")
-
-    ok, detail = _check_dead_beat_enrichment_artifacts()
-    if ok:
-        print("PASS Dead Beat enrichment emits merge artifacts")
-    else:
-        print("FAIL Dead Beat enrichment emits merge artifacts")
-        print(detail.rstrip())
-        failures.append("Dead Beat enrichment emits merge artifacts")
-
-    ok, detail = _check_editor_html_structure_regressions()
-    if ok:
-        print("PASS editor pass preserves HTML structure")
-    else:
-        print("FAIL editor pass preserves HTML structure")
-        print(detail.rstrip())
-        failures.append("editor pass preserves HTML structure")
-
-    ok, detail = _check_proposer_regressions()
-    if ok:
-        print("PASS proposer keeps packets private and human-gated")
-    else:
-        print("FAIL proposer keeps packets private and human-gated")
-        print(detail.rstrip())
-        failures.append("proposer keeps packets private and human-gated")
-
-    ok, detail = _check_trace_exporter_regressions()
-    if ok:
-        print("PASS trace exporter captures Chew/Gum training memory")
-    else:
-        print("FAIL trace exporter captures Chew/Gum training memory")
-        print(detail.rstrip())
-        failures.append("trace exporter captures Chew/Gum training memory")
-
-    ok, detail = _check_trace_review_regressions()
-    if ok:
-        print("PASS trace review gates training memory behind human labels")
-    else:
-        print("FAIL trace review gates training memory behind human labels")
-        print(detail.rstrip())
-        failures.append("trace review gates training memory behind human labels")
-
-    ok, detail = _check_memory_index_regressions()
-    if ok:
-        print("PASS memory index aggregates reviewed trace records")
-    else:
-        print("FAIL memory index aggregates reviewed trace records")
-        print(detail.rstrip())
-        failures.append("memory index aggregates reviewed trace records")
-
-    ok, detail = _check_window_taxonomy_regressions()
-    if ok:
-        print("PASS window taxonomy policy self-test")
-    else:
-        print("FAIL window taxonomy policy self-test")
-        print(detail.rstrip())
-        failures.append("window taxonomy policy self-test")
-
-    ok, detail = _check_internal_untracked()
-    if ok:
-        print("PASS _Internal/ is not tracked")
-    else:
-        print("FAIL _Internal/ is not tracked")
-        print(detail.rstrip())
-        failures.append("_Internal/ is not tracked")
+    rollup_dir = run_root / "_rollup"
+    rollup_dir.mkdir(parents=True, exist_ok=True)
+    v1_writer.write_truth_steward_summary(
+        run_dir=rollup_dir,
+        stage="truth-steward-smoke",
+        ok=not failures,
+        sources=[{"path": str(Path(__file__).resolve()), "schema": "truth-steward-smoke-script"}],
+        validation_ok=not failures,
+        validation_errors=[_one_line(name) for name in failures],
+        note=f"truth-steward smoke matrix: {len(CASES) + len(extra_checks)} cases, {len(failures)} failed",
+        truth_steward_training_state=("accepted" if not failures else "rejected"),
+        truth_steward_training_reason=("all fixtures passed" if not failures else f"{len(failures)} failures"),
+    )
 
     if failures:
         print()
-        print("authority smoke failed:")
+        print("truth-steward smoke failed:")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
     print()
-    print("authority smoke passed")
+    print(f"truth-steward smoke passed (v1 telemetry: {run_root})")
     return 0
+
+
+def _slugify_case(label: str) -> str:
+    out = []
+    for ch in label.lower():
+        if ch.isalnum():
+            out.append(ch)
+        elif out and out[-1] != "-":
+            out.append("-")
+    slug = "".join(out).strip("-")
+    return slug or "case"
+
+
+def _one_line(text: str) -> str:
+    if not text:
+        return ""
+    return " ".join(text.split())[:200]
 
 
 def _run_case(case: SmokeCase) -> tuple[bool, str]:
@@ -396,7 +406,7 @@ def _check_editor_html_structure_regressions() -> tuple[bool, str]:
     )
     if result.returncode != 0:
         return False, _format_result("editor HTML structure self-test failed", result)
-    if "authority editor self-test passed" not in result.stdout:
+    if "truth-steward editor self-test passed" not in result.stdout:
         return False, "editor self-test did not print success marker"
     return True, ""
 
@@ -422,7 +432,7 @@ def _check_trace_exporter_regressions() -> tuple[bool, str]:
     )
     if result.returncode != 0:
         return False, _format_result("trace exporter self-test failed", result)
-    if "authority trace self-test passed" not in result.stdout:
+    if "truth-steward trace self-test passed" not in result.stdout:
         return False, "trace exporter self-test did not print success marker"
     return True, ""
 
@@ -436,7 +446,7 @@ def _check_trace_review_regressions() -> tuple[bool, str]:
     )
     if result.returncode != 0:
         return False, _format_result("trace review self-test failed", result)
-    if "authority trace review self-test passed" not in result.stdout:
+    if "truth-steward trace review self-test passed" not in result.stdout:
         return False, "trace review self-test did not print success marker"
     return True, ""
 
@@ -450,7 +460,7 @@ def _check_memory_index_regressions() -> tuple[bool, str]:
     )
     if result.returncode != 0:
         return False, _format_result("memory index self-test failed", result)
-    if "authority memory index self-test passed" not in result.stdout:
+    if "truth-steward memory index self-test passed" not in result.stdout:
         return False, "memory index self-test did not print success marker"
     return True, ""
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Export a private Chew/Gum workflow trace from an authority proposal run.
+"""Export a private Chew/Gum workflow trace from a truth-steward proposal run.
 
-Reads one _Internal/authority-proposals/<date-slug>/ directory and writes:
+Reads one _Internal/truth-steward-proposals/<date-slug>/ directory and writes:
 
-  _Internal/authority-traces/<date-slug>/
+  _Internal/truth-steward-traces/<date-slug>/
     trace.json
     trace.md
     training-records.jsonl
@@ -35,8 +35,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_TRACE_ROOT = INTERNAL_ROOT / "authority-traces"
-SCHEMA_REF = "../../tools/authority/schemas/authority-workflow-trace.v0.json"
+DEFAULT_TRACE_ROOT = INTERNAL_ROOT / "truth-steward-traces"
+SCHEMA_REF = "../../tools/truth-steward/schemas/truth-steward-workflow-trace.v0.json"
 
 
 def main() -> int:
@@ -71,11 +71,11 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "proposal",
         nargs="?",
-        help="private authority proposal directory under _Internal/",
+        help="private truth-steward proposal directory under _Internal/",
     )
     parser.add_argument(
         "--output-root",
-        help="private trace root under _Internal/ (default: _Internal/authority-traces)",
+        help="private trace root under _Internal/ (default: _Internal/truth-steward-traces)",
     )
     parser.add_argument(
         "--self-test",
@@ -127,17 +127,17 @@ def _build_trace(proposal_dir: Path) -> dict:
 
     source = model_output.get("source") or {}
     summary = _summary(candidates, repairs)
-    trace_id = f"authority-trace:{proposal_dir.name}"
+    trace_id = f"truth-steward-trace:{proposal_dir.name}"
     return {
         "$schema": SCHEMA_REF,
-        "schema_version": "authority-workflow-trace.v0",
+        "schema_version": "truth-steward-workflow-trace.v0",
         "trace_id": trace_id,
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "proposal_dir": _rel(proposal_dir),
         "proposal_report": _rel(proposal_dir / "proposal-report.md"),
         "prompt_path": _rel(prompt_path) if prompt_path.exists() else "",
         "model_output_path": _rel(model_output_path),
-        "domain": "online_presence_authority",
+        "domain": "online_presence_truth_steward",
         "training_memory": _training_memory_metadata(),
         "narrative_metadata": _narrative_metadata(),
         "source": {
@@ -395,10 +395,10 @@ def _training_records(trace: dict) -> list[dict]:
         packet = packet_event.get("packet") if packet_event else {}
         records.append(
             {
-                "schema_version": "authority-training-record.v0",
+                "schema_version": "truth-steward-training-record.v0",
                 "record_id": f"{trace['trace_id']}:{event['event_id']}",
                 "trace_id": trace["trace_id"],
-                "task": "authority_packet_quality_label",
+                "task": "truth_steward_packet_quality_label",
                 "source": source,
                 "input": {
                     "packet": packet,
@@ -420,7 +420,7 @@ def _training_records(trace: dict) -> list[dict]:
     records.insert(
         0,
         {
-            "schema_version": "authority-training-record.v0",
+            "schema_version": "truth-steward-training-record.v0",
             "record_id": f"{trace['trace_id']}:workflow-case",
             "trace_id": trace["trace_id"],
             "task": "chew_gum_workflow_case",
@@ -470,7 +470,7 @@ def _write_outputs(output_dir: Path, trace: dict, records: list[dict]) -> None:
 def _render_trace_markdown(trace: dict, records: list[dict]) -> str:
     summary = trace["summary"]
     lines = [
-        "# Authority Workflow Trace",
+        "# Truth-Steward Workflow Trace",
         "",
         f"Generated: {trace['generated_at']}",
         f"Trace: `{trace['trace_id']}`",
@@ -545,12 +545,12 @@ def _cell(value: str) -> str:
 
 
 def _run_self_test() -> int:
-    proposal = INTERNAL_ROOT / "authority-smoke-traces" / "proposal-fixture"
-    output_root = INTERNAL_ROOT / "authority-smoke-traces" / "output"
+    proposal = INTERNAL_ROOT / "truth-steward-smoke-traces" / "proposal-fixture"
+    output_root = INTERNAL_ROOT / "truth-steward-smoke-traces" / "output"
     _reset_private_root(proposal)
     _reset_private_root(output_root)
     model_output = {
-        "schema_version": "authority-proposal-output.v0",
+        "schema_version": "truth-steward-proposal-output.v0",
         "generated_at": "2026-04-30T00:00:00",
         "source": {
             "path": "content/lab/toys/example/index.frag.html",
@@ -562,7 +562,7 @@ def _run_self_test() -> int:
         },
         "backend": "llama.cpp llama-server",
         "endpoint": "http://127.0.0.1:8080/v1/chat/completions",
-        "model": "coder-comments",
+        "model": "ChewDrill",
         "candidate_packets": [
             {
                 "packet_path": "_Internal/example/candidate-1.packet.json",
@@ -621,7 +621,7 @@ def _run_self_test() -> int:
         ],
     }
     (proposal / "model-output.json").write_text(_json(model_output))
-    (proposal / "prompt.json").write_text(_json({"schema_version": "authority-proposal-prompt.v0"}))
+    (proposal / "prompt.json").write_text(_json({"schema_version": "truth-steward-proposal-prompt.v0"}))
     trace = _build_trace(proposal)
     records = _training_records(trace)
     _write_outputs(output_root / proposal.name, trace, records)
@@ -654,7 +654,7 @@ def _run_self_test() -> int:
         if not (output_dir / name).exists():
             print(f"FAIL missing trace output {name}")
             return 1
-    print("authority trace self-test passed")
+    print("truth-steward trace self-test passed")
     return 0
 
 

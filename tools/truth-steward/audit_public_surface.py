@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Audit the already-public site surface for authority-boundary risks.
+"""Audit the already-public site surface for truth-steward-boundary risks.
 
 Read scope:
   - content/
@@ -7,8 +7,8 @@ Read scope:
   - site/sitemap.xml
 
 Write scope:
-  - _Internal/authority-audits/<YYYY-MM-DD>/audit.md
-  - _Internal/authority-audits/<YYYY-MM-DD>/audit.json
+  - _Internal/truth-steward-audits/<YYYY-MM-DD>/audit.md
+  - _Internal/truth-steward-audits/<YYYY-MM-DD>/audit.json
 
 The auditor reports blocking findings and warnings. It never edits public
 content, sitemap, llms.txt, or _swarmlab/.
@@ -38,7 +38,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse, urlunparse
 
-from validate_authority_draft import (
+from validate_truth_steward_draft import (
     DESCRIPTION_LABEL_PATTERNS,
     PRIVATE_PATH_PATTERNS,
     STATUS_RESIDUE_TOKENS,
@@ -53,7 +53,7 @@ CONTENT = REPO / "content"
 SITE = REPO / "site"
 LLMS = SITE / "llms.txt"
 SITEMAP = SITE / "sitemap.xml"
-REPORT_ROOT = REPO / "_Internal" / "authority-audits"
+REPORT_ROOT = REPO / "_Internal" / "truth-steward-audits"
 SITE_BASE = "https://shanecurry.com"
 SITE_HOST = "shanecurry.com"
 
@@ -823,7 +823,7 @@ def _write_reports(
     (report_dir / "audit.json").write_text(json.dumps(report, indent=2) + "\n")
 
     lines = [
-        "# Public Surface Authority Audit",
+        "# Public Surface Truth-Steward Audit",
         "",
         f"Generated: {generated_at}",
         "",

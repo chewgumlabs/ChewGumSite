@@ -29,7 +29,7 @@ published artifact by itself.
 
 ## Reusable Skills
 
-### Authority Proposal
+### Truth-Steward Proposal
 
 Use when a real public artifact may support a new page, enrichment, held packet,
 or rejection.
@@ -50,7 +50,7 @@ Outputs:
 Current command:
 
 ```sh
-make authority-propose SOURCE=content/path/to/page.frag.html
+make truth-steward-propose SOURCE=content/path/to/page.frag.html
 ```
 
 ### Source-Trail Enrichment
@@ -87,7 +87,7 @@ Use when the visible page windows are drifting into inconsistent labels.
 Current command:
 
 ```sh
-make authority-window-audit
+make truth-steward-window-audit
 ```
 
 Good outcomes:
@@ -152,7 +152,7 @@ Use before commit/push or after broad edits.
 Current command:
 
 ```sh
-make authority-audit
+make truth-steward-audit
 ```
 
 Checks include:
@@ -169,7 +169,7 @@ Use when a draft has truthful content but awkward prose.
 Current command:
 
 ```sh
-make authority-editor-pass DRAFT=_Internal/authority-drafts/YYYY-MM-DD-slug
+make truth-steward-editor-pass DRAFT=_Internal/truth-steward-drafts/YYYY-MM-DD-slug
 ```
 
 Guardrails:
@@ -236,14 +236,14 @@ Required checks:
 Current command:
 
 ```sh
-make authority-taxonomy
+make truth-steward-taxonomy
 ```
 
 Private outputs:
 
-- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.md`
-- `_Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.json`
-- `_Internal/authority-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl`
+- `_Internal/truth-steward-taxonomy/<YYYY-MM-DD>/taxonomy-report.md`
+- `_Internal/truth-steward-taxonomy/<YYYY-MM-DD>/taxonomy-report.json`
+- `_Internal/truth-steward-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl`
 
 ### Trace And Memory Capture
 
@@ -253,9 +253,9 @@ correction.
 Current commands:
 
 ```sh
-make authority-trace PROPOSAL=_Internal/authority-proposals/YYYY-MM-DD-slug
-make authority-trace-review TRACE=_Internal/authority-traces/YYYY-MM-DD-slug
-make authority-memory-index
+make truth-steward-trace PROPOSAL=_Internal/truth-steward-proposals/YYYY-MM-DD-slug
+make truth-steward-trace-review TRACE=_Internal/truth-steward-traces/YYYY-MM-DD-slug
+make truth-steward-memory-index
 ```
 
 Good memory records include:

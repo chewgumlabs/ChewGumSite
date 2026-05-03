@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Review and label a private Chew/Gum authority workflow trace.
+"""Review and label a private Chew/Gum truth-steward workflow trace.
 
-Reads one _Internal/authority-traces/<date-slug>/ directory and writes:
+Reads one _Internal/truth-steward-traces/<date-slug>/ directory and writes:
 
-  _Internal/authority-trace-reviews/<date-slug>/
+  _Internal/truth-steward-trace-reviews/<date-slug>/
     label-template.json        when no labels are supplied
     labels.applied.json        when labels are supplied
     review-summary.json
@@ -38,8 +38,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "authority-trace-reviews"
-LABEL_SCHEMA_REF = "../../tools/authority/schemas/authority-trace-labels.v0.json"
+DEFAULT_REVIEW_ROOT = INTERNAL_ROOT / "truth-steward-trace-reviews"
+LABEL_SCHEMA_REF = "../../tools/truth-steward/schemas/truth-steward-trace-labels.v0.json"
 
 REQUIRED_APPROVAL_FIELDS = (
     "truthfulness",
@@ -107,15 +107,15 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "trace",
         nargs="?",
-        help="private authority trace directory under _Internal/",
+        help="private truth-steward trace directory under _Internal/",
     )
     parser.add_argument(
         "--labels",
-        help="private authority trace labels JSON under _Internal/",
+        help="private truth-steward trace labels JSON under _Internal/",
     )
     parser.add_argument(
         "--review-root",
-        help="private review root under _Internal/ (default: _Internal/authority-trace-reviews)",
+        help="private review root under _Internal/ (default: _Internal/truth-steward-trace-reviews)",
     )
     parser.add_argument(
         "--self-test",
@@ -191,7 +191,7 @@ def _read_trace_inputs(trace_dir: Path) -> tuple[dict, list[dict]]:
 def _label_template(trace: dict, records: list[dict]) -> dict:
     labels = {
         "$schema": LABEL_SCHEMA_REF,
-        "schema_version": "authority-trace-labels.v0",
+        "schema_version": "truth-steward-trace-labels.v0",
         "trace_id": trace.get("trace_id") or "",
         "reviewed_at": "",
         "reviewer": "",
@@ -223,8 +223,8 @@ def _review_records(
     errors: list[str] = []
     warnings: list[str] = []
     trace_id = trace.get("trace_id") or ""
-    if labels.get("schema_version") != "authority-trace-labels.v0":
-        errors.append("labels.schema_version must be authority-trace-labels.v0")
+    if labels.get("schema_version") != "truth-steward-trace-labels.v0":
+        errors.append("labels.schema_version must be truth-steward-trace-labels.v0")
     if labels.get("trace_id") != trace_id:
         errors.append("labels.trace_id does not match trace.trace_id")
 
@@ -285,7 +285,7 @@ def _review_records(
         }
 
     return {
-        "schema_version": "authority-trace-review.v0",
+        "schema_version": "truth-steward-trace-review.v0",
         "trace_id": trace_id,
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "labels_supplied": labels_supplied,
@@ -389,7 +389,7 @@ def _render_review_markdown(review: dict) -> str:
     summary = review["summary"]
     readiness = summary["training_readiness"]
     lines = [
-        "# Authority Trace Review",
+        "# Truth-Steward Trace Review",
         "",
         f"Generated: {review['generated_at']}",
         f"Trace: `{review['trace_id']}`",
@@ -433,7 +433,7 @@ def _render_review_markdown(review: dict) -> str:
 
 
 def _run_self_test() -> int:
-    root = INTERNAL_ROOT / "authority-smoke-trace-review"
+    root = INTERNAL_ROOT / "truth-steward-smoke-trace-review"
     trace_dir = root / "trace"
     labels_path = root / "labels.json"
     invalid_labels_path = root / "invalid-labels.json"
@@ -442,8 +442,8 @@ def _run_self_test() -> int:
     trace_dir.mkdir(parents=True, exist_ok=True)
 
     trace = {
-        "schema_version": "authority-workflow-trace.v0",
-        "trace_id": "authority-trace:review-fixture",
+        "schema_version": "truth-steward-workflow-trace.v0",
+        "trace_id": "truth-steward-trace:review-fixture",
         "source": {
             "path": "content/lab/toys/example/index.frag.html",
             "public_path": "/lab/toys/example/",
@@ -453,18 +453,18 @@ def _run_self_test() -> int:
     }
     records = [
         {
-            "schema_version": "authority-training-record.v0",
-            "record_id": "authority-trace:review-fixture:workflow-case",
+            "schema_version": "truth-steward-training-record.v0",
+            "record_id": "truth-steward-trace:review-fixture:workflow-case",
             "trace_id": trace["trace_id"],
             "task": "chew_gum_workflow_case",
             "gum_label": {"outcome": "trace_captured_needs_human_labels"},
             "human_label": {"status": "unreviewed", "use_for_training": False},
         },
         {
-            "schema_version": "authority-training-record.v0",
-            "record_id": "authority-trace:review-fixture:candidate-01-gum_bind",
+            "schema_version": "truth-steward-training-record.v0",
+            "record_id": "truth-steward-trace:review-fixture:candidate-01-gum_bind",
             "trace_id": trace["trace_id"],
-            "task": "authority_packet_quality_label",
+            "task": "truth_steward_packet_quality_label",
             "gum_label": {"outcome": "blocked_by_gum"},
             "human_label": {"status": "unreviewed", "use_for_training": False},
         },
@@ -494,7 +494,7 @@ def _run_self_test() -> int:
             "public_story_decision": "none",
         }
     )
-    labels["records"]["authority-trace:review-fixture:workflow-case"].update(
+    labels["records"]["truth-steward-trace:review-fixture:workflow-case"].update(
         {
             "status": "approved_for_training",
             "use_for_training": True,
@@ -506,7 +506,7 @@ def _run_self_test() -> int:
             "notes": "Smoke workflow case.",
         }
     )
-    labels["records"]["authority-trace:review-fixture:candidate-01-gum_bind"].update(
+    labels["records"]["truth-steward-trace:review-fixture:candidate-01-gum_bind"].update(
         {
             "status": "approved_for_training",
             "use_for_training": True,
@@ -534,7 +534,7 @@ def _run_self_test() -> int:
         return 1
 
     invalid = json.loads(json.dumps(labels))
-    invalid["records"]["authority-trace:review-fixture:workflow-case"]["truthfulness"] = "uncertain"
+    invalid["records"]["truth-steward-trace:review-fixture:workflow-case"]["truthfulness"] = "uncertain"
     invalid_labels_path.write_text(_json(invalid))
     invalid_review = _review_records(trace_read, records_read, invalid, labels_supplied=True)
     if not invalid_review["errors"]:
@@ -544,7 +544,7 @@ def _run_self_test() -> int:
         print("FAIL invalid labels became trainable")
         return 1
 
-    print("authority trace review self-test passed")
+    print("truth-steward trace review self-test passed")
     return 0
 
 

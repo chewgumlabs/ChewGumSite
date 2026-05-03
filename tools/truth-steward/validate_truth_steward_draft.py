@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""validate_authority_draft.py — public-safety validator for staged authority drafts.
+"""validate_truth_steward_draft.py — public-safety validator for staged truth-steward drafts.
 
-Reads a draft directory under _Internal/authority-drafts/<YYYY-MM-DD>-<slug>/
+Reads a draft directory under _Internal/truth-steward-drafts/<YYYY-MM-DD>-<slug>/
 and writes validation.md + validation.json. Returns nonzero on blocking
 failures so this can gate manual promotion.
 
@@ -123,7 +123,7 @@ ADDITIONAL_NON_PUBLIC_NETWORKS = (
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("usage: validate_authority_draft.py <draft-dir>", file=sys.stderr)
+        print("usage: validate_truth_steward_draft.py <draft-dir>", file=sys.stderr)
         return 2
     draft = Path(sys.argv[1]).resolve()
     if not draft.is_dir():

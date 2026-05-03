@@ -2,7 +2,7 @@
   "$schema": "../schemas/window-taxonomy.v0.json",
   "schema_version": "window-taxonomy.v0",
   "updated": "2026-05-01",
-  "description": "Tracked public-site window taxonomy. This policy defines canonical window titles, page-role expectations, and advisory rename aliases for authority tooling.",
+  "description": "Tracked public-site window taxonomy. This policy defines canonical window titles, page-role expectations, and advisory rename aliases for truth-steward tooling.",
   "global_titles": [
     "Metadata",
     "Main Claim",

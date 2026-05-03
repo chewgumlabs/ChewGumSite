@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shanecurry.com/schemas/authority-memory-index.v0.json",
-  "title": "Authority Memory Index v0",
+  "$id": "https://shanecurry.com/schemas/truth-steward-memory-index.v0.json",
+  "title": "Truth-Steward Memory Index v0",
   "type": "object",
   "required": [
     "schema_version",
@@ -12,7 +12,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "authority-memory-index.v0"
+      "const": "truth-steward-memory-index.v0"
     },
     "generated_at": {
       "type": "string"

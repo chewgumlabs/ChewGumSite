@@ -2,7 +2,7 @@
   "$schema": "../schemas/pass-evidence-policy.v0.json",
   "schema_version": "pass-evidence-policy.v0",
   "updated": "2026-04-30",
-  "description": "Tracked authority evidence policy. These branches are Truth-state for proposer passes; the Python enforces this file instead of owning the identity graph.",
+  "description": "Tracked truth-steward evidence policy. These branches are Truth-state for proposer passes; the Python enforces this file instead of owning the identity graph.",
   "policies": {
     "identity_resolution": {
       "description": "Evidence boundaries for identity-resolution sweeps across any source page.",

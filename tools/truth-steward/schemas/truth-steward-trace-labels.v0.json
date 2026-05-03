@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shanecurry.com/schemas/authority-trace-labels.v0.json",
-  "title": "Authority Trace Labels v0",
+  "$id": "https://shanecurry.com/schemas/truth-steward-trace-labels.v0.json",
+  "title": "Truth-Steward Trace Labels v0",
   "type": "object",
   "required": [
     "$schema",
@@ -16,7 +16,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "authority-trace-labels.v0"
+      "const": "truth-steward-trace-labels.v0"
     },
     "trace_id": {
       "type": "string",

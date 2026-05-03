@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Index private authority drafts into the private registry.
+"""Index private truth-steward drafts into the private registry.
 
-Reads _Internal/authority-drafts/*/packet.json, re-runs validation for
+Reads _Internal/truth-steward-drafts/*/packet.json, re-runs validation for
 each indexed draft, and records the fresh validation reports.
 Writes only:
 
-  _Internal/authority-registry/registry.json
-  _Internal/authority-registry/registry.md
+  _Internal/truth-steward-registry/registry.json
+  _Internal/truth-steward-registry/registry.md
 
 The registry is a queue and review aid. No entry implies automatic
 publication, and this command never edits content/, sitemap, llms.txt,
@@ -35,7 +35,7 @@ import subprocess
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from validate_authority_draft import (
+from validate_truth_steward_draft import (
     PRIVATE_PATH_PATTERNS,
     URL_TRAILING_PUNCTUATION,
     _is_public_url,
@@ -45,10 +45,10 @@ from validate_authority_draft import (
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DEFAULT_DRAFTS_ROOT = INTERNAL_ROOT / "authority-drafts"
-DEFAULT_REGISTRY_ROOT = INTERNAL_ROOT / "authority-registry"
-VALIDATOR = Path(__file__).with_name("validate_authority_draft.py")
-SCHEMA_REF = "../../tools/authority/schemas/authority-draft-registry.v0.json"
+DEFAULT_DRAFTS_ROOT = INTERNAL_ROOT / "truth-steward-drafts"
+DEFAULT_REGISTRY_ROOT = INTERNAL_ROOT / "truth-steward-registry"
+VALIDATOR = Path(__file__).with_name("validate_truth_steward_draft.py")
+SCHEMA_REF = "../../tools/truth-steward/schemas/truth-steward-draft-registry.v0.json"
 
 SOURCE_KINDS = {
     "public_page",
@@ -131,11 +131,11 @@ def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--draft-root",
-        help="private draft root under _Internal/ (default: _Internal/authority-drafts)",
+        help="private draft root under _Internal/ (default: _Internal/truth-steward-drafts)",
     )
     parser.add_argument(
         "--registry-root",
-        help="private registry output root under _Internal/ (default: _Internal/authority-registry)",
+        help="private registry output root under _Internal/ (default: _Internal/truth-steward-registry)",
     )
     parser.add_argument(
         "--include-test-drafts",
@@ -281,7 +281,7 @@ def _registry_document(
     }
     return {
         "$schema": SCHEMA_REF,
-        "schema_version": "authority-draft-registry.v0",
+        "schema_version": "truth-steward-draft-registry.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "drafts_root": _rel(drafts_root),
         "summary": summary,
@@ -293,7 +293,7 @@ def _render_markdown(registry: dict) -> str:
     summary = registry["summary"]
     entries = registry["entries"]
     lines = [
-        "# Authority Draft Registry",
+        "# Truth-Steward Draft Registry",
         "",
         f"Generated: {registry['generated_at']}",
         "",
@@ -405,7 +405,7 @@ def _resolve_private_root(value: str | None, default: Path) -> Path:
 
 
 def _is_test_draft(draft_dir: Path, packet: dict) -> bool:
-    if "authority-smoke-drafts" in draft_dir.parts:
+    if "truth-steward-smoke-drafts" in draft_dir.parts:
         return True
     if packet.get("registry_exclude") is True or packet.get("test_fixture") is True:
         return True

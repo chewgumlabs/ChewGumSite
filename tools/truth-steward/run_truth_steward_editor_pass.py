@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Run a private llama.cpp/Qwen editor pass over an authority draft.
+"""Run a private llama.cpp/Qwen editor pass over a truth-steward draft.
 
-The editor pass is intentionally private. It reads one staged authority
-draft under _Internal/authority-drafts/ and writes only:
+The editor pass is intentionally private. It reads one staged truth-steward
+draft under _Internal/truth-steward-drafts/ and writes only:
 
-  _Internal/authority-editor-passes/<YYYY-MM-DD>/<draft-id>/
+  _Internal/truth-steward-editor-passes/<YYYY-MM-DD>/<draft-id>/
     editor-input.json
     editor-output.json
     editor-report.md
@@ -41,22 +41,23 @@ from pathlib import Path
 from urllib import error as url_error
 from urllib import request as url_request
 
-from validate_authority_draft import (
+from validate_truth_steward_draft import (
     PRIVATE_PATH_PATTERNS,
     SCAFFOLD_RESIDUE_PATTERNS,
     URL_PATTERN,
     URL_TRAILING_PUNCTUATION,
 )
+import v1_writer
 
 
 REPO = Path(__file__).resolve().parents[2]
 INTERNAL_ROOT = REPO / "_Internal"
-DRAFTS_ROOT = INTERNAL_ROOT / "authority-drafts"
-OUTPUT_ROOT = INTERNAL_ROOT / "authority-editor-passes"
-VALIDATOR = Path(__file__).with_name("validate_authority_draft.py")
+DRAFTS_ROOT = INTERNAL_ROOT / "truth-steward-drafts"
+OUTPUT_ROOT = INTERNAL_ROOT / "truth-steward-editor-passes"
+VALIDATOR = Path(__file__).with_name("validate_truth_steward_draft.py")
 
 DEFAULT_ENDPOINT = "http://127.0.0.1:8080/v1/chat/completions"
-DEFAULT_MODEL = "coder-comments"
+DEFAULT_MODEL = "ChewDrill"
 
 OUTPUT_FILES = (
     "editor-input.json",
@@ -174,14 +175,25 @@ def main() -> int:
     )
     (pass_dir / "editor-input.json").write_text(_json(editor_input))
 
-    raw_response = _call_llama_server(
-        endpoint=args.endpoint,
-        model=args.model,
-        editor_input=editor_input,
-        timeout=args.timeout,
-        max_tokens=args.max_tokens,
-        temperature=args.temperature,
-    )
+    raw_response = ""
+    model_error = ""
+    timed_out = False
+    started_at = dt.datetime.now()
+    try:
+        raw_response = _call_llama_server(
+            endpoint=args.endpoint,
+            model=args.model,
+            editor_input=editor_input,
+            timeout=args.timeout,
+            max_tokens=args.max_tokens,
+            temperature=args.temperature,
+        )
+    except Exception as exc:  # noqa: BLE001 - record server failures in summary, do not exit silently.
+        model_error = str(exc)
+        if "timed out" in str(exc).lower():
+            timed_out = True
+    ended_at = dt.datetime.now()
+
     parsed, parse_error = _parse_model_json(raw_response)
     rewritten = ""
     if isinstance(parsed, dict):
@@ -201,13 +213,14 @@ def main() -> int:
     decision = _decision_for(checks, validator_result, parsed)
 
     editor_output = {
-        "schema_version": "authority-editor-pass-output.v0",
+        "schema_version": "truth-steward-editor-pass-output.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "draft_id": draft.name,
         "fragment_file": payload["fragment_file"],
         "backend": "llama.cpp llama-server",
         "endpoint": args.endpoint,
         "model": args.model,
+        "model_error": model_error,
         "parsed_model_output": parsed,
         "model_parse_error": parse_error,
         "raw_model_response": raw_response,
@@ -222,12 +235,70 @@ def main() -> int:
         _render_report(editor_input, editor_output) + "\n"
     )
 
+    decision_state = decision.get("state", "rejected")
+    blocking = decision.get("blocking", []) or []
+    flags = decision.get("flags", []) or []
+    validator_ran = isinstance(validator_result, dict) and "ok" in validator_result
+    validator_ok_value = validator_result.get("ok") if validator_ran else None
+    validation_ok: bool | None
+    if not validator_ran or not isinstance(validator_ok_value, bool):
+        validation_ok = None
+    else:
+        validation_ok = validator_ok_value
+
+    if model_error:
+        ok = False
+    elif decision_state == "rejected":
+        ok = False
+    elif decision_state == "accepted":
+        ok = True
+    else:
+        ok = False
+
+    duration_ms = int((ended_at - started_at).total_seconds() * 1000)
+    prompt_bytes = (pass_dir / "editor-input.json").stat().st_size
+    response_bytes = (pass_dir / "editor-output.json").stat().st_size
+    output_chars = len(rewritten)
+
+    sources = [
+        {"path": str(draft), "schema": "truth-steward-draft.v0"},
+        {"path": str(pass_dir / "editor-input.json"), "schema": "truth-steward-editor-pass-input.v0"},
+        {"path": str(pass_dir / "editor-output.json"), "schema": "truth-steward-editor-pass-output.v0"},
+        {"path": str(VALIDATOR), "schema": "truth-steward-draft-validator"},
+    ]
+
+    v1_writer.write_truth_steward_summary(
+        run_dir=pass_dir,
+        stage="truth-steward-editor",
+        ok=ok,
+        model_alias=args.model,
+        url=args.endpoint,
+        started_at=started_at.isoformat(timespec="seconds"),
+        ended_at=ended_at.isoformat(timespec="seconds"),
+        duration_ms=duration_ms,
+        prompt_bytes=prompt_bytes,
+        response_bytes=response_bytes,
+        output_chars=output_chars,
+        sources=sources,
+        validation_ok=validation_ok,
+        validation_errors=[str(b) for b in blocking],
+        validation_warnings=[str(f) for f in flags],
+        error=model_error,
+        parse_error=str(parse_error) if parse_error else "",
+        timed_out=timed_out,
+        truth_steward_training_state=decision_state,
+        truth_steward_training_reason=(blocking[0] if blocking else (flags[0] if flags else "")),
+    )
+
     print(f"editor_pass: {pass_dir}")
-    print(f"decision: {decision['state']}")
-    print(f"blocking: {len(decision['blocking'])}")
-    print(f"flags: {len(decision['flags'])}")
+    print(f"decision: {decision_state}")
+    print(f"blocking: {len(blocking)}")
+    print(f"flags: {len(flags)}")
     print(f"see: {pass_dir / 'editor-report.md'}")
-    if args.strict and decision["state"] == "rejected":
+    print(f"summary: {pass_dir / 'summary.json'}")
+    if model_error:
+        return 1
+    if args.strict and decision_state == "rejected":
         return 1
     return 0
 
@@ -237,7 +308,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "draft",
         nargs="?",
-        help="draft directory under _Internal/authority-drafts/",
+        help="draft directory under _Internal/truth-steward-drafts/",
     )
     parser.add_argument(
         "--endpoint",
@@ -349,7 +420,7 @@ def _editor_input_document(
     source_trail = payload["source_trail"]
     validation = payload["validation"]
     return {
-        "schema_version": "authority-editor-pass-input.v0",
+        "schema_version": "truth-steward-editor-pass-input.v0",
         "generated_at": dt.datetime.now().isoformat(timespec="seconds"),
         "draft_id": draft.name,
         "fragment_file": payload["fragment_file"],
@@ -382,7 +453,7 @@ def _call_llama_server(
         {
             "role": "system",
             "content": (
-                "You are a cautious copy editor for private authority drafts. "
+                "You are a cautious copy editor for private truth-steward drafts. "
                 "You may improve grammar, sentence flow, and human tone only. "
                 "Do not add facts, links, numbers, code names, source claims, or certainty. "
                 "Preserve public/private boundary language. "
@@ -425,8 +496,7 @@ def _call_llama_server(
         with url_request.urlopen(req, timeout=timeout) as response:
             raw = response.read().decode("utf-8", errors="replace")
     except url_error.URLError as exc:
-        print(f"error: llama.cpp endpoint failed: {exc}", file=sys.stderr)
-        sys.exit(2)
+        raise RuntimeError(f"llama.cpp endpoint failed: {exc}") from exc
     try:
         parsed = json.loads(raw)
         return parsed["choices"][0]["message"]["content"]
@@ -803,7 +873,7 @@ def _unsafe_sentence_notes(model_output: dict | None) -> int:
 
 
 def _validate_rewritten_fragment(draft: Path, payload: dict, rewritten: str) -> dict:
-    with tempfile.TemporaryDirectory(prefix="authority-editor-validate-") as tmp_name:
+    with tempfile.TemporaryDirectory(prefix="truth-steward-editor-validate-") as tmp_name:
         tmp = Path(tmp_name) / draft.name
         tmp.mkdir(parents=True)
         for name in ("packet.json", "source-trail.json"):
@@ -889,7 +959,7 @@ def _render_report(editor_input: dict, editor_output: dict) -> str:
     checks = editor_output["deterministic_checks"]
     validator = editor_output["validator_result"]
     lines = [
-        "# Authority Editor Pass",
+        "# Truth-Steward Editor Pass",
         "",
         f"Generated: {editor_output['generated_at']}",
         f"Draft: {editor_output['draft_id']}",
@@ -1020,12 +1090,12 @@ def _run_self_test() -> int:
             failures.append(f"{name}: unexpected structure block {blocking!r}")
 
     if failures:
-        print("authority editor self-test failed:")
+        print("truth-steward editor self-test failed:")
         for failure in failures:
             print(f"- {failure}")
         return 1
 
-    print("authority editor self-test passed")
+    print("truth-steward editor self-test passed")
     return 0
 
 

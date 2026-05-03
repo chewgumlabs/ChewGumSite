@@ -4,12 +4,12 @@
 Read scope:
   - content/**/*.toml
   - sibling .frag.html / .jsonld / extras when present
-  - tools/authority/policies/site-taxonomy.v0.json
+  - tools/truth-steward/policies/site-taxonomy.v0.json
 
 Write scope:
-  - _Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.md
-  - _Internal/authority-taxonomy/<YYYY-MM-DD>/taxonomy-report.json
-  - _Internal/authority-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl
+  - _Internal/truth-steward-taxonomy/<YYYY-MM-DD>/taxonomy-report.md
+  - _Internal/truth-steward-taxonomy/<YYYY-MM-DD>/taxonomy-report.json
+  - _Internal/truth-steward-taxonomy/<YYYY-MM-DD>/memory-candidates.jsonl
 
 This pass is advisory. It does not move pages, edit public content, or publish.
 """
@@ -38,8 +38,8 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 CONTENT = REPO / "content"
-POLICY = REPO / "tools" / "authority" / "policies" / "site-taxonomy.v0.json"
-REPORT_ROOT = REPO / "_Internal" / "authority-taxonomy"
+POLICY = REPO / "tools" / "truth-steward" / "policies" / "site-taxonomy.v0.json"
+REPORT_ROOT = REPO / "_Internal" / "truth-steward-taxonomy"
 SITE_BASE = "https://shanecurry.com"
 
 
@@ -236,7 +236,7 @@ def _required_edits(page: PageInventory, correction: dict) -> list[str]:
         f"Update indexes so {page.title} appears under {correction['target_category']} and leaves {page.current_category}.",
         "Update sitemap.xml and llms.txt according to promotion choice.",
         f"Create old-URL handling for {page.public_path}: {correction['old_url_strategy']}.",
-        "Run make build, make authority-audit, and make authority-window-audit.",
+        "Run make build, make truth-steward-audit, and make truth-steward-window-audit.",
     ]
 
 

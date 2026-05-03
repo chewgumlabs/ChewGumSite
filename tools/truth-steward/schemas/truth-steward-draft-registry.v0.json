@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://shanecurry.com/schemas/authority-draft-registry.v0.json",
-  "title": "Authority Draft Registry v0",
+  "$id": "https://shanecurry.com/schemas/truth-steward-draft-registry.v0.json",
+  "title": "Truth-Steward Draft Registry v0",
   "type": "object",
   "required": [
     "schema_version",
@@ -15,7 +15,7 @@
       "type": "string"
     },
     "schema_version": {
-      "const": "authority-draft-registry.v0"
+      "const": "truth-steward-draft-registry.v0"
     },
     "generated_at": {
       "type": "string"
