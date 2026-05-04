@@ -48,6 +48,7 @@ from validate_truth_steward_draft import (
     URL_TRAILING_PUNCTUATION,
     _is_public_url,
 )
+import _chew_call
 import v1_writer
 
 
@@ -246,7 +247,6 @@ PASS_INTENTS = {
 }
 SOURCE_TEXT_LIMIT = 8000
 PROMPT_TEXT_LIMIT = 3600
-BIBLE_TEXT_LIMIT = 5200
 GENERIC_PHRASES = (
     "potential applications",
     "deeper understanding",
@@ -316,6 +316,7 @@ def main() -> int:
             timeout=args.timeout,
             max_tokens=args.max_tokens,
             temperature=args.temperature,
+            chew_output_dir=_chew_subprocess_dir(proposal_dir, "proposer"),
         )
         parsed_output, parse_error = _parse_model_json(_message_content(raw_response))
     except Exception as exc:  # noqa: BLE001 - report must capture local server failures.
@@ -768,7 +769,7 @@ def _allowed_evidence_urls(source_context: dict, registry_context: list[str]) ->
     if pass_policy:
         urls.extend(_policy_seed_urls(pass_policy))
         return _policy_evidence_urls(_dedupe_url_variants(urls), source_context, pass_policy)
-    urls.extend(_site_index_urls())
+    urls.extend(_site_index_urls_for_source(source_context))
     for item in registry_context:
         urls.extend(_public_urls_in_text(item))
         urls.extend(_relative_public_urls_in_text(item))
@@ -865,7 +866,18 @@ def _adjacent_source_urls(source_context: dict) -> list[str]:
     return urls
 
 
+_GENERIC_INDEX_PATHS = frozenset({
+    "/", "/blog/", "/lab/", "/lab/toys/", "/lab/tools/",
+    "/music/", "/music/discography/", "/music/live-performances/",
+    "/music/streaming-links/", "/music/uses-in-media/",
+    "/animation/", "/about/", "/glossary/", "/links/",
+})
+
+
 def _site_index_urls() -> list[str]:
+    """Per-source-agnostic dump of the full sitemap. Kept for callers that
+    legitimately want the full set; producer paths SHOULD prefer
+    `_site_index_urls_for_source()` to avoid topic-drift attractors."""
     urls = []
     for rel in ("site/sitemap.xml", "site/llms.txt"):
         path = REPO / rel
@@ -874,6 +886,59 @@ def _site_index_urls() -> list[str]:
             urls.extend(_public_urls_in_text(text))
             urls.extend(_relative_public_urls_in_text(text))
     return urls
+
+
+def _url_path(url: str) -> str:
+    try:
+        from urllib.parse import urlparse
+        return urlparse(url).path or "/"
+    except Exception:
+        return ""
+
+
+def _source_parent_paths(source_context: dict) -> set[str]:
+    """Return the source's own URL path + each parent index path."""
+    paths: set[str] = set()
+    for key in ("canonical_url", "source_ref"):
+        value = source_context.get(key)
+        if not isinstance(value, str):
+            continue
+        path = _url_path(value)
+        if not path:
+            continue
+        paths.add(path)
+        # Walk up to root
+        parts = [p for p in path.strip("/").split("/") if p]
+        for i in range(len(parts)):
+            paths.add("/" + "/".join(parts[:i]) + ("/" if i > 0 else ""))
+        paths.add("/")
+    return paths
+
+
+def _site_index_urls_for_source(source_context: dict) -> list[str]:
+    """Return a per-source-scoped subset of the site sitemap.
+
+    The original `_site_index_urls()` dumped the full sitemap, which created
+    a topic-drift attractor: qwen-2.5 would preferentially pick artifact URLs
+    from the dump even when the source page didn't mention them (the
+    'Falling Hall' attractor surfaced in routing-baseline-cycle3-2026-05-04).
+
+    Filter rule: include generic site indices + the source's own URL + the
+    source's parent directory URLs. Everything else (specific artifact URLs)
+    is excluded. URLs the source's own text mentions are added separately by
+    the caller via `_public_urls_in_text()` on the source's description / blurb,
+    so on-topic specific URLs still reach the prompt.
+    """
+    raw = _site_index_urls()
+    if not raw:
+        return []
+    source_paths = _source_parent_paths(source_context)
+    filtered: list[str] = []
+    for url in raw:
+        path = _url_path(url)
+        if path in _GENERIC_INDEX_PATHS or path in source_paths:
+            filtered.append(url)
+    return filtered
 
 
 def _prompt_document(
@@ -1029,6 +1094,12 @@ def _evidence_policy_prompt_summary(source_context: dict) -> dict:
     }
 
 
+def _chew_subprocess_dir(proposal_dir: Path, label: str) -> Path:
+    target = proposal_dir / "chew-leg" / label
+    target.mkdir(parents=True, exist_ok=True)
+    return target
+
+
 def _call_llama_server(
     endpoint: str,
     model: str,
@@ -1036,33 +1107,32 @@ def _call_llama_server(
     timeout: int,
     max_tokens: int,
     temperature: float,
+    chew_output_dir: Path | None = None,
 ) -> dict:
-    payload = {
-        "model": model,
-        "messages": prompt_doc["messages"],
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-    }
-    req = url_request.Request(
-        endpoint,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"},
-        method="POST",
+    """Invoke the LLM through chew via the shared _chew_call transport.
+
+    Returns a dict with the same {"choices":[{"message":{"content":...}}]}
+    shape Channel 1 callers expect, so the existing _message_content +
+    _parse_model_json pipeline is unchanged.
+    """
+    if chew_output_dir is None:
+        raise RuntimeError("_call_llama_server: chew_output_dir is required for the chew-routed call")
+    content = _chew_call.call_chew(
+        verb="propose_truth_steward_draft",
+        prompt_messages=prompt_doc["messages"],
+        model_alias=model,
+        output_dir=chew_output_dir,
+        endpoint=endpoint,
+        output_filename="model-output.json",
+        timeout=timeout,
     )
-    try:
-        with url_request.urlopen(req, timeout=timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except url_error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"llama server HTTP {exc.code}: {detail}") from exc
-    except url_error.URLError as exc:
-        raise RuntimeError(f"llama server unavailable: {exc.reason}") from exc
+    return {"choices": [{"message": {"role": "assistant", "content": content}}]}
 
 
 def _qwen_bible() -> str:
     if not QWEN_BIBLE.exists():
         return ""
-    return QWEN_BIBLE.read_text(errors="replace")[:BIBLE_TEXT_LIMIT]
+    return QWEN_BIBLE.read_text(errors="replace")
 
 
 def _message_content(raw_response: dict) -> str:
@@ -1311,6 +1381,7 @@ def _repair_blocked_candidates(
                 timeout=args.timeout,
                 max_tokens=args.max_tokens,
                 temperature=args.temperature,
+                chew_output_dir=_chew_subprocess_dir(proposal_dir, f"repair-{index:02d}"),
             )
             parsed_output, parse_error = _parse_model_json(_message_content(raw_response))
         except Exception as exc:  # noqa: BLE001 - private report captures failures.
