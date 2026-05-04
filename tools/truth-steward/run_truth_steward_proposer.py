@@ -488,7 +488,12 @@ def _parse_args() -> argparse.Namespace:
         default=DEFAULT_MODEL,
         help=f"llama.cpp model alias served by llama-server (default: {DEFAULT_MODEL})",
     )
-    parser.add_argument("--timeout", type=int, default=120)
+    parser.add_argument(
+        "--timeout",
+        type=int,
+        default=600,
+        help="seconds before the chew subprocess is killed; set high (default 600 = 10 min) since model variance can spike past 120s; pass --timeout 0 to disable entirely",
+    )
     parser.add_argument("--url-timeout", type=int, default=8)
     parser.add_argument("--max-tokens", type=int, default=1536)
     parser.add_argument("--temperature", type=float, default=0.1)
