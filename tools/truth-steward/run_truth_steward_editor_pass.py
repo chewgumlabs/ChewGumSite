@@ -47,6 +47,7 @@ from validate_truth_steward_draft import (
     URL_PATTERN,
     URL_TRAILING_PUNCTUATION,
 )
+import _chew_call
 import v1_writer
 
 
@@ -179,6 +180,8 @@ def main() -> int:
     model_error = ""
     timed_out = False
     started_at = dt.datetime.now()
+    chew_dir = pass_dir / "chew-leg"
+    chew_dir.mkdir(parents=True, exist_ok=True)
     try:
         raw_response = _call_llama_server(
             endpoint=args.endpoint,
@@ -187,6 +190,7 @@ def main() -> int:
             timeout=args.timeout,
             max_tokens=args.max_tokens,
             temperature=args.temperature,
+            chew_output_dir=chew_dir,
         )
     except Exception as exc:  # noqa: BLE001 - record server failures in summary, do not exit silently.
         model_error = str(exc)
@@ -448,7 +452,16 @@ def _call_llama_server(
     timeout: int,
     max_tokens: int,
     temperature: float,
+    chew_output_dir: Path | None = None,
 ) -> str:
+    """Invoke the editor LLM call through chew via the shared _chew_call.
+
+    Builds the messages array here (preserves the editor system prompt
+    verbatim — doctrine) and returns the model's text content. The rest of
+    the editor pass parses + validates that string unchanged.
+    """
+    if chew_output_dir is None:
+        raise RuntimeError("_call_llama_server: chew_output_dir is required for the chew-routed call")
     messages = [
         {
             "role": "system",
@@ -478,30 +491,15 @@ def _call_llama_server(
             ),
         },
     ]
-    body = {
-        "model": model,
-        "messages": messages,
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "stream": False,
-    }
-    data = json.dumps(body).encode("utf-8")
-    req = url_request.Request(
-        endpoint,
-        data=data,
-        headers={"Content-Type": "application/json"},
-        method="POST",
+    return _chew_call.call_chew(
+        verb="edit_truth_steward_draft",
+        prompt_messages=messages,
+        model_alias=model,
+        output_dir=chew_output_dir,
+        endpoint=endpoint,
+        output_filename="editor-output.json",
+        timeout=timeout,
     )
-    try:
-        with url_request.urlopen(req, timeout=timeout) as response:
-            raw = response.read().decode("utf-8", errors="replace")
-    except url_error.URLError as exc:
-        raise RuntimeError(f"llama.cpp endpoint failed: {exc}") from exc
-    try:
-        parsed = json.loads(raw)
-        return parsed["choices"][0]["message"]["content"]
-    except Exception:
-        return raw
 
 
 def _parse_model_json(raw: str) -> tuple[dict | None, str | None]:
