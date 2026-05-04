@@ -41,6 +41,8 @@ if _SCHEMA.get("properties", {}).get("schema_version", {}).get("const") != SCHEM
 
 ALLOWED_TOP_LEVEL: frozenset[str] = frozenset(_SCHEMA["properties"].keys())
 VALID_VARIANTS: frozenset[str] = frozenset(_SCHEMA["properties"]["variant"]["enum"])
+VALID_STAGES: frozenset[str] = frozenset(_SCHEMA["properties"]["stage"]["enum"])
+VALID_ERROR_TYPES: frozenset[str] = frozenset(_SCHEMA["properties"]["error_type"]["enum"])
 ALLOWED_USAGE_KEYS: frozenset[str] = frozenset(_SCHEMA["properties"]["usage"]["properties"].keys())
 REQUIRED_TOP_LEVEL: tuple[str, ...] = tuple(_SCHEMA["required"])
 
