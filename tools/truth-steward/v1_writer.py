@@ -47,7 +47,7 @@ ALLOWED_USAGE_KEYS: frozenset[str] = frozenset(_SCHEMA["properties"]["usage"]["p
 REQUIRED_TOP_LEVEL: tuple[str, ...] = tuple(_SCHEMA["required"])
 
 VALID_TRUTH_STEWARD_STAGES: frozenset[str] = frozenset(
-    {"truth-steward-proposal", "truth-steward-editor", "truth-steward-smoke"}
+    s for s in VALID_STAGES if s.startswith("truth-steward-")
 )
 
 
