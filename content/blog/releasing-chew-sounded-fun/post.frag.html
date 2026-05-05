@@ -1,0 +1,93 @@
+      <section class="window" data-title="A Future to Chew On" data-window-mode="text">
+        <div class="window-content">
+          <p>Sadly Qwen 2.5 can't reason enough to reconstruct software from ideas, even when a fair amount of semantic scaffolding is in place. Thanks to my previous Covid PC Build for music recording, I can actually run Qwen 3.6. The only issue is, getting autonomous larger-scale "thinking", decomposing and building, requires an Agent. And infrastructure. I'm hoping I've found a way to turn the Infrastructure INTO the Agent, in a sense, to reduce prompt-bloat related to tool-calling. It was only natural to name the Agent CHEW. He'll have little value without the Gum Scaffolding that helps keep him useful and automated, but releasing CHEW publicly sounded fun.</p>
+
+          <p><em>The paragraph above comes directly from Shane Curry. Everything below this line is structured context for readers and machines.</em></p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Metadata" data-window-mode="rich">
+        <div class="window-content">
+          <dl class="meta-grid">
+            <dt>Type</dt>
+            <dd>Blog post</dd>
+            <dt>Status</dt>
+            <dd>Working note</dd>
+            <dt>Published</dt>
+            <dd>2026-05-05</dd>
+            <dt>Updated</dt>
+            <dd>2026-05-05</dd>
+            <dt>Author</dt>
+            <dd>Shane Curry</dd>
+            <dt>Tags</dt>
+            <dd>CHEW, Gum, local AI, Qwen 2.5, Qwen 3.6, agent design, prompt bloat</dd>
+            <dt>Claim boundary</dt>
+            <dd>Naming and intent note. CHEW is not yet a released artifact; this records the decision to build it and to release it publicly when ready.</dd>
+            <dt>Canonical URL</dt>
+            <dd><a href="https://shanecurry.com/blog/releasing-chew-sounded-fun/">https://shanecurry.com/blog/releasing-chew-sounded-fun/</a></dd>
+          </dl>
+        </div>
+      </section>
+
+      <section class="window" data-title="Main Claim" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            The agent for local autonomous work is named CHEW, and the bet behind it is structural: instead of bolting tool-calling onto a model, the infrastructure that decomposes and routes work <em>is</em> the agent. CHEW is the name for that harness, and Gum is the scaffolding that keeps it honest.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Why It Matters" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Tool-calling protocols cost prompt budget on every step, and that budget is exactly what a small local model cannot spare. If the harness owns decomposition, routing, and verification directly, the model's prompts stay short and the work stays inside hardware that already exists in the room. That is the difference between a toy demo and a daily creative loop.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Supporting Observations" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li>Qwen 2.5 was tested as the worker through the existing pipeline. Even with semantic scaffolding around it, it could not reason far enough to reconstruct software from ideas.</li>
+            <li>The Covid-era music recording PC turns out to have enough VRAM and DRAM to host Qwen 3.6, which closes the local capability gap that Qwen 2.5 left open.</li>
+            <li>Naming the agent CHEW makes the role explicit: CHEW is the worker; Gum is the truth-protection scaffolding around it. The split was already implicit in the workflow before it had a name.</li>
+            <li>Releasing CHEW publicly is the next forcing function. A public release is what disciplines the harness into something a stranger can read, run, and trust.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Limits And Caveats" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            CHEW alone is not the deliverable. Without the Gum scaffolding that protects truth across passes, CHEW is an unsupervised worker, and unsupervised workers drift. This page is naming a piece of the system; it is not announcing that the piece is done.
+          </p>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Terms" data-window-mode="rich">
+        <div class="window-content">
+          <ul>
+            <li><a href="/glossary/#chew">Chew</a></li>
+            <li><a href="/glossary/#gum">Gum</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Related Posts" data-window-mode="text">
+        <div class="window-content">
+          <ul>
+            <li><a href="/blog/gum-in-the-machine/">Gum in the Machine</a></li>
+            <li><a href="/blog/i-truly-do-not-understand-what-im-doing-yet/">I Truly Do Not Understand What I Am Doing. Yet.</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="window" data-title="Preferred Citation" data-window-mode="text">
+        <div class="window-content">
+          <p>
+            Shane Curry, "A Future to Chew On,"
+            https://shanecurry.com/blog/releasing-chew-sounded-fun/, published
+            2026-05-05.
+          </p>
+        </div>
+      </section>

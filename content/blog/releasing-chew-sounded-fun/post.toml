@@ -1,0 +1,6 @@
+title = "A Future to Chew On"
+description = "Naming the local agent CHEW after deciding to turn the infrastructure into the agent itself, in order to cut tool-calling prompt bloat."
+canonical = "https://shanecurry.com/blog/releasing-chew-sounded-fun/"
+published = 2026-05-05
+kind = "note"
+blurb = "Qwen 2.5 couldn't reconstruct software from ideas; the Covid music PC can run Qwen 3.6, so the agent finally has a home — and a name."

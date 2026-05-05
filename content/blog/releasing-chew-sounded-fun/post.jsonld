@@ -1,0 +1,50 @@
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": "https://shanecurry.com/blog/releasing-chew-sounded-fun/#post",
+        "headline": "A Future to Chew On",
+        "description": "Naming the local agent CHEW after deciding to turn the infrastructure into the agent itself, in order to cut tool-calling prompt bloat.",
+        "datePublished": "2026-05-05",
+        "dateModified": "2026-05-05",
+        "author": {
+          "@id": "https://shanecurry.com/#person"
+        },
+        "mainEntityOfPage": "https://shanecurry.com/blog/releasing-chew-sounded-fun/",
+        "url": "https://shanecurry.com/blog/releasing-chew-sounded-fun/",
+        "isPartOf": {
+          "@type": "Blog",
+          "url": "https://shanecurry.com/blog/"
+        },
+        "keywords": [
+          "CHEW",
+          "Gum",
+          "local AI",
+          "Qwen 2.5",
+          "Qwen 3.6",
+          "agent design",
+          "prompt bloat"
+        ],
+        "about": [
+          "naming the local agent CHEW",
+          "infrastructure as agent",
+          "reducing tool-calling prompt bloat",
+          "Qwen 2.5 reasoning ceiling",
+          "Qwen 3.6 on a Covid-era music recording PC"
+        ],
+        "mentions": [
+          {
+            "@id": "https://shanecurry.com/glossary/#chew"
+          },
+          {
+            "@id": "https://shanecurry.com/glossary/#gum"
+          },
+          {
+            "@id": "https://shanecurry.com/blog/gum-in-the-machine/"
+          },
+          {
+            "@id": "https://shanecurry.com/blog/i-truly-do-not-understand-what-im-doing-yet/"
+          }
+        ]
+      }
+    </script>
